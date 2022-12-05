@@ -1,14 +1,21 @@
 ﻿using back.Models;
+using System.Data;
+using Microsoft.Data.SqlClient;
+using System.Reflection.PortableExecutable;
+using System.Threading.Tasks;
 
 namespace back.Services;
 public class TankService
 {
     private WOTContext Context { get; init; }
+    private IConfiguration Config { get; init;  }
+
     private string UrlImg { get; set; } = "http://localhost:5019/imgUnite";
 
-    public TankService(WOTContext _context)
+    public TankService(WOTContext _context, IConfiguration _config)
     {
         Context = _context;
+        Config = _config;
     }
     public async Task<IQueryable> ListerAsync()
     {
@@ -23,7 +30,7 @@ public class TankService
                         x.Id,
                         x.Nom,
                         x.IdTypeTank,
-                        UrlImage = string.Format($"{UrlImg}/{x.IdTypeTankNavigation.NomImage}"),
+                        x.IdTypeTankNavigation.NomImage,
                         Tier = new { Id = x.IdTier, Nom = x.IdTierNavigation.Nom }
                     };
         });
@@ -31,46 +38,92 @@ public class TankService
         return retour;
     }
 
-    public async Task<IQueryable> ListerAsync(int _idCompte)
+    public async Task<List<dynamic>> ListerAsync(int _idCompte)
     {
-        IQueryable? retour = null;
-
-        await Task.Run(() =>
+        using (SqlConnection sqlCon = new(Config.GetConnectionString("Defaut")))
         {
-            retour = from u in Context.Joueurs
-                    where u.Id == _idCompte
-                    select u.IdTanks.OrderBy(x => x.IdTierNavigation.Nom).ThenBy(x => x.Nom).Select(x => new
-                    {
-                        x.Id,
-                        x.Nom,
-                        x.IdTypeTank,
-                        UrlImage = string.Format($"{UrlImg}/{x.IdTypeTankNavigation.NomImage}"),
-                        Tier = new { Id = x.IdTier, Nom = x.IdTierNavigation.Nom }
-                    });
-        });
+            await sqlCon.OpenAsync();
 
-        return retour;
+            var cmd = sqlCon.CreateCommand();
+
+            cmd.CommandText = "SELECT t.id, t.nom, ts.nom as nomStatut, t.idTankStatut, idTypeTank, idTier, nomImage " +
+                              "FROM TankJoueur tj " +
+                              "JOIN tank t ON tj.idTank = t.id " +
+                              "JOIN TankStatut ts ON ts.id = t.idTankStatut " +
+                              "JOIN TypeTank tt ON tt.id = t.idTypeTank " +
+                              "WHERE idJoueur = @id";
+
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = _idCompte;
+
+            await cmd.PrepareAsync();
+
+            using(SqlDataReader reader = cmd.ExecuteReader())
+            {
+                List<dynamic> liste = new(); 
+
+                while (reader.Read())
+                {
+                    liste.Add(new 
+                    { 
+                        Id = reader.GetValue(0),
+                        Nom = reader.GetString(1),
+                        IdType = reader.GetValue(4),
+                        NomImage = reader.GetString(6),
+                        IdTier = reader.GetInt32(5),
+                        IdStatut = reader.GetInt32(3),
+                        NomStatut = reader.GetString(2)
+                    });
+                }
+
+                sqlCon.Close();
+                reader.Close();
+
+                return liste;
+            }
+        }
     }
 
-    public async Task<IQueryable> ListerAsync(string _idDiscord)
+    public async Task<List<dynamic>> ListerAsync(string _idDiscord)
     {
-        IQueryable? retour = null;
-
-        await Task.Run(() =>
+        using (SqlConnection sqlCon = new(Config.GetConnectionString("Defaut")))
         {
-            retour = from u in Context.Joueurs
-                     where u.IdDiscord == _idDiscord
-                     select u.IdTanks.OrderBy(x => x.IdTierNavigation.Nom).ThenBy(x => x.Nom).Select(x => new
-                     {
-                         x.Id,
-                         x.Nom,
-                         x.IdTypeTank,
-                         UrlImage = string.Format($"{UrlImg}/{x.IdTypeTankNavigation.NomImage}"),
-                         Tier = new { Id = x.IdTier, Nom = x.IdTierNavigation.Nom }
-                     });
-        });
+            await sqlCon.OpenAsync();
 
-        return retour;
+            var cmd = sqlCon.CreateCommand();
+
+            cmd.CommandText = "SELECT t.id, t.nom, Tier.nom as nomTier, ts.nom as nomStatut, tt.nom as nomType " +
+                              "FROM TankJoueur tj " +
+                              "JOIN tank t ON tj.idTank = t.id " +
+                              "JOIN joueur j ON j.id = tj.idJoueur " +
+                              "JOIN TankStatut ts ON ts.id = t.idTankStatut " +
+                              "JOIN TypeTank tt ON tt.id = t.idTypeTank " +
+                              "JOIN Tier ON Tier.id = t.idTier " +
+                              "WHERE idDiscord = @id";
+
+            cmd.Parameters.Add("@id", SqlDbType.VarChar).Value = _idDiscord;
+
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                List<dynamic> liste = new();
+
+                while (reader.Read())
+                {
+                    liste.Add(new
+                    {
+                        Id = reader.GetInt32(0),
+                        Nom = reader.GetString(1),
+                        NomTier = reader.GetString(2),
+                        NomStatut = reader.GetString(3),
+                        NomType = reader.GetString(4)
+                    });
+                }
+
+                sqlCon.Close();
+                reader.Close();
+
+                return liste;
+            }
+        }
     }
 
     public async Task<int> Ajouter(Tank _tank)

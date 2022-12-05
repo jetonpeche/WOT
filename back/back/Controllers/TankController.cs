@@ -10,13 +10,15 @@ namespace back.Controllers;
 public class TankController : ControllerBase
 {
     private TankService TankServ { get; init; }
+    private ProtectionService ProtectionServ { get; init; }
 
-    public TankController(TankService _tankService)
+	public TankController(TankService _tankService, ProtectionService _protectionService)
 	{
 		TankServ = _tankService;
+		ProtectionServ = _protectionService;
 	}
 
-	[HttpGet]
+	[HttpGet("lister")]
 	public async Task<string> Lister()
 	{
 		var liste = await TankServ.ListerAsync();
@@ -24,7 +26,7 @@ public class TankController : ControllerBase
 		return JsonConvert.SerializeObject(liste);
 	}
 
-	[HttpGet("listerTankJoueur/{idCompte}")]
+	[HttpGet("lister/{idCompte}")]
 	public async Task<string> Lister(int idCompte)
 	{
 		var liste = await TankServ.ListerAsync(idCompte);
@@ -32,7 +34,7 @@ public class TankController : ControllerBase
         return JsonConvert.SerializeObject(liste);
     }
 
-    [HttpGet("listerTankJoueurDiscord/{idDiscord}")]
+    [HttpGet("listerViaDiscord/{idDiscord}")]
     public async Task<string> Lister(string idDiscord)
 	{
         var liste = await TankServ.ListerAsync(idDiscord);
