@@ -1,4 +1,5 @@
-﻿namespace BotDiscord;
+﻿namespace BotDiscord.Enums;
+
 public enum EApiType
 {
     tank

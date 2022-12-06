@@ -34,10 +34,10 @@ public class TankController : ControllerBase
         return JsonConvert.SerializeObject(liste);
     }
 
-    [HttpGet("listerViaDiscord/{idDiscord}")]
-    public async Task<string> Lister(string idDiscord)
+    [HttpGet("listerViaDiscord/{idDiscord}/{idTier}")]
+    public async Task<string> Lister(string idDiscord, int idTier)
 	{
-        var liste = await TankServ.ListerAsync(idDiscord);
+        var liste = await TankServ.ListerAsync(idDiscord, idTier);
 
         return JsonConvert.SerializeObject(liste);
     }

@@ -17,6 +17,7 @@ public class TankService
         Context = _context;
         Config = _config;
     }
+
     public async Task<IQueryable> ListerAsync()
     {
         IQueryable? retour = null;
@@ -83,7 +84,7 @@ public class TankService
         }
     }
 
-    public async Task<List<dynamic>> ListerAsync(string _idDiscord)
+    public async Task<List<dynamic>> ListerAsync(string _idDiscord, int _idTier)
     {
         using (SqlConnection sqlCon = new(Config.GetConnectionString("Defaut")))
         {
@@ -98,9 +99,11 @@ public class TankService
                               "JOIN TankStatut ts ON ts.id = t.idTankStatut " +
                               "JOIN TypeTank tt ON tt.id = t.idTypeTank " +
                               "JOIN Tier ON Tier.id = t.idTier " +
-                              "WHERE idDiscord = @id";
+                              "WHERE idDiscord = @id AND t.idTier = @idTier AND t.estVisible = 1 " +
+                              "ORDER BY idTankStatut, tt.id, t.nom";
 
             cmd.Parameters.Add("@id", SqlDbType.VarChar).Value = _idDiscord;
+            cmd.Parameters.Add("@idTier", SqlDbType.Int).Value = _idTier;
 
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
