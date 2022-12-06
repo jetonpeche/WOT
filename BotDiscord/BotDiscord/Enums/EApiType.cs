@@ -2,5 +2,6 @@
 
 public enum EApiType
 {
-    tank
+    tank,
+    joueur
 }

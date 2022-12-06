@@ -1,8 +1,6 @@
 ﻿using back.Models;
-using System.Data;
 using Microsoft.Data.SqlClient;
-using System.Reflection.PortableExecutable;
-using System.Threading.Tasks;
+using System.Data;
 
 namespace back.Services;
 public class TankService

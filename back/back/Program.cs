@@ -25,6 +25,7 @@ builder.Services.AddDbContext<WOTContext>(o => o.UseSqlServer(config.GetConnecti
 // injection de dependance
 builder.Services
     .AddScoped<TankService>()
+    .AddScoped<JoueurService>()
     .AddScoped<TokenService>()
     .AddScoped<ProtectionService>();
 
