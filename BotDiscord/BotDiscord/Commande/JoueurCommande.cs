@@ -42,11 +42,11 @@ public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("ajouter_joueur", "Ajouter un nouveau joueur")]
-    public async Task Ajouter(ulong _idDiscord, string _pseudo, bool _estStrateur, bool _estAdmin)
+    public async Task Ajouter(SocketUser _joueur, string _pseudo, bool _estStrateur, bool _estAdmin)
     {
         string jsonString = JsonSerializer.Serialize(new
         {
-            IdDiscord = _idDiscord.ToString(),
+            IdDiscord = _joueur.Id.ToString(),
             Pseudo = _pseudo,
             EstStrateur = _estStrateur,
             EstAdmin = _estAdmin

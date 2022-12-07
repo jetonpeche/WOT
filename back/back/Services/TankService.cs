@@ -6,9 +6,7 @@ namespace back.Services;
 public class TankService
 {
     private WOTContext Context { get; init; }
-    private IConfiguration Config { get; init;  }
-
-    private string UrlImg { get; set; } = "http://localhost:5019/imgUnite";
+    private IConfiguration Config { get; init; }
 
     public TankService(WOTContext _context, IConfiguration _config)
     {
@@ -127,15 +125,22 @@ public class TankService
         }
     }
 
-    public async Task<int> Ajouter(Tank _tank)
+    public async Task<int> AjouterAsync(Tank _tank)
     {
-        await Context.Tanks.AddAsync(_tank);
+        try
+        {
+            await Context.Tanks.AddAsync(_tank);
 
-        await Context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
 
-        // obj _tank est completé apres l'ajout
-        // on peut recuperer son ID via _tank
+            // obj _tank est completé apres l'ajout
+            // on peut recuperer son ID via _tank
 
-        return _tank.Id;
+            return _tank.Id;
+        }
+        catch
+        {
+            return 0;
+        }
     }
 }

@@ -47,13 +47,14 @@ public class TankController : ControllerBase
 	{
 		Tank tank = new()
 		{
-			Nom = _tankImport.Nom,
+			Nom = ProtectionServ.XSS(_tankImport.Nom),
 			IdTier = _tankImport.IdTier,
-			IdTankStatut = _tankImport.IdTankStatut,
-			IdTypeTank = _tankImport.IdTypeTank
-		};
+			IdTankStatut = _tankImport.IdStatut,
+			IdTypeTank = _tankImport.IdType,
+            EstVisible = 1
+        };
 
-		int id = await TankServ.Ajouter(tank);
+		int id = await TankServ.AjouterAsync(tank);
 
 		return JsonConvert.SerializeObject(id);
 	}

@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using System.Text.Json;
 
 namespace BotDiscord.Commande;
 
@@ -45,5 +46,24 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
         }
 
         await Context.Channel.SendMessageAsync(null, false, embedBuilder.Build());
+    }
+
+    [SlashCommand("ajouter_tank", "Ajouter un tank")]
+    public async Task Ajouter(string _nom, ETier _tier, ETypeTank _typeTank, EStatutTank _statutTank)
+    {
+        string jsonString = JsonSerializer.Serialize(new
+        {
+            Nom = _nom,
+            IdType = (int)_typeTank,
+            IdStatut = (int)_statutTank,
+            IdTier = (int)_tier
+        });
+
+        int id = await ApiService.PostAsync<int>(EApiType.tank, "ajouter", jsonString);
+
+        if(id != 0)
+            await Context.Channel.SendMessageAsync("Le tank a été ajouté");
+        else
+            await Context.Channel.SendMessageAsync("Erreur d'ajout");
     }
 }
