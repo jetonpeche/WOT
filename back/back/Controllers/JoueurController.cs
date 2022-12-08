@@ -52,9 +52,16 @@ public class JoueurController : Controller
         return JsonConvert.SerializeObject(liste is null ? Array.Empty<string>() : liste);
     }
 
+    /// <summary>
+    /// Ajout d'un nouveau joueur
+    /// </summary>
+    /// <returns>-1 => existe deja / 0 => erreur / autre => OK</returns>
     [HttpPost("Ajouter")]
     public async Task<string> Ajouter(JoueurImport _joueurImport)
     {
+        if(JoueurServ.Existe(_joueurImport.IdDiscord))
+            JsonConvert.SerializeObject(-1);
+
         Joueur joueur = new()
         {
             IdDiscord = ProtectionServ.XSS(_joueurImport.IdDiscord),

@@ -56,6 +56,8 @@ public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
 
         if (id != default)
             await Context.Channel.SendMessageAsync("Le joueur a été ajouté");
+        else if(id == -1)
+            await Context.Channel.SendMessageAsync($"Le joueur {_joueur.Username} existe déjà");
         else
             await Context.Channel.SendMessageAsync("Erreur d'ajout");
     }

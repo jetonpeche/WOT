@@ -98,5 +98,12 @@ namespace back.Services
                 return 0;
             }
         }
+
+        public bool Existe(string _idDiscord)
+        {
+            int nb = Context.Joueurs.Count(x => x.IdDiscord == _idDiscord);
+
+            return nb == 1;
+        }
     }
 }
