@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen(swagger =>
 {
     // genere un XML et permet de voir le sumary dans swagger pour chaque fonctions dans le controller
     string xmlNomFichier = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    //swagger.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlNomFichier));
+    swagger.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlNomFichier));
 });
 
 ConfigurationManager config = builder.Configuration;
@@ -84,3 +84,10 @@ app.MapControllers();
 app.Run();
 
 //Scaffold-DbContext "Data Source=DESKTOP-1KR1QP3;Initial Catalog=WOT;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+// supp warning swagger => 1591 dans build général
+/*
+ * pour le summary dans swagger (fichier du projet)
+  <PropertyGroup>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+ */

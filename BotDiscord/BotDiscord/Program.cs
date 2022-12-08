@@ -19,7 +19,7 @@ public class Program
             .AddJsonFile("config.json")
             .Build();
 
-        // injection de dependance
+        //creation de l'injecteur de dependance et injection de dependance
         using IHost host = Host.CreateDefaultBuilder()
             .ConfigureServices((_, service) =>
             service

@@ -1,7 +1,5 @@
 ﻿using back.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 
 namespace back.Controllers;
 
@@ -34,7 +32,15 @@ public class TankController : ControllerBase
         return JsonConvert.SerializeObject(liste);
     }
 
-    [HttpGet("listerViaDiscord/{idDiscord}/{idTier}")]
+	[HttpGet("listerViaDiscord/{idTier}/{idType:int?}")]
+	public async Task<string> Lister(int idTier, int? idType = null)
+	{
+		var liste = await TankServ.ListerAsync(idTier, idType);
+
+		return JsonConvert.SerializeObject(liste);
+	}
+
+    [HttpGet("listerTankJoueurViaDiscord/{idDiscord}/{idTier}")]
     public async Task<string> Lister(string idDiscord, int idTier)
 	{
         var liste = await TankServ.ListerAsync(idDiscord, idTier);

@@ -96,9 +96,54 @@ public class TankService
                               "JOIN TypeTank tt ON tt.id = t.idTypeTank " +
                               "JOIN Tier ON Tier.id = t.idTier " +
                               "WHERE idDiscord = @id AND t.idTier = @idTier AND t.estVisible = 1 " +
-                              "ORDER BY idTankStatut, tt.id, t.nom";
+                              "ORDER BY tt.id, idTankStatut, t.nom";
 
             cmd.Parameters.Add("@id", SqlDbType.VarChar).Value = _idDiscord;
+            cmd.Parameters.Add("@idTier", SqlDbType.Int).Value = _idTier;
+
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                List<dynamic> liste = new();
+
+                while (reader.Read())
+                {
+                    liste.Add(new
+                    {
+                        Id = reader.GetInt32(0),
+                        Nom = reader.GetString(1),
+                        NomTier = reader.GetString(2),
+                        NomStatut = reader.GetString(3),
+                        NomType = reader.GetString(4)
+                    });
+                }
+
+                sqlCon.Close();
+                reader.Close();
+
+                return liste;
+            }
+        }
+    }
+
+    public async Task<List<dynamic>> ListerAsync(int _idTier, int? _idType = null)
+    {
+        using (SqlConnection sqlCon = new(Config.GetConnectionString("Defaut")))
+        {
+            await sqlCon.OpenAsync();
+
+            var cmd = sqlCon.CreateCommand();
+
+            cmd.CommandText = "SELECT t.id, t.nom, Tier.nom as nomTier, ts.nom as nomStatut, tt.nom as nomType " +
+                              "FROM tank t " +
+                              "JOIN TankStatut ts ON ts.id = t.idTankStatut " +
+                              "JOIN TypeTank tt ON tt.id = t.idTypeTank " +
+                              "JOIN Tier ON Tier.id = t.idTier " +
+                              "WHERE t.idTier = @idTier " + $"{(_idType is not null ? "AND t.idTypeTank = @idType" : "")}" + " AND t.estVisible = 1 " +
+                              "ORDER BY tt.id, idTankStatut, t.nom";
+
+            if(_idType is not null)
+                cmd.Parameters.Add("@idType", SqlDbType.Int).Value = _idType.Value;
+            
             cmd.Parameters.Add("@idTier", SqlDbType.Int).Value = _idTier;
 
             using (SqlDataReader reader = cmd.ExecuteReader())
