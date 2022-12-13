@@ -1,4 +1,5 @@
 ﻿using back.Models;
+using Microsoft.Data.SqlClient;
 
 namespace back.Services
 {
@@ -84,6 +85,20 @@ namespace back.Services
             return retour;
         }
 
+        public async Task<int> GetId(string _idDiscord)
+        {
+            int id = default;
+
+            await Task.Run(() =>
+            {
+                id = (from j in Context.Joueurs
+                     where j.IdDiscord == _idDiscord
+                     select j.Id).FirstOrDefault();
+            });
+
+            return id;
+        }
+
         public async Task<int> AjouterAsync(Joueur _joueur)
         {
             try
@@ -99,11 +114,56 @@ namespace back.Services
             }
         }
 
+        public async Task AjouterTankJoueurAsync(int _idJoueur, int _idTank)
+        {
+            using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+            {
+                await sqlCon.OpenAsync();
+
+                SqlCommand cmd = sqlCon.CreateCommand();
+
+                cmd.CommandText = "INSERT INTO TankJoueur (idJoueur, idTank) VALUES (@idJoueur, @idTank)";
+
+                cmd.Parameters.AddRange(new SqlParameter[]
+                    {
+                        new SqlParameter("@idJoueur", System.Data.SqlDbType.Int) { Value = _idJoueur },
+                        new SqlParameter("@idTank", System.Data.SqlDbType.Int) { Value = _idTank }
+                    });
+
+                await cmd.PrepareAsync();
+                await cmd.ExecuteNonQueryAsync();
+
+                await sqlCon.CloseAsync();
+            }
+        }
+
+        public bool PossedeTank(int _idJoueur, int _idTank)
+        {
+            int? nb = Context.Joueurs
+                .Where(x => x.Id == _idJoueur)
+                .Select(x => x.IdTanks.Where(x => x.Id == _idTank))
+                .FirstOrDefault()?
+                .Count();
+
+            return nb.HasValue && nb.Value is 1;
+        }
+
+        public bool PossedeTank(string _idDiscord, int _idTank)
+        {
+            int? nb = Context.Joueurs
+                .Where(x => x.IdDiscord == _idDiscord)
+                .Select(x => x.IdTanks.Where(x => x.Id == _idTank))
+                .FirstOrDefault()?
+                .Count();
+
+            return nb.HasValue && nb.Value is 1;
+        }
+
         public bool Existe(string _idDiscord)
         {
             int nb = Context.Joueurs.Count(x => x.IdDiscord == _idDiscord);
 
-            return nb == 1;
+            return nb is 1;
         }
     }
 }

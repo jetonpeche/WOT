@@ -80,19 +80,13 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("ajouter_tank_joueur", "Ajouter un tank pour soi")]
-    public async Task AjouterTankJoueur([Description("l'idTank est visible via la commande 'lister_tank (exemple: 1, 2, 3, 4)'")] string _listeIdTank)
+    public async Task AjouterTankJoueur([Description("l'idTank est visible via la commande 'lister_tank'"), MinValue(1)] int _idTank)
     {
-        // a voir
-        _listeIdTank = Regex.Replace(_listeIdTank, @"\s+", string.Empty);
+        string jsonString = JsonSerializer.Serialize(new { IdDiscord = Context.User.Id.ToString(), IdTank = _idTank });
 
-        List<string> listeIdTank = new(_listeIdTank.Trim().Split(','));
+        string retour = await ApiService.PostAsync<string>(EApiType.joueur, "ajouterTankJoueurViaDiscord", jsonString);
 
-        string jsonString = JsonSerializer.Serialize(new { IdDiscord = Context.User.Id.ToString(), ListeIdTank = listeIdTank });
-
-        bool estAjouter = await ApiService.PostAsync<bool>(EApiType.tank, "ajouterTankJoueurViaDiscord", jsonString);
-        
-
-        await Context.Channel.SendMessageAsync("");
+        await Context.Channel.SendMessageAsync(retour == default ? "Erreur: \"idTank\" n'existe pas ou erreur serveur" : retour);
     }
 
     [SlashCommand("ajouter_tank", "Ajouter un tank")]

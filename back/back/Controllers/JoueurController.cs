@@ -54,7 +54,7 @@ public class JoueurController : Controller
     /// <summary>
     /// Ajout d'un nouveau joueur
     /// </summary>
-    /// <returns>-1 => existe deja / 0 => erreur / autre => OK</returns>
+    /// <returns> -1 => existe deja / 0 => erreur / autre => OK</returns>
     [HttpPost("Ajouter")]
     public async Task<string> Ajouter(JoueurImport _joueurImport)
     {
@@ -73,5 +73,26 @@ public class JoueurController : Controller
         int id = await JoueurServ.AjouterAsync(joueur);
 
         return JsonConvert.SerializeObject(id);
+    }
+
+    /// <summary>
+    /// Ajouter un char a un joueur
+    /// "IdJoueur" n'est pas utilisé
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("ajouterTankJoueurViaDiscord")]
+    public async Task<string> Ajouter(JoueurTankImport _joueurTankImport)
+    {
+        if (JoueurServ.PossedeTank(_joueurTankImport.IdDiscord!, _joueurTankImport.IdTank))
+            return JsonConvert.SerializeObject("Tu possèdes déjà le tank");
+
+        int idJoueur = await JoueurServ.GetId(_joueurTankImport.IdDiscord!);
+
+        if(idJoueur == default)
+            return JsonConvert.SerializeObject("Id discord inconnu");
+
+        await JoueurServ.AjouterTankJoueurAsync(idJoueur, _joueurTankImport.IdTank);
+
+        return JsonConvert.SerializeObject("Le tank a été ajouté");
     }
 }
