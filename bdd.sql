@@ -1,9 +1,11 @@
+DROP TABLE ClanWarJoueur;
 DROP TABLE TankJoueur;
 DROP TABLE Tank;
 DROP TABLE Joueur;
 DROP TABLE Tier;
 DROP TABLE TypeTank;
 DROP TABLE TankStatut;
+DROP TABLE ClanWar;
 
 CREATE TABLE Tier
 (
@@ -23,6 +25,12 @@ CREATE TABLE TankStatut
 (
     id int PRIMARY KEY IDENTITY(1, 1) NOT NULL,
     nom varchar(100) NOT NULL
+);
+
+CREATE TABLE ClanWar
+(
+    id int PRIMARY KEY IDENTITY(1, 1) NOT NULL,
+    date date NOT NULL
 );
 
 CREATE TABLE Tank
@@ -54,6 +62,19 @@ CREATE TABLE Joueur
     estAdmin int NOT NULL DEFAULT 0,
     estStrateur int NOT NULL DEFAULT 0,
     estActiver int NOT NULL DEFAULT 1
+);
+
+CREATE TABLE ClanWarJoueur
+(
+    idClanWar int NOT NULL,
+    idJoueur int NOT NULL,
+    idTank int  NULL, 
+
+    PRIMARY KEY(idClanWar, idJoueur),
+
+    FOREIGN KEY (idClanWar) REFERENCES ClanWar(id),
+    FOREIGN KEY (idJoueur) REFERENCES Joueur(id),
+    FOREIGN KEY (idTank) REFERENCES Tank(id)
 );
 
 CREATE TABLE TankJoueur
