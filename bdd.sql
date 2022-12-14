@@ -7,6 +7,8 @@ DROP TABLE TypeTank;
 DROP TABLE TankStatut;
 DROP TABLE ClanWar;
 
+-- cascade sur joueur et clan war
+
 CREATE TABLE Tier
 (
     id int PRIMARY KEY IDENTITY(1, 1) NOT NULL,
@@ -72,8 +74,8 @@ CREATE TABLE ClanWarJoueur
 
     PRIMARY KEY(idClanWar, idJoueur),
 
-    FOREIGN KEY (idClanWar) REFERENCES ClanWar(id),
-    FOREIGN KEY (idJoueur) REFERENCES Joueur(id),
+    FOREIGN KEY (idClanWar) REFERENCES ClanWar(id) ON DELETE CASCADE,
+    FOREIGN KEY (idJoueur) REFERENCES Joueur(id) ON DELETE CASCADE,
     FOREIGN KEY (idTank) REFERENCES Tank(id)
 );
 
@@ -84,9 +86,14 @@ CREATE TABLE TankJoueur
 
     PRIMARY KEY(idJoueur, idTank),
 
-    FOREIGN KEY (idJoueur) REFERENCES Joueur(id),
+    FOREIGN KEY (idJoueur) REFERENCES Joueur(id) ON DELETE CASCADE,
     FOREIGN KEY (idTank) REFERENCES Tank(id)
 );
+
+-- clan war
+SET IDENTITY_INSERT ClanWar ON;
+INSERT INTO ClanWar (id, date) VALUES (1, '14/12/2022'), (2, '20/01/2022');
+SET IDENTITY_INSERT ClanWar OFF;
 
 -- type tank
 SET IDENTITY_INSERT TypeTank ON;
@@ -144,3 +151,6 @@ SET IDENTITY_INSERT Tank OFF;
 -- tank joueur
 INSERT INTO TankJoueur (idJoueur, idTank) VALUES
 (1, 4), (1, 5), (1, 12), (1, 13), (1, 16), (1, 22), (1, 29);
+
+-- clanWarJoueur
+INSERT INTO ClanWarJoueur (idJoueur, idClanWar, idTank) VALUES (1, 1, null), (1, 2, 4);
