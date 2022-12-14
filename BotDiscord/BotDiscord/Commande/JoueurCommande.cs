@@ -15,13 +15,13 @@ public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
 
         if (liste is null)
         {
-            await Context.Channel.SendMessageAsync($"Erreur réseau");
+            await RespondAsync($"Erreur réseau");
             return;
         }
 
         if (liste.Count == 0)
         {
-            await Context.Channel.SendMessageAsync($"Aucun joueur");
+            await RespondAsync($"Aucun joueur");
             return;
         }
 
@@ -55,10 +55,42 @@ public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
         int id = await ApiService.PostAsync<int>(EApiType.joueur, "ajouter", jsonString);
 
         if (id != default)
-            await Context.Channel.SendMessageAsync("Le joueur a été ajouté");
+            await RespondAsync("Le joueur a été ajouté");
         else if(id == -1)
-            await Context.Channel.SendMessageAsync($"Le joueur {_joueur.Username} existe déjà");
+            await RespondAsync($"Le joueur {_joueur.Username} existe déjà");
         else
-            await Context.Channel.SendMessageAsync("Erreur d'ajout");
+            await RespondAsync("Erreur d'ajout");
+    }
+
+    [SlashCommand("supprimer_joueur", "Supprime le joueur choisi")]
+    public async Task Supprimer(SocketUser _joueur)
+    {
+        if (_joueur.IsBot)
+        {
+            await RespondAsync("Tu ne peux pas me supprimer");
+            return;
+        }
+
+        int retour = await ApiService.GetAsync<int>(EApiType.joueur, $"supprimer/{_joueur.Id}");
+
+        if (retour is 1)
+            await RespondAsync("Le joueur a été supprimé" + new Emoji("👋"));
+        else if (retour is -1)
+            await RespondAsync("Le joueur n'existe pas");
+        else
+            await RespondAsync("Erreur de suppression");
+    }
+
+    [SlashCommand("supprime_moi", "Supprime le joueur qui éxecute la commande de la base de donnée")]
+    public async Task Supprimer()
+    {
+        int retour = await ApiService.GetAsync<int>(EApiType.joueur, $"supprimer/{Context.User.Id}");
+
+        if (retour is 1)
+            await RespondAsync("Tu as été supprimé" + new Emoji("👋"));
+        else if(retour is -1)
+            await RespondAsync("Tu n'existes pas");
+        else
+            await RespondAsync("Erreur de suppression");
     }
 }

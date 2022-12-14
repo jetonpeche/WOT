@@ -7,6 +7,7 @@ namespace back.Models
     {
         public Tank()
         {
+            ClanWarJoueurs = new HashSet<ClanWarJoueur>();
             IdJoueurs = new HashSet<Joueur>();
         }
 
@@ -20,6 +21,7 @@ namespace back.Models
         public virtual TankStatut IdTankStatutNavigation { get; set; } = null!;
         public virtual Tier IdTierNavigation { get; set; } = null!;
         public virtual TypeTank IdTypeTankNavigation { get; set; } = null!;
+        public virtual ICollection<ClanWarJoueur> ClanWarJoueurs { get; set; }
 
         public virtual ICollection<Joueur> IdJoueurs { get; set; }
     }

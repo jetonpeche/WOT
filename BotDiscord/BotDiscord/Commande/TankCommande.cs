@@ -1,11 +1,9 @@
 ﻿using BotDiscord.Models;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
 using System.ComponentModel;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace BotDiscord.Commande;
 
@@ -36,7 +34,7 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
 
         embedBuilder.AddField("Si le tank n'existe pas demander à un admin*", "Merci " + new Emoji("💋"));
 
-        await ReplyAsync(null, false, embedBuilder.Build());
+        await RespondAsync(embed: embedBuilder.Build());
     }
 
     [SlashCommand("lister_tank_joueur", "Liste les tanks du joueur au tier choisi")]
@@ -46,23 +44,23 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
 
         if(liste is null)
         {
-            await Context.Channel.SendMessageAsync($"Erreur réseau");
+            await RespondAsync($"Erreur réseau");
             return;
         }
 
         string nomTier = _tier.ToString().Replace("id", "");
+
+        if (liste.Count is 0)
+        {
+            await RespondAsync($"Il n'y a qu'un tank de {nomTier}");
+            return;
+        }
 
         EmbedBuilder embedBuilder = new()
         {
             Title = $"Liste des tanks {nomTier} de {_joueur.Username}",
             Color = Color.DarkPurple
         };
-
-        if(liste.Count is 0)
-        {
-            await Context.Channel.SendMessageAsync($"Il n'y a qu'un tank de {nomTier}");
-            return;
-        }
 
         string nomTypeTank = "";
         foreach (var element in liste)
@@ -76,7 +74,7 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
             embedBuilder.AddField(element.Nom, $"{element.NomStatut} | {element.NomType}");
         }
 
-        await Context.Channel.SendMessageAsync(null, false, embedBuilder.Build());
+        await RespondAsync(embed: embedBuilder.Build());
     }
 
     [SlashCommand("ajouter_tank_joueur", "Ajouter un tank pour soi")]
@@ -86,7 +84,7 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
 
         string retour = await ApiService.PostAsync<string>(EApiType.joueur, "ajouterTankJoueurViaDiscord", jsonString);
 
-        await Context.Channel.SendMessageAsync(retour == default ? "Erreur: \"idTank\" n'existe pas ou erreur serveur" : retour);
+        await RespondAsync(retour == default ? "Erreur: \"idTank\" n'existe pas ou erreur serveur" : retour);
     }
 
     [SlashCommand("ajouter_tank", "Ajouter un tank")]
@@ -103,8 +101,8 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
         int id = await ApiService.PostAsync<int>(EApiType.tank, "ajouter", jsonString);
 
         if(id != 0)
-            await Context.Channel.SendMessageAsync("Le tank a été ajouté");
+            await RespondAsync("Le tank a été ajouté");
         else
-            await Context.Channel.SendMessageAsync("Erreur d'ajout");
+            await RespondAsync("Erreur d'ajout");
     }
 }

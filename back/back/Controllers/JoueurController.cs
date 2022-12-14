@@ -54,7 +54,7 @@ public class JoueurController : Controller
     /// <summary>
     /// Ajout d'un nouveau joueur
     /// </summary>
-    /// <returns> -1 => existe deja / 0 => erreur / autre => OK</returns>
+    /// <returns> -1 => existe deja / 0 => erreur / autre (id du joueur) => OK</returns>
     [HttpPost("Ajouter")]
     public async Task<string> Ajouter(JoueurImport _joueurImport)
     {
@@ -94,5 +94,23 @@ public class JoueurController : Controller
         await JoueurServ.AjouterTankJoueurAsync(idJoueur, _joueurTankImport.IdTank);
 
         return JsonConvert.SerializeObject("Le tank a été ajouté");
+    }
+
+    /// <summary>
+    /// Supprime le joueur et toutes ses données
+    /// </summary>
+    /// <returns>1 => OK / 0 => erreur / -1 => existe pas</returns>
+    [HttpGet("supprimer/{idDiscord}")]
+    public async Task<string> Supprimer(string idDiscord)
+    {
+        if(JoueurServ.Existe(idDiscord))
+        {
+            bool retour = await JoueurServ.SupprimerAsync(idDiscord);
+            return JsonConvert.SerializeObject(retour ? 1 : 0);
+        }
+        else
+        {
+            return JsonConvert.SerializeObject(-1);
+        }
     }
 }

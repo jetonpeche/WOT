@@ -106,6 +106,9 @@ namespace back.Services
                 await Context.Joueurs.AddAsync(_joueur);
                 await Context.SaveChangesAsync();
 
+                // obj _joueur est completé apres l'ajout
+                // on peut recuperer son ID via _joueur
+
                 return _joueur.Id;
             }
             catch
@@ -134,6 +137,26 @@ namespace back.Services
                 await cmd.ExecuteNonQueryAsync();
 
                 await sqlCon.CloseAsync();
+            }
+        }
+
+        public async Task<bool> SupprimerAsync(string _idDiscord)
+        {
+            try
+            {
+                Joueur joueur = (from j in Context.Joueurs
+                                 where j.IdDiscord == _idDiscord
+                                 select j).First();
+
+                Context.Joueurs.Remove(joueur);
+
+                await Context.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
