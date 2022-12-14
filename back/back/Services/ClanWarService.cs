@@ -39,6 +39,25 @@ public class ClanWarService
         return _clanWar.Id;
     }
 
+    public async Task<int> SupprimerAsync(DateTime _date)
+    {
+        try
+        {
+            ClanWar clanWar = (from cw in Context.ClanWars
+                               where cw.Date == _date
+                               select cw).First();
+
+            Context.ClanWars.Remove(clanWar);
+            await Context.SaveChangesAsync();
+
+            return 1;
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
     public bool Existe(DateTime _date)
     {
         var retour = (from cw in Context.ClanWars

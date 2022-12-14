@@ -70,8 +70,25 @@ public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("supprimer_clan_war", "Supprime la clan war")]
-    public async Task Supprimer()
+    public async Task Supprimer([Summary(description: "Date au format JJ/MM")] string _date)
     {
-        await RespondAsync("A faire");
+        if (!Regex.IsMatch(_date, PatternDate))
+        {
+            await RespondAsync("La date doit être au format JJ/MM");
+            return;
+        }
+
+        DateTime date = DateTime.Parse($"{_date}/{DateTime.Now.Year}");
+
+        string jsonString = JsonConvert.SerializeObject(new { Date = date, IdDiscord = Context.User.Id.ToString() });
+
+        int id = await ApiService.PostAsync<int>(EApiType.clanWar, "supprimer", jsonString);
+
+        if (id is -1)
+            await RespondAsync("La date de la clan war n'existe pas");
+        else if (id is 0)
+            await RespondAsync("Erreur de suppression");
+        else
+            await RespondAsync("La clan war a été supprimé");
     }
 }
