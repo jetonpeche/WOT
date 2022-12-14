@@ -54,12 +54,12 @@ public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
 
         int id = await ApiService.PostAsync<int>(EApiType.joueur, "ajouter", jsonString);
 
-        if (id != default)
-            await RespondAsync("Le joueur a été ajouté");
-        else if(id == -1)
+        if (id is -1)
             await RespondAsync($"Le joueur {_joueur.Username} existe déjà");
-        else
+        if (id is 0)
             await RespondAsync("Erreur d'ajout");
+        else
+            await RespondAsync("Le joueur a été ajouté");
     }
 
     [SlashCommand("supprimer_joueur", "Supprime le joueur choisi")]

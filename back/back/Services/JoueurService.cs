@@ -188,5 +188,12 @@ namespace back.Services
 
             return nb is 1;
         }
+
+        public bool Existe(int _idJoueur)
+        {
+            int nb = Context.Joueurs.Count(x => x.Id == _idJoueur);
+
+            return nb is 1;
+        }
     }
 }

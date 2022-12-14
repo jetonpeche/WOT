@@ -27,6 +27,7 @@ builder.Services
     .AddScoped<TankService>()
     .AddScoped<JoueurService>()
     .AddScoped<TokenService>()
+    .AddScoped<ClanWarService>()
     .AddScoped<ProtectionService>();
 
 builder.Services.AddCors(options => options.AddPolicy("CORS", c => c.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()));

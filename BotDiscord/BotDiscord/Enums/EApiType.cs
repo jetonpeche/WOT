@@ -3,5 +3,6 @@
 public enum EApiType
 {
     tank,
-    joueur
+    joueur,
+    clanWar
 }
