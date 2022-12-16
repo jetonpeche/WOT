@@ -38,7 +38,6 @@ namespace back.Controllers
         /// Ajout d'une clan war
         /// "IdJoueur" => utiliser dans l'app web uniquement
         /// </summary>
-        /// <param name="_clanWarImport"></param>
         /// <returns></returns>
         [HttpPost("ajouter")]
         public async Task<string> Ajouter(ClanWarImport _clanWarImport)
@@ -67,11 +66,69 @@ namespace back.Controllers
         }
 
         /// <summary>
+        /// Inscrit le joueur à la prochaine clan war
+        /// Si "Date" vide ou pas date => inscription prochaine clan war
+        /// Sinon incription à la date de la clan war
+        /// </summary>
+        /// <returns>Message du resultat</returns>
+        [HttpPost("participerViaDiscord")]
+        public async Task<string> Participer(ParticipantClanWarImport _participantClanWarImport)
+        {
+            if (!JoueurServ.Existe(_participantClanWarImport.IdDiscord!))
+                return JsonConvert.SerializeObject("Je ne te connais pas, participation impossible");
+
+            if(DateTime.TryParse(_participantClanWarImport.Date, out DateTime date))
+            {
+                if(!ClanWarServ.Existe(date))
+                    return JsonConvert.SerializeObject($"La clan war du {date.ToString("d")} n'existe pas");
+
+                int idClanWar = await ClanWarServ.GetIdAsync(date);
+                int idJoueur = await JoueurServ.GetIdAsync(_participantClanWarImport.IdDiscord!);
+
+                if(await ClanWarServ.ParticipeDejaAsync(idClanWar, idJoueur))
+                    return JsonConvert.SerializeObject("Tu participes déjà à cette clan war");
+
+                ClanWarJoueur clanWarJoueur = new()
+                {
+                    IdJoueur = idJoueur,
+                    IdClanWar = idClanWar,
+                    IdTank = null
+                };
+
+                bool retour = await ClanWarServ.AjouterParticipantAsync(clanWarJoueur);
+
+                return JsonConvert.SerializeObject(retour ? "Tu as été ajouté" : "Erreur d'ajout à la clan war");
+            }
+            // inscription a la prochaine clan war
+            else
+            {
+                int idJoueur = await JoueurServ.GetIdAsync(_participantClanWarImport.IdDiscord!);
+                int? idClanWar = await ClanWarServ.GetProchaineClanWarAsync();
+
+                if (!idClanWar.HasValue)
+                    return JsonConvert.SerializeObject("Aucune clan war prochainement");
+
+                if (await ClanWarServ.ParticipeDejaAsync(idClanWar.Value, idJoueur))
+                    return JsonConvert.SerializeObject("Tu participes déjà à la prochaine clan war");
+
+                ClanWarJoueur clanWarJoueur = new()
+                {
+                    IdJoueur = idJoueur,
+                    IdClanWar = idClanWar.Value,
+                    IdTank = null
+                };
+
+                bool retour = await ClanWarServ.AjouterParticipantAsync(clanWarJoueur);
+
+                return JsonConvert.SerializeObject(retour ? "Tu as été ajouté" : "Erreur d'ajout à la clan war");
+            }
+        }
+
+        /// <summary>
         /// Supprime une clan war
         /// "IdJoueur" => utiliser dans l'app web uniquement
         /// </summary>
-        /// <param name="_clanWarImport"></param>
-        /// <returns></returns>
+        /// <returns>0 => erreur ou inconnu id discord / 1 => OK / -1 => date existe pas</returns>
         [HttpPost("supprimer")]
         public async Task<string> Supprimer(ClanWarImport _clanWarImport)
         {

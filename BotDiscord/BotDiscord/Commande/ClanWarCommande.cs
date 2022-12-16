@@ -1,15 +1,13 @@
-﻿using BotDiscord.Models;
+﻿using BotDiscord.Classes;
+using BotDiscord.Models;
 using Discord;
 using Discord.Interactions;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 
 namespace BotDiscord.Commande;
 
 public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
 {
-    private string PatternDate { get; } = @"^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))$";
-
     [SlashCommand("lister_clan_war", "Liste les clan war")]
     public async Task Lister()
     {
@@ -42,7 +40,7 @@ public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("ajouter_clan_war", "Ajouter une clan war")]
     public async Task Ajouter([Summary(description: "Date au format JJ/MM")] string _date)
     {
-        if(!Regex.IsMatch(_date, PatternDate))
+        if(!Outil.FormatDateOK(_date))
         {
             await RespondAsync("La date doit être au format JJ/MM");
             return;
@@ -69,10 +67,23 @@ public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
         
     }
 
+    [SlashCommand("participer_clan_war", "S'inscrire à la clan war (si pas de date => prochaine clan war)")]
+    public async Task Participer([Summary(description: "Date au format JJ/MM")] string? _date = null)
+    {
+        string jsonString = JsonConvert.SerializeObject(new { Date = _date, IdDiscord = Context.User.Id.ToString() });
+
+        string retour = await ApiService.PostAsync<string>(EApiType.clanWar, "participerViaDiscord", jsonString);
+
+        if (retour == default)
+            await RespondAsync("Erreur d'ajout à la clan war");
+        else
+            await RespondAsync(retour);
+    }
+
     [SlashCommand("supprimer_clan_war", "Supprime la clan war")]
     public async Task Supprimer([Summary(description: "Date au format JJ/MM")] string _date)
     {
-        if (!Regex.IsMatch(_date, PatternDate))
+        if (!Outil.FormatDateOK(_date))
         {
             await RespondAsync("La date doit être au format JJ/MM");
             return;

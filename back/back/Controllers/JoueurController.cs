@@ -86,7 +86,7 @@ public class JoueurController : Controller
         if (JoueurServ.PossedeTank(_joueurTankImport.IdDiscord!, _joueurTankImport.IdTank))
             return JsonConvert.SerializeObject("Tu possèdes déjà le tank");
 
-        int idJoueur = await JoueurServ.GetId(_joueurTankImport.IdDiscord!);
+        int idJoueur = await JoueurServ.GetIdAsync(_joueurTankImport.IdDiscord!);
 
         if(idJoueur == default)
             return JsonConvert.SerializeObject("Id discord inconnu");

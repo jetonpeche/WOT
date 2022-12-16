@@ -85,7 +85,7 @@ namespace back.Services
             return retour;
         }
 
-        public async Task<int> GetId(string _idDiscord)
+        public async Task<int> GetIdAsync(string _idDiscord)
         {
             int id = default;
 
