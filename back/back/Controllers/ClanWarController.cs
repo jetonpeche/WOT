@@ -1,4 +1,5 @@
-﻿using back.Models;
+﻿using back.Enums;
+using back.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back.Controllers
@@ -17,16 +18,17 @@ namespace back.Controllers
         }
 
         /// <summary>
-        /// Liste les clan wars avec la participation (oui / non) du joueur
+        /// Liste les clan war avec la participation (oui / non) du joueur et le nombre de participants
         /// </summary>
         /// <param name="idDiscord">id discord du compte qui le demande</param>
+        /// <param name="etatClanWar">0 => participe pas / 1 => participe / 2 => toutes</param>
         /// <returns></returns>
-        [HttpGet("lister/{idDiscord}")]
-        public async Task<string> Lister(string idDiscord)
+        [HttpGet("listerViaDiscord/{idDiscord}/{etatClanWar}")]
+        public async Task<string> Lister(string idDiscord, EEtatClanWar etatClanWar)
         {
             if(JoueurServ.Existe(idDiscord))
             {
-                var retour = await ClanWarServ.ListerAsync(idDiscord);
+                var retour = await ClanWarServ.ListerAsync(idDiscord, etatClanWar);
 
                 return JsonConvert.SerializeObject(retour);
             }
@@ -66,7 +68,7 @@ namespace back.Controllers
         }
 
         /// <summary>
-        /// Inscrit le joueur à la prochaine clan war
+        /// Inscrit le joueur aux clan war
         /// Si "Date" vide ou pas date => inscription prochaine clan war
         /// Sinon incription à la date de la clan war
         /// </summary>
@@ -124,6 +126,12 @@ namespace back.Controllers
             }
         }
 
+        /// <summary>
+        /// Désinscription du joueur aux clan war
+        /// Si "Date" vide ou pas date => Désinscription prochaine clan war
+        /// Sinon désincription à la date de la clan war
+        /// </summary>
+        /// <returns>Message du resultat</returns>
         [HttpPost("desinscrireViaDiscord")]
         public async Task<string> Desinscription(ParticipantClanWarImport _participantClanWarImport)
         {

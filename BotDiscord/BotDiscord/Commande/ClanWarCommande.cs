@@ -9,9 +9,9 @@ namespace BotDiscord.Commande;
 public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("lister_clan_war", "Liste les clan war")]
-    public async Task Lister()
+    public async Task Lister([Summary(description: "Filtre les clan war")] EEtatClanWar etatClanWar)
     {
-        List<ClanWar> liste = await ApiService.GetAsync<List<ClanWar>>(EApiType.clanWar, $"lister/{Context.User.Id}");
+        List<ClanWar> liste = await ApiService.GetAsync<List<ClanWar>>(EApiType.clanWar, $"listerViaDiscord/{Context.User.Id}/{(int)etatClanWar}");
 
         if(liste is null)
         {

@@ -1,5 +1,5 @@
-﻿using back.Models;
-using Microsoft.Data.SqlClient;
+﻿using back.Enums;
+using back.Models;
 
 namespace back.Services;
 
@@ -12,21 +12,50 @@ public class ClanWarService
         Context = _wotContext;
     }
 
-    public async Task<IQueryable> ListerAsync(string _idDiscord)
+    public async Task<IQueryable>ListerAsync(string _idDiscord, EEtatClanWar _eEtatClanWar = EEtatClanWar.toute)
     {
-        IQueryable? retour = null;
+        IQueryable retour = null;
 
         await Task.Run(() =>
         {
-            retour = from cw in Context.ClanWars
-                     where cw.Date >= DateTime.Now
-                     orderby cw.Date
-                     select new
-                     {
-                         Date = cw.Date.ToString("d"),
-                         Participe = cw.ClanWarJoueurs.Where(cwj => cwj.IdJoueurNavigation.IdDiscord == _idDiscord).Count() == 1,
-                         NbParticipant = cw.ClanWarJoueurs.Count()
-                     };
+            switch (_eEtatClanWar)
+            {
+                case EEtatClanWar.participePas:
+                    retour = from cw in Context.ClanWars
+                             where cw.Date >= DateTime.Now && cw.ClanWarJoueurs.Where(cwj => cwj.IdJoueurNavigation.IdDiscord == _idDiscord).Count() == 0
+                             orderby cw.Date
+                             select new
+                             {
+                                 Date = cw.Date.ToString("d"),
+                                 Participe = false,
+                                 NbParticipant = cw.ClanWarJoueurs.Count()
+                             };
+                    break;
+
+                case EEtatClanWar.participe:
+                    retour = from cw in Context.ClanWars
+                             where cw.Date >= DateTime.Now && cw.ClanWarJoueurs.Where(cwj => cwj.IdJoueurNavigation.IdDiscord == _idDiscord).Count() == 1
+                             orderby cw.Date
+                             select new
+                             {
+                                 Date = cw.Date.ToString("d"),
+                                 Participe = true,
+                                 NbParticipant = cw.ClanWarJoueurs.Count()
+                             };
+                    break;
+
+                case EEtatClanWar.toute:
+                    retour = from cw in Context.ClanWars
+                             where cw.Date >= DateTime.Now
+                             orderby cw.Date
+                             select new
+                             {
+                                 Date = cw.Date.ToString("d"),
+                                 Participe = cw.ClanWarJoueurs.Where(cwj => cwj.IdJoueurNavigation.IdDiscord == _idDiscord).Count() == 1,
+                                 NbParticipant = cw.ClanWarJoueurs.Count()
+                             };
+                    break;
+            }
         });
 
         return retour;
