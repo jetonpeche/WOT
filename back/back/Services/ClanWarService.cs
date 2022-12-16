@@ -93,6 +93,23 @@ public class ClanWarService
         }
     }
 
+    public async Task<bool> DesinscrireAsync(int _idClanWar, int _idJoueur)
+    {
+        try
+        {
+            ClanWarJoueur clanWarJoueur = Context.ClanWarJoueurs.Where(x => x.IdClanWar == _idClanWar && x.IdJoueur == _idJoueur).First();
+
+            Context.ClanWarJoueurs.Remove(clanWarJoueur);
+            await Context.SaveChangesAsync();
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public async Task<int> SupprimerAsync(DateTime _date)
     {
         try

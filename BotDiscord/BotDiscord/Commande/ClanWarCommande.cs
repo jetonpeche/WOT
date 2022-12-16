@@ -68,14 +68,27 @@ public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("participer_clan_war", "S'inscrire à la clan war (si pas de date => prochaine clan war)")]
-    public async Task Participer([Summary(description: "Date au format JJ/MM")] string? _date = null)
+    public async Task Participer([Summary(description: "Date au format JJ/MM ou JJ/MM/AAAA")] string? _date = null)
     {
-        string jsonString = JsonConvert.SerializeObject(new { Date = _date, IdDiscord = Context.User.Id.ToString() });
+        string jsonString = JsonConvert.SerializeObject(new { Date = $"{_date}", IdDiscord = Context.User.Id.ToString() });
 
         string retour = await ApiService.PostAsync<string>(EApiType.clanWar, "participerViaDiscord", jsonString);
 
         if (retour == default)
             await RespondAsync("Erreur d'ajout à la clan war");
+        else
+            await RespondAsync(retour);
+    }
+
+    [SlashCommand("desinscrire_clan_war", "Se désinscrire de la clan war (si pas de date => prochaine clan war)")]
+    public async Task Desinscription([Summary(description: "Date au format JJ/MM ou JJ/MM/AAAA")] string? _date = null)
+    {
+        string jsonString = JsonConvert.SerializeObject(new { Date = _date, IdDiscord = Context.User.Id.ToString() });
+
+        string retour = await ApiService.PostAsync<string>(EApiType.clanWar, "desinscrireViaDiscord", jsonString);
+
+        if (retour == default)
+            await RespondAsync("Erreur lors de la désinscription");
         else
             await RespondAsync(retour);
     }

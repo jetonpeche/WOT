@@ -124,6 +124,45 @@ namespace back.Controllers
             }
         }
 
+        [HttpPost("desinscrireViaDiscord")]
+        public async Task<string> Desinscription(ParticipantClanWarImport _participantClanWarImport)
+        {
+            if (!JoueurServ.Existe(_participantClanWarImport.IdDiscord!))
+                return JsonConvert.SerializeObject("Je ne te connais pas, désinscription impossible");
+
+            if(DateTime.TryParse(_participantClanWarImport.Date, out DateTime date))
+            {
+                if (!ClanWarServ.Existe(date))
+                    return JsonConvert.SerializeObject($"La clan war du {date.ToString("d")} n'existe pas");
+
+                int idClanWar = await ClanWarServ.GetIdAsync(date);
+                int idJoueur = await JoueurServ.GetIdAsync(_participantClanWarImport.IdDiscord!);
+
+                if (!await ClanWarServ.ParticipeDejaAsync(idClanWar, idJoueur))
+                    return JsonConvert.SerializeObject($"Tu ne participes pas à cette clan war");
+
+                bool retour = await ClanWarServ.DesinscrireAsync(idClanWar, idJoueur);
+
+                return JsonConvert.SerializeObject(retour ? "Tu as été désincrit" : "Erreur désinscription");
+            }
+            else
+            {
+               int? idClanWar = await ClanWarServ.GetProchaineClanWarAsync();
+
+                if (!idClanWar.HasValue)
+                    return JsonConvert.SerializeObject("Aucune clan n'existe prochainement");
+
+                int idJoueur = await JoueurServ.GetIdAsync(_participantClanWarImport.IdDiscord!);
+
+                if (!await ClanWarServ.ParticipeDejaAsync(idClanWar.Value, idJoueur))
+                    return JsonConvert.SerializeObject($"Tu ne participes pas à cette clan war");
+
+                bool retour = await ClanWarServ.DesinscrireAsync(idClanWar.Value, idJoueur);
+
+                return JsonConvert.SerializeObject(retour ? "Tu as été désincrit" : "Erreur désinscription");
+            }
+        }
+
         /// <summary>
         /// Supprime une clan war
         /// "IdJoueur" => utiliser dans l'app web uniquement
