@@ -1,0 +1,22 @@
+<div id="img">
+
+<mat-card class="cardCo">
+    <mat-card-title>Connexion</mat-card-title>
+
+    <mat-card-content [formGroup]="form">
+        <mat-form-field appearance="outline">
+            <mat-label>Pseudo</mat-label>
+            <input matInput type="text" formControlName="Pseudo" required>
+            <mat-error>Le champ est obligatoire</mat-error>
+        </mat-form-field>
+    </mat-card-content>
+    
+    <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="Connexion()">
+            <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner>
+            {{ btnClicker ? '' : 'Go !' }}
+        </button>
+    </mat-card-actions>
+</mat-card>
+
+</div>

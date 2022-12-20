@@ -82,7 +82,7 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
     {
         string jsonString = JsonSerializer.Serialize(new { IdDiscord = Context.User.Id.ToString(), IdTank = _idTank });
 
-        string retour = await ApiService.PostAsync<string>(EApiType.joueur, "ajouterTankJoueurViaDiscord", jsonString);
+        string retour = await ApiService.PostAsync<string>(EApiType.joueur, "ajouterTankJoueur", jsonString);
 
         await RespondAsync(retour == default ? "Erreur: \"idTank\" n'existe pas ou erreur serveur" : retour);
     }

@@ -21,14 +21,14 @@ public class TankService
         await Task.Run(() =>
         {
             retour = from x in Context.Tanks
-                     orderby x.IdTierNavigation.Nom, x.Nom
+                     orderby x.IdTierNavigation.Nom, x.IdTankStatut, x.Nom
                      select new
                     {
                         x.Id,
                         x.Nom,
+                        IdStatut = x.IdTankStatut,
                         x.IdTypeTank,
-                        x.IdTypeTankNavigation.NomImage,
-                        Tier = new { Id = x.IdTier, Nom = x.IdTierNavigation.Nom }
+                        x.IdTier
                     };
         });
 

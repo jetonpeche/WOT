@@ -1,4 +1,5 @@
-﻿using back.Models;
+﻿using back.ModelExport;
+using back.Models;
 using Microsoft.Data.SqlClient;
 
 namespace back.Services
@@ -85,6 +86,30 @@ namespace back.Services
             return retour;
         }
 
+        public async Task<JoueurExport?> GetInfoAsync(string _pseudo)
+        {
+            JoueurExport retour = null;
+
+            await Task.Run(() =>
+            {
+                if(PseudoExiste(_pseudo))
+                {
+                    retour = Context.Joueurs
+                    .Where(x => x.Pseudo.ToLower() == _pseudo.ToLower())
+                    .Select(j => new JoueurExport()
+                    {
+                        Id = j.Id,
+                        Pseudo = j.Pseudo,
+                        EstAdmin = j.EstAdmin == 1,
+                        EstStrateur = j.EstStrateur == 1,
+                        ListeIdTank = j.IdTanks.Select(x => x.Id).ToList()
+                    }).First();
+                }
+            });
+
+            return retour;
+        }
+
         public async Task<int> GetIdAsync(string _idDiscord)
         {
             int id = default;
@@ -117,26 +142,68 @@ namespace back.Services
             }
         }
 
-        public async Task AjouterTankJoueurAsync(int _idJoueur, int _idTank)
+        public async Task<bool> AjouterTankJoueurAsync(int _idJoueur, int _idTank)
         {
-            using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+            try
             {
-                await sqlCon.OpenAsync();
+                using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+                {
+                    await sqlCon.OpenAsync();
 
-                SqlCommand cmd = sqlCon.CreateCommand();
+                    SqlCommand cmd = sqlCon.CreateCommand();
 
-                cmd.CommandText = "INSERT INTO TankJoueur (idJoueur, idTank) VALUES (@idJoueur, @idTank)";
+                    cmd.CommandText = "INSERT INTO TankJoueur (idJoueur, idTank) VALUES (@idJoueur, @idTank)";
 
-                cmd.Parameters.AddRange(new SqlParameter[]
-                    {
+                    cmd.Parameters.AddRange(new SqlParameter[]
+                        {
                         new SqlParameter("@idJoueur", System.Data.SqlDbType.Int) { Value = _idJoueur },
                         new SqlParameter("@idTank", System.Data.SqlDbType.Int) { Value = _idTank }
-                    });
+                        });
 
-                await cmd.PrepareAsync();
-                await cmd.ExecuteNonQueryAsync();
+                    await cmd.PrepareAsync();
+                    await cmd.ExecuteNonQueryAsync();
 
-                await sqlCon.CloseAsync();
+                    await sqlCon.CloseAsync();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            
+        }
+
+        public async Task<bool> SupprimerTankJoueurAsync(int _idJoueur, int _idTank)
+        {
+            try
+            {
+                using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+                {
+                    await sqlCon.OpenAsync();
+
+                    SqlCommand cmd = sqlCon.CreateCommand();
+
+                    cmd.CommandText = "DELETE FROM TankJoueur WHERE idJoueur = @idJoueur AND idTank = @idTank";
+
+                    cmd.Parameters.AddRange(new SqlParameter[]
+                        {
+                        new SqlParameter("@idJoueur", System.Data.SqlDbType.Int) { Value = _idJoueur },
+                        new SqlParameter("@idTank", System.Data.SqlDbType.Int) { Value = _idTank }
+                        });
+
+                    await cmd.PrepareAsync();
+                    await cmd.ExecuteNonQueryAsync();
+
+                    await sqlCon.CloseAsync();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -180,6 +247,13 @@ namespace back.Services
                 .Count();
 
             return nb.HasValue && nb.Value is 1;
+        }
+
+        public bool PseudoExiste(string _pseudo)
+        {
+            int nb = Context.Joueurs.Count(x => x.Pseudo.ToLower() == _pseudo.ToLower());
+
+            return nb is 1;
         }
 
         public bool Existe(string _idDiscord)

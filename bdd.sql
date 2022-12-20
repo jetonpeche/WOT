@@ -104,7 +104,7 @@ SET IDENTITY_INSERT TypeTank OFF;
 
 -- tank statut
 SET IDENTITY_INSERT TankStatut ON;
-INSERT INTO TankStatut (id, nom) VALUES (1, 'Méta'), (2, 'Accepté'), (3, 'Toléré'), (4, 'Autre');
+INSERT INTO TankStatut (id, nom) VALUES (1, 'Méta'), (2, 'Accepté'), (3, 'Toléré');
 SET IDENTITY_INSERT TankStatut OFF;
 
 -- tier
