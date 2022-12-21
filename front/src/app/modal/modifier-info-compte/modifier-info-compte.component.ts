@@ -57,12 +57,12 @@ export class ModifierInfoCompteComponent implements OnInit
     this.listeTank = this.listeTankClone.filter(x => x.Nom.toLowerCase().includes(_recherche.toLowerCase()));
   }
 
-  protected Filtrer(_idTier: number = 0, _idType: number = 0, _idStatut: number = 0, _estNonPosseder: boolean): void
+  protected Filtrer(_idTier: number = 0, _idType: number = 0, _idStatut: number = 0, _radioBtnValeur: number): void
   { 
     this.listeTank = this.listeTankClone;
 
-    if(_idTier == 0 && _idType == 0 && _idStatut == 0 && !_estNonPosseder)
-      return;
+    if(_idTier == 0 && _idType == 0 && _idStatut == 0 && +_radioBtnValeur == 0)
+      return;   
 
     // filtre cumulatif
     if(_idTier != 0 && _idTier != undefined)
@@ -74,9 +74,17 @@ export class ModifierInfoCompteComponent implements OnInit
     if(_idStatut != 0 && _idStatut != undefined)
       this.listeTank = this.listeTank.filter(x => x.IdStatut == _idStatut);
 
-    // si non => on sens fou
-    if(_estNonPosseder)
-      this.listeTank = this.listeTank.filter(x => x.estPosseder == false);
+    // posseder ou non
+    switch (+_radioBtnValeur) 
+    {
+      case 1:
+        this.listeTank = this.listeTank.filter(x => x.estPosseder == false);
+        break;
+      
+      case 2:
+        this.listeTank = this.listeTank.filter(x => x.estPosseder == true);
+      break;
+    }
   }
 
   protected GetImageTypeTank(_idType: number): string
