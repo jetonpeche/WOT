@@ -1,0 +1,76 @@
+<div class="headerTitre">
+    <h1>Gestion des joueurs</h1>
+    <button mat-raised-button color="primary" (click)="OuvrirModalAjouterJoueur()">Ajouter</button>
+</div>
+
+<div class="container-fluid">
+    <mat-form-field appearance="outline">
+        <mat-label>Recherche</mat-label>
+        <input matInput type="search" (keyup)="Rechercher($event)" #input>
+    </mat-form-field>
+    
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="listeJoueur" matSort>
+    
+            <!-- Pseudo Column -->
+            <ng-container matColumnDef="Pseudo">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Pseudo </th>
+                <td mat-cell *matCellDef="let element"> {{ element.Pseudo }} </td>
+            </ng-container>
+    
+            <!-- IdDiscord Column -->
+            <ng-container matColumnDef="IdDiscord">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Id Discord </th>
+                <td mat-cell *matCellDef="let element"> {{ element.IdDiscord }} </td>
+            </ng-container>
+    
+            <!-- EstStrateur Column -->
+            <ng-container matColumnDef="EstStrateur">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Strateur </th>
+                <td mat-cell *matCellDef="let element"> {{ element.EstStrateur ? 'Oui' : 'Non' }} </td>
+            </ng-container>
+    
+            <!-- EstStrateur Column -->
+            <ng-container matColumnDef="EstAdmin">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Admin </th>
+                <td mat-cell *matCellDef="let element"> {{ element.EstAdmin ? 'Oui' : 'Non' }} </td>
+            </ng-container>
+    
+            <!-- Activer Column -->
+            <ng-container matColumnDef="EstActiver">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Activer </th>
+                <td mat-cell *matCellDef="let element"> {{ element.EstActiver ? 'Oui' : 'Non' }} </td>
+            </ng-container>
+
+            <!-- action Column -->
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
+                <td mat-cell *matCellDef="let element">
+
+                    <!-- activer / desactiver -->
+                    <button mat-mini-fab color="primary" (click)="ActiverDesactiverJoueur(element, $event)">
+                        <mat-icon *ngIf="!btnClicker">{{ element.EstActiver ? 'power' : 'power_off' }}</mat-icon>
+                        <mat-spinner *ngIf="btnClicker" diameter="23"></mat-spinner>
+                    </button>&nbsp;
+
+                    <!-- supprimer -->
+                    <button mat-mini-fab color="warn" (click)="SupprimerJoueur(element.IdDiscord, $event)">
+                        <mat-icon *ngIf="!btnClicker">delete</mat-icon>
+                        <mat-spinner *ngIf="btnClicker" diameter="23"></mat-spinner>
+                    </button>
+                </td>
+            </ng-container>
+    
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="hoverLigneTableau"></tr>
+    
+            <!-- Row shown when there is no matching data. -->
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">Auncun résultat pour "{{ input.value }}"</td>
+            </tr>
+        </table>
+    
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+    </div>
+</div>
+

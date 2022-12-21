@@ -1,0 +1,21 @@
+.sectionCheckbox 
+{
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 60px;
+
+    mat-checkbox 
+    {
+      font-size: 1em;
+      margin: 0 10px;
+    }
+  }
+
+p
+{
+  color: black;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 0;
+}

@@ -3,7 +3,7 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-.mat-mdc-form-field 
+table, .mat-mdc-form-field 
 {
   width: 100%;
 }
@@ -11,4 +11,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-mdc-progress-spinner circle, .mat-spinner circle
 {
     stroke: white;
+}
+
+.hoverLigneTableau:hover
+{
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.mat-mdc-dialog-title
+{
+  font-weight: bold !important;
+  font-size: 1.4em !important;
+  color: black !important;
 }

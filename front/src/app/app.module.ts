@@ -21,6 +21,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatTableModule} from '@angular/material/table';
+import {MatSortModule} from '@angular/material/sort';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 // permet de donner la possibilité de refrech la page en mode prod en ajoutant un # sur URL
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
@@ -30,13 +33,19 @@ import { JwtInterceptor } from './interceptor/jwt.interceptor';
 import { ConnexionComponent } from './component/connexion/connexion.component';
 import { AccueilComponent } from './component/accueil/accueil.component';
 import { ModifierInfoCompteComponent } from './modal/modifier-info-compte/modifier-info-compte.component';
+import { GestionJoueurComponent } from './component/gestion-joueur/gestion-joueur.component';
+import { ConfirmationComponent } from './modal/confirmation/confirmation.component';
+import { AjouterJoueurComponent } from './modal/ajouter-joueur/ajouter-joueur.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ConnexionComponent,
     AccueilComponent,
-    ModifierInfoCompteComponent
+    ModifierInfoCompteComponent,
+    GestionJoueurComponent,
+    ConfirmationComponent,
+    AjouterJoueurComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +70,10 @@ import { ModifierInfoCompteComponent } from './modal/modifier-info-compte/modifi
     MatIconModule,
     MatSelectModule,
     MatCheckboxModule,
-    MatRadioModule
+    MatRadioModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

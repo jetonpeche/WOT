@@ -1,4 +1,5 @@
 ﻿using back.Enums;
+using back.ModelExport;
 using back.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ public class JoueurController : Controller
     [HttpGet("lister2/{roleJoueur}")]
     public async Task<string> Lister(ERoleJoueur roleJoueur)
     {
-        IQueryable? liste = null;
+        List<JoueurExport> liste = new();
 
         switch (roleJoueur)
         {
@@ -48,7 +49,7 @@ public class JoueurController : Controller
                 break;
         }
 
-        return JsonConvert.SerializeObject(liste is null ? Array.Empty<string>() : liste);
+        return JsonConvert.SerializeObject(liste);
     }
 
     /// <summary>
@@ -67,11 +68,11 @@ public class JoueurController : Controller
     /// Ajout d'un nouveau joueur
     /// </summary>
     /// <returns> -1 => existe deja / 0 => erreur / autre (id du joueur) => OK</returns>
-    [HttpPost("Ajouter")]
+    [HttpPost("ajouter")]
     public async Task<string> Ajouter(JoueurImport _joueurImport)
     {
         if(JoueurServ.Existe(_joueurImport.IdDiscord))
-            JsonConvert.SerializeObject(-1);
+            return JsonConvert.SerializeObject(-1);
 
         Joueur joueur = new()
         {
@@ -85,6 +86,33 @@ public class JoueurController : Controller
         int id = await JoueurServ.AjouterAsync(joueur);
 
         return JsonConvert.SerializeObject(id);
+    }
+
+    /// <summary>
+    /// Active un joueur
+    /// </summary>
+    /// <param name="idJoueur"></param>
+    /// <returns></returns>
+    [HttpPost("activer/{idJoueur}")]
+    public async Task<string> Activer(int idJoueur)
+    {
+        bool retour = await JoueurServ.Activer(idJoueur);
+
+        return JsonConvert.SerializeObject(retour);
+    }
+
+    /// <summary>
+    /// Desactive un joueur
+    /// </summary>
+    /// <param name="idJoueur"></param>
+    /// <returns></returns>
+    [HttpPost("desactiver/{idJoueur}")]
+    public async Task<string> Desactiver(int idJoueur)
+    {
+        Console.WriteLine(idJoueur);
+        bool retour = await JoueurServ.Desactiver(idJoueur);
+
+        return JsonConvert.SerializeObject(retour);
     }
 
     /// <summary>

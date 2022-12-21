@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Ajouter un joueur</h2>
+<mat-dialog-content style="padding-top: 10px;">
+    <form [formGroup]="form">
+
+        <div class="row">
+
+            <!-- input pseudo -->
+            <div style="margin-bottom: 10px;" class="col-lg-6 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Pseudo</mat-label>
+                    <input matInput type="text" formControlName="Pseudo" required>
+                    <mat-error>Obligatoire</mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- input id id discord -->
+            <div class="col-lg-6 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Id Discord</mat-label>
+                    <input matInput type="number" formControlName="IdDiscord" required>
+                    <mat-error>Obligatoire</mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- checkbox role -->
+            <div class="col-lg-12">
+                <p>Roles</p>
+                <div class="sectionCheckbox">
+                    <mat-checkbox formControlName="EstAdmin">Admin</mat-checkbox>
+                    <mat-checkbox formControlName="EstStrateur">Strateur</mat-checkbox>
+                </div>
+            </div>
+        </div>     
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end"> 
+    <button mat-raised-button color="warn" [mat-dialog-close]="undefined">Annuler</button>
+    <button mat-raised-button color="primary" (click)="AjouterJoueur()">
+        <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner>
+            {{ btnClicker ? '' : 'Ajouter' }}
+    </button>
+</mat-dialog-actions>

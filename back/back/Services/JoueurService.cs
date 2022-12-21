@@ -1,6 +1,7 @@
 ﻿using back.ModelExport;
 using back.Models;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace back.Services
 {
@@ -15,72 +16,72 @@ namespace back.Services
             Config = _config;
         }
 
-        public async Task<IQueryable> ListerAsync()
+        public async Task<List<JoueurExport>> ListerAsync()
         {
-            IQueryable? retour = null;
+            List<JoueurExport> retour = Array.Empty<JoueurExport>().ToList();
 
             await Task.Run(() =>
             {
-                retour = from x in Context.Joueurs
+                retour = (from x in Context.Joueurs
                          orderby x.Pseudo
-                         select new
+                         select new JoueurExport
                          {
-                             x.Id,
-                             x.IdDiscord,
-                             x.Pseudo,
+                             Id = x.Id,
+                             IdDiscord = x.IdDiscord,
+                             Pseudo = x.Pseudo,
                              EstStrateur = x.EstStrateur == 1,
                              EstAdmin = x.EstAdmin == 1,
                              EstActiver = x.EstActiver == 1,
                              ListeIdTank = x.IdTanks.Select(y => y.Id).ToList()
-                         };
+                         }).ToList();
             });
 
             return retour;
         }
 
-        public async Task<IQueryable> ListerStrateurAsync()
+        public async Task<List<JoueurExport>> ListerStrateurAsync()
         {
-            IQueryable? retour = null;
+            List<JoueurExport> retour = Array.Empty<JoueurExport>().ToList();
 
             await Task.Run(() =>
             {
-                retour = from x in Context.Joueurs
+                retour = (from x in Context.Joueurs
                          orderby x.Pseudo
                          where x.EstStrateur == 1
-                         select new
+                         select new JoueurExport
                          {
-                             x.Id,
-                             x.IdDiscord,
-                             x.Pseudo,
+                             Id = x.Id,
+                             IdDiscord = x.IdDiscord,
+                             Pseudo = x.Pseudo,
                              EstStrateur = true,
                              EstAdmin = x.EstAdmin == 1,
                              EstActiver = x.EstActiver == 1,
                              ListeIdTank = x.IdTanks.Select(y => y.Id).ToList()
-                         };
+                         }).ToList();
             });
 
             return retour;
         }
 
-        public async Task<IQueryable> ListerAdminAsync()
+        public async Task<List<JoueurExport>> ListerAdminAsync()
         {
-            IQueryable? retour = null;
+            List<JoueurExport> retour = Array.Empty<JoueurExport>().ToList();
 
             await Task.Run(() =>
             {
-                retour = from x in Context.Joueurs
+                retour = (from x in Context.Joueurs
                          orderby x.Pseudo
                          where x.EstAdmin == 1
-                         select new
+                         select new JoueurExport
                          {
-                             x.Id,
-                             x.IdDiscord,
-                             x.Pseudo,
+                             Id = x.Id,
+                             IdDiscord = x.IdDiscord,
+                             Pseudo = x.Pseudo,
                              EstStrateur = x.EstStrateur == 1,
                              EstAdmin = true,
                              EstActiver = x.EstActiver == 1,
                              ListeIdTank = x.IdTanks.Select(y => y.Id).ToList()
-                         };
+                         }).ToList();
             });
 
             return retour;
@@ -88,7 +89,7 @@ namespace back.Services
 
         public async Task<JoueurExport?> GetInfoAsync(string _pseudo)
         {
-            JoueurExport retour = null;
+            JoueurExport? retour = null;
 
             await Task.Run(() =>
             {
@@ -99,6 +100,7 @@ namespace back.Services
                     .Select(j => new JoueurExport()
                     {
                         Id = j.Id,
+                        IdDiscord = j.IdDiscord,
                         Pseudo = j.Pseudo,
                         EstAdmin = j.EstAdmin == 1,
                         EstStrateur = j.EstStrateur == 1,
@@ -156,8 +158,8 @@ namespace back.Services
 
                     cmd.Parameters.AddRange(new SqlParameter[]
                         {
-                        new SqlParameter("@idJoueur", System.Data.SqlDbType.Int) { Value = _idJoueur },
-                        new SqlParameter("@idTank", System.Data.SqlDbType.Int) { Value = _idTank }
+                        new SqlParameter("@idJoueur", SqlDbType.Int) { Value = _idJoueur },
+                        new SqlParameter("@idTank", SqlDbType.Int) { Value = _idTank }
                         });
 
                     await cmd.PrepareAsync();
@@ -175,6 +177,62 @@ namespace back.Services
             
         }
 
+        public async Task<bool> Activer(int _idJoueur)
+        {
+            try
+            {
+                using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+                {
+                    await sqlCon.OpenAsync();
+
+                    SqlCommand cmd = sqlCon.CreateCommand();
+
+                    cmd.CommandText = "UPDATE Joueur SET estActiver = 1 WHERE id = @idJoueur";
+
+                    cmd.Parameters.Add("@idJoueur", SqlDbType.Int).Value = _idJoueur;
+
+                    await cmd.PrepareAsync();
+                    await cmd.ExecuteNonQueryAsync();
+
+                    await sqlCon.CloseAsync();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> Desactiver(int _idJoueur)
+        {
+            try
+            {
+                using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+                {
+                    await sqlCon.OpenAsync();
+
+                    SqlCommand cmd = sqlCon.CreateCommand();
+
+                    cmd.CommandText = "UPDATE Joueur SET estActiver = 0 WHERE id = @idJoueur";
+
+                    cmd.Parameters.Add("@idJoueur", SqlDbType.Int).Value = _idJoueur;
+
+                    await cmd.PrepareAsync();
+                    await cmd.ExecuteNonQueryAsync();
+
+                    await sqlCon.CloseAsync();
+
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> SupprimerTankJoueurAsync(int _idJoueur, int _idTank)
         {
             try
@@ -189,8 +247,8 @@ namespace back.Services
 
                     cmd.Parameters.AddRange(new SqlParameter[]
                         {
-                        new SqlParameter("@idJoueur", System.Data.SqlDbType.Int) { Value = _idJoueur },
-                        new SqlParameter("@idTank", System.Data.SqlDbType.Int) { Value = _idTank }
+                        new SqlParameter("@idJoueur", SqlDbType.Int) { Value = _idJoueur },
+                        new SqlParameter("@idTank", SqlDbType.Int) { Value = _idTank }
                         });
 
                     await cmd.PrepareAsync();
