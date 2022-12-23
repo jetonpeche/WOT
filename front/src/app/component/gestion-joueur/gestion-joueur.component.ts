@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { AjouterJoueurComponent } from 'src/app/modal/ajouter-joueur/ajouter-joueur.component';
+import { ModifierJoueurComponent } from 'src/app/modal/modifier-joueur/modifier-joueur.component';
 import { JoueurService } from 'src/app/service/joueur.service';
 import { OutilService } from 'src/app/service/outil.service';
 import { Joueur } from 'src/app/types/Joueur';
@@ -21,7 +22,7 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
 
   btnClicker: boolean = false;
 
-  displayedColumns: string[] = ['Pseudo', 'IdDiscord', 'EstStrateur', 'EstAdmin', "EstActiver", "action"];
+  displayedColumns: string[] = ['Pseudo', 'IdDiscord', 'NbTank', 'EstStrateur', 'EstAdmin', "EstActiver", "action"];
 
   listeJoueur: MatTableDataSource<Joueur>;
 
@@ -80,6 +81,24 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
           this.listeJoueur.data.push(retour);
           this.toastrServ.success("Le joueur a été ajouté");
         }      
+      }
+    });
+  }
+
+  OuvrirModalModifierJoueur(_joueur: Joueur): void
+  {
+    const DIALOG_REF = this.dialog.open(ModifierJoueurComponent, { data: { joueur: _joueur }});
+
+    DIALOG_REF.afterClosed().subscribe({
+      next: (retour: Joueur) =>
+      {
+        if(retour != undefined)
+        {
+          _joueur.IdDiscord = retour.IdDiscord;
+          _joueur.Pseudo = retour.Pseudo;
+          _joueur.EstAdmin = retour.EstAdmin;
+          _joueur.EstStrateur = retour.EstStrateur;
+        }
       }
     });
   }

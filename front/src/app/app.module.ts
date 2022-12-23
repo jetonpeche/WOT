@@ -24,6 +24,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 // permet de donner la possibilité de refrech la page en mode prod en ajoutant un # sur URL
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
@@ -36,6 +37,7 @@ import { ModifierInfoCompteComponent } from './modal/modifier-info-compte/modifi
 import { GestionJoueurComponent } from './component/gestion-joueur/gestion-joueur.component';
 import { ConfirmationComponent } from './modal/confirmation/confirmation.component';
 import { AjouterJoueurComponent } from './modal/ajouter-joueur/ajouter-joueur.component';
+import { ModifierJoueurComponent } from './modal/modifier-joueur/modifier-joueur.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { AjouterJoueurComponent } from './modal/ajouter-joueur/ajouter-joueur.co
     ModifierInfoCompteComponent,
     GestionJoueurComponent,
     ConfirmationComponent,
-    AjouterJoueurComponent
+    AjouterJoueurComponent,
+    ModifierJoueurComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +76,8 @@ import { AjouterJoueurComponent } from './modal/ajouter-joueur/ajouter-joueur.co
     MatRadioModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTooltipModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

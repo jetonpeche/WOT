@@ -16,10 +16,10 @@ public class TankController : ControllerBase
 		ProtectionServ = _protectionService;
 	}
 
-	[HttpGet("lister")]
-	public async Task<string> Lister()
+	[HttpGet("lister/{seulementVisible}")]
+	public async Task<string> Lister(bool seulementVisible)
 	{
-		var liste = await TankServ.ListerAsync();
+		var liste = await TankServ.ListerAsync(seulementVisible);
 
 		return JsonConvert.SerializeObject(liste);
 	}

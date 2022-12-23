@@ -13,8 +13,8 @@ export class TankService
 
   constructor(private http: HttpClient) { }
 
-  Lister(): Observable<Tank[]>
+  Lister(_seulementVisible: boolean): Observable<Tank[]>
   {
-    return this.http.get<Tank[]>(`${this.NOM_API}/lister`);
+    return this.http.get<Tank[]>(`${this.NOM_API}/lister/${_seulementVisible}`);
   }
 }

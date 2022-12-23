@@ -13,9 +13,9 @@ table, .mat-mdc-form-field
     stroke: white;
 }
 
-.hoverLigneTableau:hover
+.survole:hover
 {
-  background-color: lightgray;
+  background-color: lightgray !important;
   cursor: pointer;
 }
 

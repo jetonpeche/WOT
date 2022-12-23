@@ -35,8 +35,8 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end"> 
     <button mat-raised-button color="warn" [mat-dialog-close]="undefined">Annuler</button>
-    <button mat-raised-button color="primary" (click)="AjouterJoueur()">
+    <button mat-raised-button color="primary" (click)="ModifierJoueur()">
         <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner>
-            {{ btnClicker ? '' : 'Ajouter' }}
+            {{ btnClicker ? '' : 'Modifier' }}
     </button>
 </mat-dialog-actions>

@@ -177,6 +177,47 @@ namespace back.Services
             
         }
 
+        public async Task<bool> ModifierAsync(JoueurImport _joueurImport)
+        {
+            try
+            {
+                using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+                {
+                    await sqlCon.OpenAsync();
+
+                    SqlCommand cmd = sqlCon.CreateCommand();
+
+                    cmd.CommandText = "UPDATE joueur " +
+                        "SET " +
+                            "pseudo = @pseudo, " +
+                            "idDiscord = @idDiscord," +
+                            "estStrateur = @strateur," +
+                            "estAdmin = @estAdmin " +
+                        "WHERE id = @idJoueur";
+
+                    cmd.Parameters.AddRange(new SqlParameter[]
+                    {
+                        new SqlParameter("@idJoueur", SqlDbType.Int) { Value = _joueurImport.Id },
+                        new SqlParameter("@pseudo", SqlDbType.VarChar, 200) { Value = _joueurImport.Pseudo },
+                        new SqlParameter("@idDiscord", SqlDbType.VarChar, 100) { Value = _joueurImport.IdDiscord },
+                        new SqlParameter("@strateur", SqlDbType.Int) { Value = _joueurImport.EstStrateur },
+                        new SqlParameter("@estAdmin", SqlDbType.Int) { Value = _joueurImport.EstAdmin }
+                    });
+
+                    await cmd.PrepareAsync();
+                    await cmd.ExecuteNonQueryAsync();
+
+                    await sqlCon.CloseAsync();
+
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> Activer(int _idJoueur)
         {
             try

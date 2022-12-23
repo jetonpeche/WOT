@@ -109,7 +109,7 @@ export class ModifierInfoCompteComponent implements OnInit
 
   private ListerTank(): void
   {
-    this.tankServ.Lister().subscribe({
+    this.tankServ.Lister(true).subscribe({
       next: (retour: Tank[]) =>
       {
         // ajout d'un attribut

@@ -7,6 +7,7 @@ export type Tank =
     IdStatut: number,
     
     Nom: string,
+    EstVisible: boolean,
 
     // pas dans appel API
     estPosseder: boolean

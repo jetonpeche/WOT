@@ -1,6 +1,5 @@
-export type JoueurExport =
+export type JoueurModifierExport =
 {
-    /** Pour la modification du joueur */
     Id: number,
     IdDiscord: string,
     Pseudo: string,

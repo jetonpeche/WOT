@@ -149,6 +149,14 @@ public class JoueurController : Controller
         return JsonConvert.SerializeObject(estAjout);
     }
 
+    [HttpPost("modifier")]
+    public async Task<string> Modifier(JoueurImport _joueurImport)
+    {
+        bool retour = await JoueurServ.ModifierAsync(_joueurImport);
+
+        return JsonConvert.SerializeObject(retour);
+    }
+
     /// <summary>
     /// Supprime la possession d'un tank
     /// "IdJoueur" n'est pas utilisé SI via discord

@@ -14,22 +14,42 @@ public class TankService
         Config = _config;
     }
 
-    public async Task<IQueryable> ListerAsync()
+    public async Task<IQueryable> ListerAsync(bool _seulementVisible)
     {
         IQueryable? retour = null;
 
         await Task.Run(() =>
         {
-            retour = from x in Context.Tanks
-                     orderby x.IdTierNavigation.Nom, x.IdTankStatut, x.Nom
-                     select new
-                    {
-                        x.Id,
-                        x.Nom,
-                        IdStatut = x.IdTankStatut,
-                        x.IdTypeTank,
-                        x.IdTier
-                    };
+            if(_seulementVisible)
+            {
+                retour = from x in Context.Tanks
+                         orderby x.IdTierNavigation.Nom, x.IdTankStatut, x.Nom
+                         where x.EstVisible == 1
+                         select new
+                         {
+                             x.Id,
+                             x.Nom,
+                             IdStatut = x.IdTankStatut,
+                             x.IdTypeTank,
+                             x.IdTier,
+                             EstVisible = true
+                         };
+            }
+            else
+            {
+                retour = from x in Context.Tanks
+                         orderby x.IdTierNavigation.Nom, x.IdTankStatut, x.Nom
+                         select new
+                         {
+                             x.Id,
+                             x.Nom,
+                             IdStatut = x.IdTankStatut,
+                             x.IdTypeTank,
+                             x.IdTier,
+                             EstVisible = x.EstVisible == 1
+                         };
+            }
+            
         });
 
         return retour;
@@ -48,7 +68,7 @@ public class TankService
                               "JOIN tank t ON tj.idTank = t.id " +
                               "JOIN TankStatut ts ON ts.id = t.idTankStatut " +
                               "JOIN TypeTank tt ON tt.id = t.idTypeTank " +
-                              "WHERE idJoueur = @id";
+                              "WHERE idJoueur = @id AND estVisible = 1";
 
             cmd.Parameters.Add("@id", SqlDbType.Int).Value = _idCompte;
 

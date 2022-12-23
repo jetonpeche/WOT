@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { JoueurExport } from '../types/export/JoueurExport';
+import { JoueurModifierExport } from '../types/export/JoueurModifierExport';
 import { Joueur } from '../types/Joueur';
 
 @Injectable({
@@ -47,6 +48,11 @@ export class JoueurService
   {
     const DATA = { IdTank: _idTank, IdJoueur: environment.infoJoueur.Id };
     return this.http.post<boolean>(`${this.NOM_API}/ajouterTankJoueur`, DATA);
+  }
+
+  Modifier(_joueur: JoueurModifierExport): Observable<boolean>
+  {
+    return this.http.post<boolean>(`${this.NOM_API}/modifier`, _joueur);
   }
 
   SupprimerTankJoueur(_idTank: number): Observable<boolean>
