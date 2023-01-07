@@ -1,0 +1,96 @@
+<div style="overflow-y: hidden;">
+    <div class="headerTitre">
+        <h1>Gestion des tanks</h1>
+        <button mat-raised-button color="primary" (click)="OuvrirModalAjouterTank()">Ajouter</button>
+    </div>
+    
+    <div class="container-fluid">
+        <!-- filtre / recherche -->
+        <div class="row">
+    
+            <!-- input recherche par nom -->
+            <div class="col-lg-12 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Recherche par nom</mat-label>
+                    <input #inputRecherche matInput type="search" (keyup)="Rechercher(inputRecherche.value)">
+                </mat-form-field>
+            </div>
+    
+            <!-- select filtre par tier -->
+            <div class="col-lg-4 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Par tier</mat-label>
+                    <mat-select #selectIdTier 
+                                (selectionChange)="Filtrer($event.value, selectIdType.value, 
+                                                           selectIdStatut.value)">
+                        <mat-option value="0">Tous</mat-option>
+                        <mat-option *ngFor="let element of listeTier" [value]="element.Id">
+                            {{ element.Nom }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+    
+            <!-- select filtre par type -->
+            <div class="col-lg-4 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Par type</mat-label>
+                    <mat-select #selectIdType 
+                                (selectionChange)="Filtrer(selectIdTier.value, $event.value, 
+                                                           selectIdStatut.value)">
+                        <mat-option value="0">Tous</mat-option>
+                        <mat-option *ngFor="let element of listeTypeTank" [value]="element.Id">
+                            {{ element.Nom }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+    
+            <!-- select filtre par statut -->
+            <div class="col-lg-4 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Par statut</mat-label>
+                    <mat-select #selectIdStatut 
+                                (selectionChange)="Filtrer(selectIdTier.value, selectIdType.value, 
+                                                           $event.value)">
+                        <mat-option value="0">Tous</mat-option>
+                        <mat-option *ngFor="let element of listeStatutTank" [value]="element.Id">
+                            {{ element.Nom }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    
+        <!-- card tank -->
+        <div class="row scrollBar">
+            <div class="col-lg-4" *ngFor="let element of listeTank">
+                <mat-card (click)="OuvrirModalJoueurPossedeTank(element.Id)">
+                    <mat-card-header>
+    
+                        <mat-card-title>
+                            <img mat-card-image src="assets/{{ GetImageTypeTank(element.IdTypeTank) }}" alt="logo type tank"> 
+                            {{ element.Nom | titlecase }}
+                        </mat-card-title>
+    
+                        <mat-card-subtitle>
+                            Statut: {{ GetNomStatut(element.IdStatut) }} | 
+                            Char: {{ GetNomType(element.IdTypeTank) }} |
+                            {{ GetNomTier(element.IdTier) }}
+                        </mat-card-subtitle>
+                        
+                    </mat-card-header>
+    
+                    <mat-card-actions align="end">                 
+                        <button mat-raised-button color="accent">Modifier</button>&nbsp;
+                        <button mat-raised-button color="primary">Joueurs</button>
+                    </mat-card-actions>
+                    
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

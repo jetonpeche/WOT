@@ -24,7 +24,7 @@ public class TankController : ControllerBase
 		return JsonConvert.SerializeObject(liste);
 	}
 
-	[HttpGet("lister/{idCompte}")]
+	[HttpGet("lister2/{idCompte}")]
 	public async Task<string> Lister(int idCompte)
 	{
 		var liste = await TankServ.ListerAsync(idCompte);
@@ -48,6 +48,10 @@ public class TankController : ControllerBase
         return JsonConvert.SerializeObject(liste);
     }
 
+	/// <summary>
+	/// Ajouter un tank
+	/// </summary>
+	/// <returns>0 => erreur / autre => OK</returns>
 	[HttpPost("ajouter")]
 	public async Task<string>Ajouter(TankImport _tankImport)
 	{

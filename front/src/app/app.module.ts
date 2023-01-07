@@ -38,6 +38,8 @@ import { GestionJoueurComponent } from './component/gestion-joueur/gestion-joueu
 import { ConfirmationComponent } from './modal/confirmation/confirmation.component';
 import { AjouterJoueurComponent } from './modal/ajouter-joueur/ajouter-joueur.component';
 import { ModifierJoueurComponent } from './modal/modifier-joueur/modifier-joueur.component';
+import { GestionTankComponent } from './component/gestion-tank/gestion-tank.component';
+import { AjouterTankComponent } from './modal/ajouter-tank/ajouter-tank.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { ModifierJoueurComponent } from './modal/modifier-joueur/modifier-joueur
     GestionJoueurComponent,
     ConfirmationComponent,
     AjouterJoueurComponent,
-    ModifierJoueurComponent
+    ModifierJoueurComponent,
+    GestionTankComponent,
+    AjouterTankComponent
   ],
   imports: [
     BrowserModule,

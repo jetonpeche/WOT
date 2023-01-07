@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Tank } from '../types/Tank';
+import { TankExport } from '../types/export/TankExport';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +17,10 @@ export class TankService
   Lister(_seulementVisible: boolean): Observable<Tank[]>
   {
     return this.http.get<Tank[]>(`${this.NOM_API}/lister/${_seulementVisible}`);
+  }
+
+  Ajouter(_tank: TankExport): Observable<number>
+  {
+    return this.http.post<number>(`${this.NOM_API}/ajouter`, _tank);
   }
 }
