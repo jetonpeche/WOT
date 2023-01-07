@@ -65,7 +65,7 @@
         <!-- card tank -->
         <div class="row scrollBar">
             <div class="col-lg-4" *ngFor="let element of listeTank">
-                <mat-card (click)="OuvrirModalJoueurPossedeTank(element.Id)">
+                <mat-card (click)="OuvrirModalJoueurPossedeTank(element.Id, element.Nom)">
                     <mat-card-header>
     
                         <mat-card-title>

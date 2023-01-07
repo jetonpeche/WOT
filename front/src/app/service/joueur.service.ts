@@ -20,6 +20,11 @@ export class JoueurService
     return this.http.get<Joueur[]>(`${this.NOM_API}/lister`);
   }
 
+  ListerPossedeTank(_idTank: number): Observable<string[]>
+  {
+    return this.http.get<string[]>(`${this.NOM_API}/listerPossedeTank/${_idTank}`);
+  }
+
   Connexion(_pseudo: string): Observable<Joueur>
   {
     return this.http.get<Joueur>(`${this.NOM_API}/info/${_pseudo}`);

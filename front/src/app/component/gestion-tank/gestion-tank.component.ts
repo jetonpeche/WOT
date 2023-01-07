@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AjouterTankComponent } from 'src/app/modal/ajouter-tank/ajouter-tank.component';
+import { JoueurPossedeTankComponent } from 'src/app/modal/joueur-possede-tank/joueur-possede-tank.component';
 import { TankService } from 'src/app/service/tank.service';
 import { StatutTank } from 'src/app/types/StatutTank';
 import { Tank } from 'src/app/types/Tank';
@@ -70,9 +71,9 @@ export class GestionTankComponent implements OnInit
     });
   }
 
-  protected OuvrirModalJoueurPossedeTank(_idTank: number)
+  protected OuvrirModalJoueurPossedeTank(_idTank: number, _nomTank: string): void
   {
-
+    this.dialog.open(JoueurPossedeTankComponent, { data: { idTank: _idTank, nomTank: _nomTank }});
   }
 
   protected Rechercher(_recherche: string): void

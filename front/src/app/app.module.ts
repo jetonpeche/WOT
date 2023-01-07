@@ -25,6 +25,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatListModule} from '@angular/material/list';
 
 // permet de donner la possibilité de refrech la page en mode prod en ajoutant un # sur URL
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
@@ -40,6 +41,7 @@ import { AjouterJoueurComponent } from './modal/ajouter-joueur/ajouter-joueur.co
 import { ModifierJoueurComponent } from './modal/modifier-joueur/modifier-joueur.component';
 import { GestionTankComponent } from './component/gestion-tank/gestion-tank.component';
 import { AjouterTankComponent } from './modal/ajouter-tank/ajouter-tank.component';
+import { JoueurPossedeTankComponent } from './modal/joueur-possede-tank/joueur-possede-tank.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,8 @@ import { AjouterTankComponent } from './modal/ajouter-tank/ajouter-tank.componen
     AjouterJoueurComponent,
     ModifierJoueurComponent,
     GestionTankComponent,
-    AjouterTankComponent
+    AjouterTankComponent,
+    JoueurPossedeTankComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +84,8 @@ import { AjouterTankComponent } from './modal/ajouter-tank/ajouter-tank.componen
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatListModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

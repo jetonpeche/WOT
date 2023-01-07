@@ -87,6 +87,20 @@ namespace back.Services
             return retour;
         }
 
+        public async Task<List<string>> ListerPossedeTankAsync(int _idTank)
+        {
+            List<string> retour = new();
+
+            await Task.Run(() =>
+            {
+                retour = Context.Tanks
+                    .Where(x => x.Id == _idTank)
+                    .Select(x => x.IdJoueurs.Select(j => j.Pseudo).First()).ToList();
+            });
+
+            return retour[0] == null ? Array.Empty<string>().ToList() : retour;
+        }
+
         public async Task<JoueurExport?> GetInfoAsync(string _pseudo)
         {
             JoueurExport? retour = null;
