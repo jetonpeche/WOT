@@ -1,4 +1,5 @@
-﻿using back.Models;
+﻿using back.ModelImport;
+using back.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace back.Controllers;
@@ -53,7 +54,7 @@ public class TankController : ControllerBase
 	/// </summary>
 	/// <returns>0 => erreur / autre => OK</returns>
 	[HttpPost("ajouter")]
-	public async Task<string>Ajouter(TankImport _tankImport)
+	public async Task<string> Ajouter(TankImport _tankImport)
 	{
 		Tank tank = new()
 		{
@@ -67,5 +68,27 @@ public class TankController : ControllerBase
 		int id = await TankServ.AjouterAsync(tank);
 
 		return JsonConvert.SerializeObject(id);
+	}
+
+	/// <summary>
+	/// Modifier un tank
+	/// </summary>
+	/// <returns>true / false</returns>
+	[HttpPost("modifier")]
+	public async Task<string> Modifier(TankModifierImport _tankImport)
+	{
+		Tank tank = new()
+		{
+			Id= _tankImport.Id,
+			Nom = ProtectionServ.XSS(_tankImport.Nom),
+			IdTier = _tankImport.IdTier,
+			IdTankStatut = _tankImport.IdStatut,
+			IdTypeTank = _tankImport.IdType,
+			EstVisible = _tankImport.EstVisible ? 1 : 0
+		};
+
+		bool retour = await TankServ.ModifierAsync(tank);
+
+		return JsonConvert.SerializeObject(retour);
 	}
 }

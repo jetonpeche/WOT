@@ -3,7 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AjouterTankComponent } from 'src/app/modal/ajouter-tank/ajouter-tank.component';
 import { JoueurPossedeTankComponent } from 'src/app/modal/joueur-possede-tank/joueur-possede-tank.component';
+import { ModifierTankComponent } from 'src/app/modal/modifier-tank/modifier-tank.component';
 import { TankService } from 'src/app/service/tank.service';
+import { TankModifierExport } from 'src/app/types/export/TankModifierExport';
 import { StatutTank } from 'src/app/types/StatutTank';
 import { Tank } from 'src/app/types/Tank';
 import { Tier } from 'src/app/types/Tier';
@@ -74,6 +76,24 @@ export class GestionTankComponent implements OnInit
   protected OuvrirModalJoueurPossedeTank(_idTank: number, _nomTank: string): void
   {
     this.dialog.open(JoueurPossedeTankComponent, { data: { idTank: _idTank, nomTank: _nomTank }});
+  }
+
+  protected OuvrirModalJModifierTank(_tank: Tank): void
+  {
+    const DIALOG_REF = this.dialog.open(ModifierTankComponent, { data: {tank: _tank }});
+
+    DIALOG_REF.afterClosed().subscribe({
+      next: (retour: TankModifierExport) =>
+      {
+        if(retour != undefined)
+        {
+          _tank.Nom = retour.Nom;
+          _tank.IdStatut = retour.IdStatut;
+          _tank.IdTier = retour.IdTier;
+          _tank.IdTypeTank = retour.IdType;
+        }
+      }
+    });
   }
 
   protected Rechercher(_recherche: string): void

@@ -65,7 +65,7 @@
         <!-- card tank -->
         <div class="row scrollBar">
             <div class="col-lg-4" *ngFor="let element of listeTank">
-                <mat-card (click)="OuvrirModalJoueurPossedeTank(element.Id, element.Nom)">
+                <mat-card>
                     <mat-card-header>
     
                         <mat-card-title>
@@ -82,8 +82,15 @@
                     </mat-card-header>
     
                     <mat-card-actions align="end">                 
-                        <button mat-raised-button color="accent">Modifier</button>&nbsp;
-                        <button mat-raised-button color="primary">Joueurs</button>
+                        <button mat-raised-button color="accent"
+                                (click)="OuvrirModalJModifierTank(element)">
+                            Modifier
+                        </button>&nbsp;
+
+                        <button mat-raised-button color="primary" 
+                                (click)="OuvrirModalJoueurPossedeTank(element.Id, element.Nom)">
+                            Joueurs
+                        </button>
                     </mat-card-actions>
                     
                 </mat-card>

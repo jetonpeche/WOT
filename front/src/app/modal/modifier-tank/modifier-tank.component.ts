@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TankService } from 'src/app/service/tank.service';
 import { StatutTank } from 'src/app/types/StatutTank';
@@ -9,11 +9,11 @@ import { TypeTank } from 'src/app/types/TypeTank';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-ajouter-tank',
-  templateUrl: './ajouter-tank.component.html',
-  styleUrls: ['./ajouter-tank.component.scss']
+  selector: 'app-modifier-tank',
+  templateUrl: './modifier-tank.component.html',
+  styleUrls: ['./modifier-tank.component.scss']
 })
-export class AjouterTankComponent implements OnInit
+export class ModifierTankComponent implements OnInit
 {
   protected form: FormGroup;
   protected listeTier: Tier[] = [];
@@ -23,9 +23,10 @@ export class AjouterTankComponent implements OnInit
   protected btnClicker: boolean = false;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) private data: any,
     private tankServ: TankService, 
     private toastrServ: ToastrService,
-    private dialogRef: MatDialogRef<AjouterTankComponent>) { }
+    private dialogRef: MatDialogRef<ModifierTankComponent>) { }
 
   ngOnInit(): void 
   {
@@ -34,35 +35,35 @@ export class AjouterTankComponent implements OnInit
     this.listeStatutTank = environment.listeStatutTank;
 
     this.form = new FormGroup({
-      Nom: new FormControl("", [Validators.required]),
-      IdTier: new FormControl<number>(null, [Validators.required]),
-      IdType: new FormControl<number>(null, [Validators.required]),
-      IdStatut: new FormControl<number>(null, [Validators.required])
+      Nom: new FormControl(this.data.tank.Nom, [Validators.required]),
+      IdTier: new FormControl<number>(this.data.tank.IdTier, [Validators.required]),
+      IdType: new FormControl<number>(this.data.tank.IdTypeTank, [Validators.required]),
+      IdStatut: new FormControl<number>(this.data.tank.IdStatut, [Validators.required]),
+
+      Id: new FormControl<number>(this.data.tank.Id),
+      EstVisible: new FormControl<boolean>(this.data.tank.EstVisible)
     });
   }
 
-  protected AjouterTank(): void
+  ModifierTank(): void
   {
     if(this.form.invalid || this.btnClicker)
       return;
 
     this.btnClicker = true;
-    console.log(this.form.value);
-    
-    this.tankServ.Ajouter(this.form.value).subscribe({
-      next: (retour: number) =>
+
+    this.tankServ.Modifier(this.form.value).subscribe({
+      next: (retour: boolean) =>
       {
         this.btnClicker = false;
 
-        if(retour == 0)
-          this.toastrServ.error("Ajout impossible");
-        else
+        if(retour)
         {
-          this.form.value.Id = retour;
-          this.form.value.EstVisible = true;
-
+          this.toastrServ.success("Le tank a été modifié");
           this.dialogRef.close(this.form.value);
         }
+        else
+          this.toastrServ.error("Impossible de modifier la tank");
       },
       error: () => this.btnClicker = false
     });

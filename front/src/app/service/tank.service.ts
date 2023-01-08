@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Tank } from '../types/Tank';
 import { TankExport } from '../types/export/TankExport';
+import { TankModifierExport } from '../types/export/TankModifierExport';
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +23,10 @@ export class TankService
   Ajouter(_tank: TankExport): Observable<number>
   {
     return this.http.post<number>(`${this.NOM_API}/ajouter`, _tank);
+  }
+
+  Modifier(_tank: TankModifierExport): Observable<boolean>
+  {
+    return this.http.post<boolean>(`${this.NOM_API}/modifier`, _tank);
   }
 }

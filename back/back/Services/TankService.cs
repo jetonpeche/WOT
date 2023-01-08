@@ -208,4 +208,20 @@ public class TankService
             return 0;
         }
     }
+
+    public async Task<bool> ModifierAsync(Tank _tank)
+    {
+        try
+        {
+            Context.Tanks.Update(_tank);
+
+            await Context.SaveChangesAsync();
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
