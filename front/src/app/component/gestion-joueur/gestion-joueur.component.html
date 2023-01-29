@@ -53,6 +53,12 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Actions </th>
                 <td mat-cell *matCellDef="let element">
 
+                    <!-- lister tank joueur -->
+                    <button mat-mini-fab color="primary" matTooltip="Liste des tanks du joueurs" 
+                            (click)="ModalOuvrirModalTankJoueur(element.Id, element.Nom, $event)">
+                        <mat-icon>list</mat-icon>
+                    </button>&nbsp;
+
                     <!-- activer / desactiver -->
                     <button mat-mini-fab color="primary" matTooltip="Activer / désactiver joueur" 
                             (click)="ActiverDesactiverJoueur(element, $event)">

@@ -52,6 +52,11 @@ public class JoueurController : Controller
         return JsonConvert.SerializeObject(liste);
     }
 
+    /// <summary>
+    /// Liste les joueurs qui possede le tank
+    /// </summary>
+    /// <param name="idTank"></param>
+    /// <returns>Pseudo</returns>
     [HttpGet("listerPossedeTank/{idTank}")]
     public async Task<string> ListerPossedeTank(int idTank)
     {

@@ -43,6 +43,7 @@ import { GestionTankComponent } from './component/gestion-tank/gestion-tank.comp
 import { AjouterTankComponent } from './modal/ajouter-tank/ajouter-tank.component';
 import { JoueurPossedeTankComponent } from './modal/joueur-possede-tank/joueur-possede-tank.component';
 import { ModifierTankComponent } from './modal/modifier-tank/modifier-tank.component';
+import { TankJoueurComponent } from './modal/tank-joueur/tank-joueur.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { ModifierTankComponent } from './modal/modifier-tank/modifier-tank.compo
     GestionTankComponent,
     AjouterTankComponent,
     JoueurPossedeTankComponent,
-    ModifierTankComponent
+    ModifierTankComponent,
+    TankJoueurComponent
   ],
   imports: [
     BrowserModule,

@@ -55,49 +55,19 @@ public class TankService
         return retour;
     }
 
-    public async Task<List<dynamic>> ListerAsync(int _idCompte)
+    public async Task<List<string>> ListerAsync(int _idCompte)
     {
-        using (SqlConnection sqlCon = new(Config.GetConnectionString("Defaut")))
+        List<string> retour = new();
+
+        await Task.Run(() =>
         {
-            await sqlCon.OpenAsync();
+            retour = Context.Joueurs
+                    .Where(j => j.Id == _idCompte)
+                    .SelectMany(tanks => tanks.IdTanks.Select(j => j.Nom))
+                    .ToList();
+        });
 
-            var cmd = sqlCon.CreateCommand();
-
-            cmd.CommandText = "SELECT t.id, t.nom, ts.nom as nomStatut, t.idTankStatut, idTypeTank, idTier, nomImage " +
-                              "FROM TankJoueur tj " +
-                              "JOIN tank t ON tj.idTank = t.id " +
-                              "JOIN TankStatut ts ON ts.id = t.idTankStatut " +
-                              "JOIN TypeTank tt ON tt.id = t.idTypeTank " +
-                              "WHERE idJoueur = @id AND estVisible = 1";
-
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = _idCompte;
-
-            await cmd.PrepareAsync();
-
-            using(SqlDataReader reader = cmd.ExecuteReader())
-            {
-                List<dynamic> liste = new(); 
-
-                while (reader.Read())
-                {
-                    liste.Add(new 
-                    { 
-                        Id = reader.GetValue(0),
-                        Nom = reader.GetString(1),
-                        IdType = reader.GetValue(4),
-                        NomImage = reader.GetString(6),
-                        IdTier = reader.GetInt32(5),
-                        IdStatut = reader.GetInt32(3),
-                        NomStatut = reader.GetString(2)
-                    });
-                }
-
-                sqlCon.Close();
-                reader.Close();
-
-                return liste;
-            }
-        }
+        return retour;
     }
 
     public async Task<List<dynamic>> ListerAsync(string _idDiscord, int _idTier)

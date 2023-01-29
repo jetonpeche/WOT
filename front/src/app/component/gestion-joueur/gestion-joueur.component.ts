@@ -6,6 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { AjouterJoueurComponent } from 'src/app/modal/ajouter-joueur/ajouter-joueur.component';
 import { ModifierJoueurComponent } from 'src/app/modal/modifier-joueur/modifier-joueur.component';
+import { TankJoueurComponent } from 'src/app/modal/tank-joueur/tank-joueur.component';
 import { JoueurService } from 'src/app/service/joueur.service';
 import { OutilService } from 'src/app/service/outil.service';
 import { Joueur } from 'src/app/types/Joueur';
@@ -79,6 +80,7 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
         if(retour != undefined)
         {
           this.listeJoueur.data.push(retour);
+          this.listeJoueur.data = this.listeJoueur.data;
           this.toastrServ.success("Le joueur a été ajouté");
         }      
       }
@@ -101,6 +103,13 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
         }
       }
     });
+  }
+
+  ModalOuvrirModalTankJoueur(_idJoueur: number, _nomJoueur: string, _event: Event): void
+  {
+    _event.stopPropagation();
+
+    this.dialog.open(TankJoueurComponent, { data: { idJoueur: _idJoueur, nomJoueur: _nomJoueur }});
   }
 
   SupprimerJoueur(_idDiscord: string, _event: Event): void
@@ -139,10 +148,10 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
 
   private ActiverJoueur(_joueur: Joueur): void
   {
-    this.joueurServ.Desactiver(_joueur.Id).subscribe({
+    this.joueurServ.Activer(_joueur.Id).subscribe({
       next: (retour: boolean) =>
       {
-        if(retour)
+        if(retour === true)
         {
           this.toastrServ.success("Le joueur est activé");
           _joueur.EstActiver = true;
@@ -158,7 +167,7 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
     this.joueurServ.Desactiver(_joueur.Id).subscribe({
       next: (retour: boolean) =>
       {
-        if(retour)
+        if(retour === true)
         {
           this.toastrServ.success("Le joueur est désactivé");
           _joueur.EstActiver = false;

@@ -17,6 +17,11 @@ public class TankController : ControllerBase
 		ProtectionServ = _protectionService;
 	}
 
+	/// <summary>
+	/// Liste les tanks 
+	/// </summary>
+	/// <param name="seulementVisible">false => liste visible et invisible</param>
+	/// <returns>Liste des tanks</returns>
 	[HttpGet("lister/{seulementVisible}")]
 	public async Task<string> Lister(bool seulementVisible)
 	{
@@ -25,6 +30,11 @@ public class TankController : ControllerBase
 		return JsonConvert.SerializeObject(liste);
 	}
 
+	/// <summary>
+	/// Liste les tanks du joueur
+	/// </summary>
+	/// <param name="idCompte"></param>
+	/// <returns>Liste nom des tanks</returns>
 	[HttpGet("lister2/{idCompte}")]
 	public async Task<string> Lister(int idCompte)
 	{

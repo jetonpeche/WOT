@@ -94,11 +94,12 @@ namespace back.Services
             await Task.Run(() =>
             {
                 retour = Context.Tanks
-                    .Where(x => x.Id == _idTank)
-                    .Select(x => x.IdJoueurs.Select(j => j.Pseudo).First()).ToList();
+                        .Where(t => t.Id == _idTank)
+                        .SelectMany(tanks => tanks.IdJoueurs.Select(j => j.Pseudo))
+                        .ToList();
             });
 
-            return retour[0] == null ? Array.Empty<string>().ToList() : retour;
+            return retour;
         }
 
         public async Task<JoueurExport?> GetInfoAsync(string _pseudo)
@@ -236,7 +237,7 @@ namespace back.Services
         {
             try
             {
-                using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+                using (SqlConnection sqlCon = new(Config.GetConnectionString("Defaut")))
                 {
                     await sqlCon.OpenAsync();
 
@@ -264,7 +265,7 @@ namespace back.Services
         {
             try
             {
-                using (SqlConnection sqlCon = new(Config.GetConnectionString("defaut")))
+                using (SqlConnection sqlCon = new(Config.GetConnectionString("Defaut")))
                 {
                     await sqlCon.OpenAsync();
 

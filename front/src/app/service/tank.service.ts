@@ -20,6 +20,11 @@ export class TankService
     return this.http.get<Tank[]>(`${this.NOM_API}/lister/${_seulementVisible}`);
   }
 
+  Lister2(_idJoueur: number): Observable<string[]>
+  {
+    return this.http.get<string[]>(`${this.NOM_API}/lister2/${_idJoueur}`);
+  }
+
   Ajouter(_tank: TankExport): Observable<number>
   {
     return this.http.post<number>(`${this.NOM_API}/ajouter`, _tank);
