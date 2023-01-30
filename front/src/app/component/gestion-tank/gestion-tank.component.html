@@ -88,8 +88,9 @@
                         </button>&nbsp;
 
                         <button mat-raised-button color="primary" 
-                                (click)="OuvrirModalJoueurPossedeTank(element.Id, element.Nom)">
-                            Joueurs
+                                (click)="OuvrirModalJoueurPossedeTank(element.Id, element.Nom)"
+                                [disabled]="element.NbPossesseur == 0">
+                            Joueurs ({{ element.NbPossesseur }})
                         </button>
                     </mat-card-actions>
                     

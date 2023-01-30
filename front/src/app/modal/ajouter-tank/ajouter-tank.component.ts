@@ -60,6 +60,7 @@ export class AjouterTankComponent implements OnInit
         {
           this.form.value.Id = retour;
           this.form.value.EstVisible = true;
+          this.form.value.nbPossesseur = 0;
 
           this.dialogRef.close(this.form.value);
         }

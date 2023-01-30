@@ -7,7 +7,7 @@ import { ModifierTankComponent } from 'src/app/modal/modifier-tank/modifier-tank
 import { TankService } from 'src/app/service/tank.service';
 import { TankModifierExport } from 'src/app/types/export/TankModifierExport';
 import { StatutTank } from 'src/app/types/StatutTank';
-import { Tank } from 'src/app/types/Tank';
+import { TankAdmin } from 'src/app/types/TankAdmin';
 import { Tier } from 'src/app/types/Tier';
 import { TypeTank } from 'src/app/types/TypeTank';
 import { environment } from 'src/environments/environment';
@@ -19,12 +19,12 @@ import { environment } from 'src/environments/environment';
 })
 export class GestionTankComponent implements OnInit
 {
-  listeTank: Tank[] = [];
+  listeTank: TankAdmin[] = [];
   listeTier: Tier[] = [];
   listeTypeTank: TypeTank[] = [];
   listeStatutTank: StatutTank[] = [];
 
-  private listeTankClone: Tank[] = [];
+  private listeTankClone: TankAdmin[] = [];
 
   constructor(
     private dialog: MatDialog, 
@@ -46,12 +46,13 @@ export class GestionTankComponent implements OnInit
     const DIALOG_REF = this.dialog.open(AjouterTankComponent);
 
     DIALOG_REF.afterClosed().subscribe({
-      next: (retour: Tank) =>
+      next: (retour: TankAdmin) =>
       {
         if(retour != undefined)
         {
           this.listeTank.push(retour);
 
+          // tri par nom du tank
           this.listeTank.sort((a, b) =>
           {
             if(a.Nom.toLowerCase() > b.Nom.toLowerCase()) 
@@ -61,11 +62,6 @@ export class GestionTankComponent implements OnInit
             else
               return 0;
           });
-
-          console.log(this.listeTank);
-          console.log(this.listeTankClone);
-          
-          
 
           this.toastrServ.success("Le tank a été ajouté");
         }
@@ -78,7 +74,7 @@ export class GestionTankComponent implements OnInit
     this.dialog.open(JoueurPossedeTankComponent, { data: { idTank: _idTank, nomTank: _nomTank }});
   }
 
-  protected OuvrirModalJModifierTank(_tank: Tank): void
+  protected OuvrirModalJModifierTank(_tank: TankAdmin): void
   {
     const DIALOG_REF = this.dialog.open(ModifierTankComponent, { data: {tank: _tank }});
 
@@ -147,22 +143,9 @@ export class GestionTankComponent implements OnInit
 
   private ListerTank(): void
   {
-    this.tankServ.Lister(true).subscribe({
-      next: (retour: Tank[]) =>
+    this.tankServ.Lister(false).subscribe({
+      next: (retour: TankAdmin[]) =>
       {
-        // ajout d'un attribut
-        for (let element of retour) 
-          element.estPosseder = false;
-
-        // defini les tanks posseder par le joueur
-        for (const element of environment.infoJoueur.ListeIdTank) 
-        {
-          let tank: Tank = retour.find(x => x.Id == element);
-
-          if(tank != undefined)
-            tank.estPosseder = true;
-        }
-
         this.listeTankClone = this.listeTank = retour;
       } 
     });

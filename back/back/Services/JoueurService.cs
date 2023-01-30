@@ -341,6 +341,15 @@ namespace back.Services
             }
         }
 
+        public bool EstActiver(string _pseudo)
+        {
+            var retour = Context.Joueurs
+                .Where(j => j.Pseudo == _pseudo)
+                .Select(j => j.EstActiver).First();
+
+            return retour == 1;
+        }
+
         public bool PossedeTank(int _idJoueur, int _idTank)
         {
             int? nb = Context.Joueurs

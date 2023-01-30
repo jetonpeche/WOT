@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Tank } from '../types/Tank';
 import { TankExport } from '../types/export/TankExport';
 import { TankModifierExport } from '../types/export/TankModifierExport';
+import { TankAdmin } from '../types/TankAdmin';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,12 @@ export class TankService
 
   constructor(private http: HttpClient) { }
 
-  Lister(_seulementVisible: boolean): Observable<Tank[]>
+  /**
+   * @param _seulementVisible false => TOUT les tanks
+   */
+  Lister(_seulementVisible: boolean): Observable<Tank[] | TankAdmin[]>
   {
-    return this.http.get<Tank[]>(`${this.NOM_API}/lister/${_seulementVisible}`);
+    return this.http.get<Tank[] | TankAdmin[]>(`${this.NOM_API}/lister/${_seulementVisible}`);
   }
 
   Lister2(_idJoueur: number): Observable<string[]>

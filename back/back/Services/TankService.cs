@@ -46,7 +46,8 @@ public class TankService
                              IdStatut = x.IdTankStatut,
                              x.IdTypeTank,
                              x.IdTier,
-                             EstVisible = x.EstVisible == 1
+                             EstVisible = x.EstVisible == 1,
+                             NbPossesseur = x.IdJoueurs.Count()
                          };
             }
             

@@ -72,9 +72,12 @@ public class JoueurController : Controller
     [HttpGet("info/{pseudo}")]
     public async Task<string> GetInfo(string pseudo)
     {
-        var infoJoueur = await JoueurServ.GetInfoAsync(pseudo);
+        JoueurExport? infoJoueur = null;
 
-        return JsonConvert.SerializeObject(infoJoueur == null ? null : infoJoueur);
+        if (JoueurServ.PseudoExiste(pseudo) && JoueurServ.EstActiver(pseudo))
+            infoJoueur = await JoueurServ.GetInfoAsync(pseudo);
+
+        return JsonConvert.SerializeObject(infoJoueur);
     }
 
     /// <summary>

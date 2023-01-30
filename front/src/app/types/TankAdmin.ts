@@ -1,4 +1,4 @@
-export type Tank =
+export type TankAdmin =
 {
     Id: number,
 
@@ -9,6 +9,5 @@ export type Tank =
     Nom: string,
     EstVisible: boolean,
 
-    // pas dans appel API
-    estPosseder: boolean
+    NbPossesseur: number
 }

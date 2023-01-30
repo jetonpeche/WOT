@@ -50,7 +50,7 @@ export class ConnexionComponent implements OnInit
           this.router.navigate(["/accueil"]);
         }
         else
-          this.toastrServ.info(`Je ne connais pas: ${this.form.value.Pseudo}`);
+          this.toastrServ.info(`Je ne connais pas: ${this.form.value.Pseudo} ou ton compte n'est pas activé`);
       },
       error: () => this.btnClicker = false
     });
