@@ -26,6 +26,10 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
   displayedColumns: string[] = ['Pseudo', 'IdDiscord', 'NbTank', 'EstStrateur', 'EstAdmin', "EstActiver", "action"];
 
   listeJoueur: MatTableDataSource<Joueur>;
+  listeJoueurClone: Joueur[] = [];
+
+  tailleEcran = window.screen.width;
+  readonly TAILLE_768 = 768;
 
   constructor(
     private joueurServ: JoueurService, 
@@ -42,19 +46,36 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
 
   ngAfterViewInit(): void 
   {
-    this.paginator._intl.itemsPerPageLabel = "Joueur par page";
+    if(this.tailleEcran > this.TAILLE_768)
+    {
+      this.paginator._intl.itemsPerPageLabel = "Joueur par page";
 
-    this.listeJoueur.paginator = this.paginator;
-    this.listeJoueur.sort = this.sort;
+      this.listeJoueur.paginator = this.paginator;
+      this.listeJoueur.sort = this.sort;
+    }
   }
 
   Rechercher(event: Event): void
   {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.listeJoueur.filter = filterValue.trim().toLowerCase();
 
-    if (this.listeJoueur.paginator)
-      this.listeJoueur.paginator.firstPage();
+    if(this.tailleEcran > this.TAILLE_768)
+    {
+      this.listeJoueur.filter = filterValue.trim().toLowerCase();
+
+      if (this.listeJoueur.paginator)
+        this.listeJoueur.paginator.firstPage();
+    }
+    else
+    {
+      if(filterValue.trim() == "")
+      {
+        this.listeJoueur.data = this.listeJoueurClone;
+        return;
+      }
+
+      this.listeJoueur.data = this.listeJoueurClone.filter(j => j.Pseudo.trim().toLowerCase().includes(filterValue));
+    }
   }
 
   ActiverDesactiverJoueur(_joueur: Joueur, _event: Event): void
@@ -185,7 +206,7 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
       {
         console.log(retour);
         
-        this.listeJoueur.data = retour;
+        this.listeJoueurClone = this.listeJoueur.data = retour;
       }
     });
   }

@@ -38,4 +38,9 @@ export class TankService
   {
     return this.http.post<boolean>(`${this.NOM_API}/modifier`, _tank);
   }
+
+  Supprimer(_idTank: number): Observable<boolean>
+  {
+    return this.http.get<boolean>(`${this.NOM_API}/supprimer/${_idTank}`);
+  }
 }

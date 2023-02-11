@@ -22,7 +22,7 @@
                     <mat-label>Par tier</mat-label>
                     <mat-select #selectIdTier 
                                 (selectionChange)="Filtrer($event.value, selectIdType.value, 
-                                                           selectIdStatut.value)">
+                                                           selectIdStatut.value, checkboxTankPossedeJoueur.checked)">
                         <mat-option value="0">Tous</mat-option>
                         <mat-option *ngFor="let element of listeTier" [value]="element.Id">
                             {{ element.Nom }}
@@ -37,7 +37,7 @@
                     <mat-label>Par type</mat-label>
                     <mat-select #selectIdType 
                                 (selectionChange)="Filtrer(selectIdTier.value, $event.value, 
-                                                           selectIdStatut.value)">
+                                                           selectIdStatut.value, checkboxTankPossedeJoueur.checked)">
                         <mat-option value="0">Tous</mat-option>
                         <mat-option *ngFor="let element of listeTypeTank" [value]="element.Id">
                             {{ element.Nom }}
@@ -52,7 +52,7 @@
                     <mat-label>Par statut</mat-label>
                     <mat-select #selectIdStatut 
                                 (selectionChange)="Filtrer(selectIdTier.value, selectIdType.value, 
-                                                           $event.value)">
+                                                           $event.value, checkboxTankPossedeJoueur.checked)">
                         <mat-option value="0">Tous</mat-option>
                         <mat-option *ngFor="let element of listeStatutTank" [value]="element.Id">
                             {{ element.Nom }}
@@ -60,11 +60,19 @@
                     </mat-select>
                 </mat-form-field>
             </div>
+
+            <!-- filtre les tanks qui ont au moins un joueur -->
+            <div class="col-lg-12 col-md-12">
+                <mat-checkbox color="primary" #checkboxTankPossedeJoueur
+                    (change)="Filtrer(selectIdTier.value, selectIdType.value, selectIdStatut.value, $event.checked)">
+                        Tanks qui ont au moins un joueur
+                </mat-checkbox>
+            </div>
         </div>
     
         <!-- card tank -->
         <div class="row scrollBar">
-            <div class="col-lg-4" *ngFor="let element of listeTank">
+            <div class="col-lg-4 col-sm-6" *ngFor="let element of listeTank">
                 <mat-card>
                     <mat-card-header>
     
@@ -81,12 +89,35 @@
                         
                     </mat-card-header>
     
-                    <mat-card-actions align="end">                 
-                        <button mat-raised-button color="accent"
-                                (click)="OuvrirModalJModifierTank(element)">
-                            Modifier
+                    <mat-card-actions align="end">  
+
+                        <!-- btn supprimer -->
+                        <button mat-raised-button color="warn"
+                                (click)="OuvrirModalConfirmation(element.Id, element.Nom)">
+
+                                <ng-container *ngIf="tailleEcran <= TAILLE_375">
+                                    <mat-icon>delete</mat-icon>
+                                </ng-container>
+                                
+                                <ng-container *ngIf="tailleEcran > TAILLE_375">
+                                    Supprimer
+                                </ng-container>
                         </button>&nbsp;
 
+                        <!-- btn modifier -->
+                        <button mat-raised-button color="accent"
+                                (click)="OuvrirModalJModifierTank(element)">
+
+                                <ng-container *ngIf="tailleEcran <= TAILLE_375">
+                                    <mat-icon>edit</mat-icon>
+                                </ng-container>
+
+                                <ng-container *ngIf="tailleEcran > TAILLE_375">
+                                    Modifier
+                                </ng-container>
+                        </button>&nbsp;
+
+                        <!-- btn lister joueurs qui possede le tank -->
                         <button mat-raised-button color="primary" 
                                 (click)="OuvrirModalJoueurPossedeTank(element.Id, element.Nom)"
                                 [disabled]="element.NbPossesseur == 0">

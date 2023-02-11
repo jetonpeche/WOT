@@ -30,4 +30,6 @@ export var environment = {
 
     // contient pas que des espaces
     regexVide: /^(\s+\S+\s*)*(?!\s).*$/,
+
+    tailleEcran375: 375
   };

@@ -11,6 +11,9 @@ import { ModifierInfoCompteComponent } from './modal/modifier-info-compte/modifi
 })
 export class AppComponent implements OnInit
 {
+  tailleEcran: number = window.screen.width;
+  readonly TAILLE_375 = environment.tailleEcran375;
+
   constructor(private dialog: MatDialog) { }
 
   ngOnInit(): void 

@@ -195,4 +195,35 @@ public class TankService
             return false;
         }
     }
+
+    public async Task<bool> SupprimerAsync(int _idTank)
+    {
+        try
+        {
+            using(SqlConnection sqlCon = new(Config.GetConnectionString("Defaut")))
+            {
+                await sqlCon.OpenAsync();
+
+               SqlCommand cmd = sqlCon.CreateCommand();
+
+                cmd.CommandText = "" +
+                    "DELETE FROM TankJoueur WHERE idTank = @idTank;" +
+                    "DELETE FROM ClanWarJoueur WHERE idTank = @idTank;" +
+                    "DELETE FROM Tank WHERE id = @idTank;";
+
+                cmd.Parameters.Add("@idTank", SqlDbType.Int).Value = _idTank;
+
+                await cmd.PrepareAsync();
+                await cmd.ExecuteNonQueryAsync();
+
+                await sqlCon.CloseAsync();
+
+                return true;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

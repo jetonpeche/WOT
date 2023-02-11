@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AjouterTankComponent } from 'src/app/modal/ajouter-tank/ajouter-tank.component';
 import { JoueurPossedeTankComponent } from 'src/app/modal/joueur-possede-tank/joueur-possede-tank.component';
 import { ModifierTankComponent } from 'src/app/modal/modifier-tank/modifier-tank.component';
+import { OutilService } from 'src/app/service/outil.service';
 import { TankService } from 'src/app/service/tank.service';
 import { TankModifierExport } from 'src/app/types/export/TankModifierExport';
 import { StatutTank } from 'src/app/types/StatutTank';
@@ -24,11 +25,16 @@ export class GestionTankComponent implements OnInit
   listeTypeTank: TypeTank[] = [];
   listeStatutTank: StatutTank[] = [];
 
+  tailleEcran: number = window.screen.width;
+
+  readonly TAILLE_375 = environment.tailleEcran375;
+
   private listeTankClone: TankAdmin[] = [];
 
   constructor(
     private dialog: MatDialog, 
     private tankServ: TankService,
+    private outilServ: OutilService,
     private toastrServ: ToastrService
     ) { }
 
@@ -92,6 +98,22 @@ export class GestionTankComponent implements OnInit
     });
   }
 
+  protected OuvrirModalConfirmation(_idTank: number, _nomTank: string): void
+  {
+    const TITRE = "Confirmation suppression de tank";
+    const MESSAGE = `Confimez vous la suppression du tank ${_nomTank} ?`;
+
+    this.outilServ.OuvrirModalConfirmation(TITRE, MESSAGE);
+
+    this.outilServ.retourConfirmation.subscribe({
+      next: (retour: boolean) =>
+      {
+        if(retour === true)
+          this.SupprimerTank(_idTank);
+      }
+    });
+  }
+
   protected Rechercher(_recherche: string): void
   {
     if(_recherche == "")
@@ -103,9 +125,12 @@ export class GestionTankComponent implements OnInit
     this.listeTank = this.listeTankClone.filter(x => x.Nom.toLowerCase().includes(_recherche.toLowerCase()));
   }
 
-  protected Filtrer(_idTier: number = 0, _idType: number = 0, _idStatut: number = 0): void
+  protected Filtrer(_idTier: number = 0, _idType: number = 0, _idStatut: number = 0, _tankEstPossederParJoueur: boolean): void
   { 
     this.listeTank = this.listeTankClone;
+
+    if(_tankEstPossederParJoueur)
+      this.listeTank = this.listeTank.filter(x => x.NbPossesseur > 0)
 
     if(_idTier == 0 && _idType == 0 && _idStatut == 0)
       return;   
@@ -148,6 +173,24 @@ export class GestionTankComponent implements OnInit
       {
         this.listeTankClone = this.listeTank = retour;
       } 
+    });
+  }
+
+  private SupprimerTank(_idTank: number): void
+  {
+    this.tankServ.Supprimer(_idTank).subscribe({
+      next: (retour: boolean) =>
+      {
+        if(retour === true)
+        {
+          this.toastrServ.success("Le tank a été supprimé");
+
+          const INDEX = this.listeTank.findIndex(t => t.Id == _idTank);
+          this.listeTank.splice(INDEX, 1);
+        }
+        else
+          this.toastrServ.error("Une erreur à eu lieu");
+      }
     });
   }
 }

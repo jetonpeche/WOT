@@ -32,3 +32,9 @@ table, .mat-mdc-form-field
   margin-bottom: 30px;
   text-align: center;
 }
+
+// btn raised icon decaler
+.mat-mdc-raised-button .mat-icon
+{
+  margin-top: 5px;
+}

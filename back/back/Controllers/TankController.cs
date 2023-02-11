@@ -101,4 +101,16 @@ public class TankController : ControllerBase
 
 		return JsonConvert.SerializeObject(retour);
 	}
+
+	/// <summary>
+	/// Supprime un tank
+	/// </summary>
+	/// <returns>true / false</returns>
+	[HttpGet("supprimer/{idTank}")]
+	public async Task<string> Supprimer(int idTank)
+	{
+		bool retour = await TankServ.SupprimerAsync(idTank);
+
+		return JsonConvert.SerializeObject(retour);
+	}
 }
