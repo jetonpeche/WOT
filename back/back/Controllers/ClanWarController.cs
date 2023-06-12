@@ -18,6 +18,19 @@ namespace back.Controllers
         }
 
         /// <summary>
+        /// iste les clan war avec la participation du joueur et le nombre de participants
+        /// </summary>
+        /// <param name="idDiscord"></param>
+        /// <returns></returns>
+        [HttpGet("lister/{idDiscord}")]
+        public async Task<string> Lister(string idDiscord)
+        {
+            var retour = await ClanWarServ.ListerAsync(idDiscord, EEtatClanWar.toute);
+
+            return JsonConvert.SerializeObject(retour);
+        }
+
+        /// <summary>
         /// Liste les clan war avec la participation (oui / non) du joueur et le nombre de participants
         /// </summary>
         /// <param name="idDiscord">id discord du compte qui le demande</param>
@@ -65,6 +78,12 @@ namespace back.Controllers
             int id = await ClanWarServ.AjouterAsync(clanWar);
 
             return JsonConvert.SerializeObject(id);
+        }
+
+        [HttpPost("participer")]
+        public async Task<string> Participer()
+        {
+            return JsonConvert.SerializeObject("");
         }
 
         /// <summary>

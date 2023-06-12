@@ -26,6 +26,7 @@ public class ClanWarService
                              orderby cw.Date
                              select new
                              {
+                                 cw.Id,
                                  Date = cw.Date.ToString("d"),
                                  Participe = false,
                                  NbParticipant = cw.ClanWarJoueurs.Count()
@@ -38,6 +39,7 @@ public class ClanWarService
                              orderby cw.Date
                              select new
                              {
+                                 cw.Id,
                                  Date = cw.Date.ToString("d"),
                                  Participe = true,
                                  NbParticipant = cw.ClanWarJoueurs.Count()
@@ -50,6 +52,7 @@ public class ClanWarService
                              orderby cw.Date
                              select new
                              {
+                                 cw.Id,
                                  Date = cw.Date.ToString("d"),
                                  Participe = cw.ClanWarJoueurs.Where(cwj => cwj.IdJoueurNavigation.IdDiscord == _idDiscord).Count() == 1,
                                  NbParticipant = cw.ClanWarJoueurs.Count()

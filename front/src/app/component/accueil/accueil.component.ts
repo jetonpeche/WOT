@@ -1,10 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ClanWarService } from 'src/app/service/clan-war.service';
+import { ClanWar } from 'src/app/types/ClanWar';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-accueil',
   templateUrl: './accueil.component.html',
   styleUrls: ['./accueil.component.scss']
 })
-export class AccueilComponent {
+export class AccueilComponent implements OnInit
+{
+  listeClanWar: ClanWar[] = [];
 
+  constructor(private clanWarServ: ClanWarService) { }
+
+  ngOnInit(): void 
+  {
+    this.ListerClanWar();
+  }
+
+  protected Participer(_clanWar: ClanWar): void
+  {
+    this.clanWarServ.Participer(_clanWar.Id, environment.infoJoueur.Id).subscribe({
+      next: (retour: boolean) =>
+      {
+        
+      }
+    });
+  }
+
+  private ListerClanWar(): void
+  {
+    this.clanWarServ.Lister(environment.infoJoueur.IdDiscord).subscribe({
+      next: (retour: ClanWar[]) =>
+      {
+        this.listeClanWar = retour;
+      }
+    });
+  }
 }

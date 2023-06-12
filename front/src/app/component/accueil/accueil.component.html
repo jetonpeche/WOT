@@ -1,1 +1,23 @@
-<p>accueil works!</p>
+<div class="headerTitre">
+    <h1>Liste des clan war dispo</h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        <mat-card class="col-lg-4 col-xs-12" *ngFor="let element of listeClanWar">
+            <mat-card-title>{{ element.Date }}</mat-card-title>
+
+            <mat-card-content>
+                Participe: {{ element.Participe ? 'Oui' : 'Non' }} <br>
+                Nombre de participant(s): {{ element.NbParticipant }}
+            </mat-card-content>
+
+            <mat-card-actions align="end">
+                <button mat-raised-button color="primary"
+                        (click)="Participer(element)">
+                    Participer
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</div>

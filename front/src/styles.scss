@@ -33,6 +33,19 @@ table, .mat-mdc-form-field
   text-align: center;
 }
 
+.mat-mdc-card
+{
+  margin: 10px 5px 10px 5px;
+}
+
+.mat-mdc-card-title
+{
+  font-weight: bold;
+  color: black;
+  font-size: 1.3em;
+  margin-bottom: 10px;
+}
+
 // btn raised icon decaler
 .mat-mdc-raised-button .mat-icon
 {
