@@ -1,9 +1,7 @@
-﻿namespace back.ModelImport
+﻿namespace back.ModelImport;
+
+public sealed class ClanWarImport
 {
-    public class ClanWarImport
-    {
-        public string? IdDiscord { get; set; }
-        public int? IdJoueur { get; set; }
-        public DateTime Date { get; set; }
-    }
+    public required string IdDiscord { get; set; }
+    public DateTime Date { get; set; }
 }
