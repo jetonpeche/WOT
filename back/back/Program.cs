@@ -123,6 +123,7 @@ app.UseAuthentication();
 
 app.MapGroup("/joueur").AjouterRouteJoueur();
 app.MapGroup("/clanWar").AjouterRouteClanWar();
+app.MapGroup("/tank").AjouterRouteTank();
 
 app.Run();
 

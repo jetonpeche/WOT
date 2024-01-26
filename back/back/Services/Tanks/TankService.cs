@@ -45,6 +45,34 @@ internal sealed class TankService: ITankService
         }
     }
 
+    public async Task<TankExport[]> ListerAsync(int _idJoueur)
+    {
+        try
+        {
+            var retour = await Context.Tanks
+                .Where(x => x.EstVisible == 0 && x.IdJoueurs.Any(y => y.Id == _idJoueur))
+                .OrderBy(x => x.IdTypeTank)
+                .OrderBy(x => x.IdTankStatut)
+                .OrderBy(x => x.Nom)
+                .Select(x => new TankExport
+                {
+                    Id = x.Id,
+                    Nom = x.Nom,
+                    IdStatut = x.IdTankStatut,
+                    IdTypeTank = x.IdTypeTank,
+                    IdTier = x.IdTier,
+                    EstVisible = true,
+                    NbPossesseur = (ushort)x.IdJoueurs.Count()
+                }).ToArrayAsync();
+
+            return retour;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
     public async Task<string[]> ListerNomAsync(int _idJoueur)
     {
         try

@@ -1,9 +1,9 @@
 ﻿namespace back.ModelImport;
 
-public class TankModifierImport
+public sealed class TankModifierImport
 {
     public int Id { get; set; }
-    public string Nom { get; set; } = null!;
+    public required string Nom { get; set; }
     public int IdType { get; set; }
     public int IdStatut { get; set; }
     public int IdTier { get; set; }

@@ -12,6 +12,8 @@ public interface ITankService
     /// <returns>liste des tanks</returns>
     Task<TankExport[]> ListerAsync(bool _seulementVisible);
 
+    Task<TankExport[]> ListerAsync(int _idJoueur);
+
     /// <summary>
     /// Lister les noms des tanks du joueur
     /// </summary>
