@@ -1,13 +1,13 @@
 ﻿namespace back.ModelImport;
 
-public class JoueurImport
+public sealed class JoueurImport
 {
     /// <summary>
     /// Uniquement pour la modification du joueur
     /// </summary>
-    public int Id { get; set; }
-    public string IdDiscord { get; set; } = null!;
-    public string Pseudo { get; set; } = null!;
+    public required int Id { get; set; }
+    public required string IdDiscord { get; set; }
+    public required string Pseudo { get; set; }
     public bool EstStrateur { get; set; }
     public bool EstAdmin { get; set; }
 }

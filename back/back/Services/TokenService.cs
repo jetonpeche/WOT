@@ -1,37 +1,35 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace back.Services;
-public class TokenService
+
+public sealed class TokenService(RSA _rsa, string _issuer)
 {
-	private IConfiguration Config { get; init; }
-
-	public TokenService(IConfiguration _config)
-	{
-		Config = _config;
-	}
-
-    public string Generer(int _idCompte)
+    public string Generer(Claim[] _tabClaim)
     {
-        var cle = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.GetValue<string>("Token:cleSecrete")));
-        var cleSigner = new SigningCredentials(cle, SecurityAlgorithms.HmacSha256);
+        var gestionnaireJwt = new JsonWebTokenHandler();
 
-        // ajout des infos divers dans le token
-        Claim[] claim = new[]
+        // permet de signer le JWT
+        var cle = new RsaSecurityKey(_rsa);
+
+        // creation du JWT
+        // par defaut dure 1 heure
+        var jwt = gestionnaireJwt.CreateToken(new SecurityTokenDescriptor
         {
-            new Claim("idCompte", _idCompte.ToString())
-        };
+            // informations ajouter dans le JWT
+            Subject = new ClaimsIdentity(_tabClaim),
 
-        var token = new JwtSecurityToken(
-            issuer: Config.GetValue<string>("Token:issuer"),
-            audience: Config.GetValue<string>("Token:audience"),
-            claims: claim,
-            expires: DateTime.UtcNow.AddHours(1),
-            signingCredentials: cleSigner
-            );
+            // OBLIGATOIRE => qui est l'émeteur
+            // en général mettre URL
+            Issuer = _issuer,
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+            SigningCredentials = new SigningCredentials(cle, SecurityAlgorithms.RsaSha256)
+        });
+
+        return jwt;
     }
 }

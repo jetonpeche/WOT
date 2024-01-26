@@ -1,7 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 
 namespace back.Services;
-public class ProtectionService
+
+public sealed class ProtectionService
 {
     public string XSS(string _text)
     {
