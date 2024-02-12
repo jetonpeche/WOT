@@ -1,8 +1,14 @@
-﻿namespace BotDiscord.Models;
+﻿using System.Text.Json.Serialization;
 
-public class ClanWar
+namespace BotDiscord.Models;
+
+public sealed record ClanWar
 {
-    public string Date { get; set; } = null!;
-    public bool Participe { get; set; }
-    public int NbParticipant { get; set; }
+    public required string Date { get; init; }
+    public bool Participe { get; init; }
+    public int NbParticipant { get; init; }
 }
+
+[JsonSerializable(typeof(ClanWar))]
+[JsonSerializable(typeof(ClanWar[]))]
+public partial class ClanWarContext: JsonSerializerContext { }

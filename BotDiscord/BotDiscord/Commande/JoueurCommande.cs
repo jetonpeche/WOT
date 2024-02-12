@@ -1,4 +1,5 @@
 ﻿using BotDiscord.Models;
+using BotDiscord.ModelsExport;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -9,17 +10,17 @@ namespace BotDiscord.Commande;
 public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("lister_joueur", "Liste les joueurs")]
-    public async Task Lister(ERoleJoueur _roleJoueur)
+    public async Task Lister([Summary("Role_du_joueur")] ERoleJoueur _roleJoueur)
     {
-        List<Joueur> liste = await ApiService.GetAsync<List<Joueur>>(EApiType.joueur, $"lister2/{(int)_roleJoueur}");
+        Joueur[]? tabJoueur = await ApiService.GetAsync(EApiType.joueur, $"lister/{(int)_roleJoueur}", JoueurContext.Default.JoueurArray);
 
-        if (liste is null)
+        if (tabJoueur is null)
         {
             await RespondAsync($"Erreur réseau");
             return;
         }
 
-        if (liste.Count == 0)
+        if (tabJoueur.Length == 0)
         {
             await RespondAsync($"Aucun joueur");
             return;
@@ -31,35 +32,63 @@ public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
             Color = Color.DarkOrange
         };
 
-        foreach (var element in liste)
+        foreach (var element in tabJoueur)
         {
             embedBuilder.AddField(element.Pseudo,
                 $"Strateur: {(element.EstStrateur ? "Oui" : "Non")} | " +
                 $"Admin: {(element.EstAdmin ? "Oui" : "Non")}");
         }
 
-        await Context.Channel.SendMessageAsync(null, false, embedBuilder.Build());
+        await Context.Channel.SendMessageAsync(embed: embedBuilder.Build());
+    }
+
+    [SlashCommand("inscription", "s'inscrire")]
+    public async Task Ajouter([Summary("Pseudo")] string _pseudo)
+    {
+        string jsonString = JsonSerializer.Serialize(new JoueurExport
+        {
+            IdDiscord = Context.User.Id.ToString(),
+            Pseudo = _pseudo,
+            EstStrateur = false,
+            EstAdmin = false
+        }, JoueurExportContext.Default.JoueurExport);
+
+        var reponse = await ApiService.PostAsync(EApiType.joueur, "ajouter", jsonString);
+
+        if (reponse is null)
+            await RespondAsync("Erreur d'ajout");
+
+        else if (reponse.IsSuccessStatusCode)
+            await RespondAsync("Le joueur a été ajouté");
+
+        else
+            await RespondAsync($"Tu es déjà inscrit");
     }
 
     [SlashCommand("ajouter_joueur", "Ajouter un nouveau joueur")]
-    public async Task Ajouter(SocketUser _joueur, string _pseudo, bool _estStrateur, bool _estAdmin)
+    public async Task Ajouter(SocketUser _joueur, 
+                             [Summary("Pseudo")] string _pseudo, 
+                             [Summary("Est_un_strateur")] bool _estStrateur, 
+                             [Summary("Est_un_admin")] bool _estAdmin)
     {
-        string jsonString = JsonSerializer.Serialize(new
+        string jsonString = JsonSerializer.Serialize(new JoueurExport
         {
             IdDiscord = _joueur.Id.ToString(),
             Pseudo = _pseudo,
             EstStrateur = _estStrateur,
             EstAdmin = _estAdmin
-        });
+        }, JoueurExportContext.Default.JoueurExport);
 
-        int id = await ApiService.PostAsync<int>(EApiType.joueur, "ajouter", jsonString);
+        var reponse = await ApiService.PostAsync(EApiType.joueur, "ajouter", jsonString);
 
-        if (id is -1)
-            await RespondAsync($"Le joueur {_joueur.Username} existe déjà");
-        if (id is 0)
+        if (reponse is null)
             await RespondAsync("Erreur d'ajout");
-        else
+
+        else if(reponse.IsSuccessStatusCode)
             await RespondAsync("Le joueur a été ajouté");
+           
+        else
+            await RespondAsync($"Le joueur {_joueur.Username} existe déjà");
     }
 
     [SlashCommand("supprimer_joueur", "Supprime le joueur choisi")]
@@ -71,26 +100,29 @@ public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
             return;
         }
 
-        int retour = await ApiService.GetAsync<int>(EApiType.joueur, $"supprimer/{_joueur.Id}");
-
-        if (retour is 1)
-            await RespondAsync("Le joueur a été supprimé" + new Emoji("👋"));
-        else if (retour is -1)
-            await RespondAsync("Le joueur n'existe pas");
-        else
-            await RespondAsync("Erreur de suppression");
+        await SupprimerAsync(_joueur.Id);
     }
 
     [SlashCommand("supprime_moi", "Supprime le joueur qui éxecute la commande de la base de donnée")]
     public async Task Supprimer()
     {
-        int retour = await ApiService.GetAsync<int>(EApiType.joueur, $"supprimer/{Context.User.Id}");
+        await SupprimerAsync(Context.User.Id);
+    }
 
-        if (retour is 1)
-            await RespondAsync("Tu as été supprimé" + new Emoji("👋"));
-        else if(retour is -1)
-            await RespondAsync("Tu n'existes pas");
-        else
+    private async Task SupprimerAsync(ulong _idDiscord)
+    {
+        var reponse = await ApiService.DeleteAsync(EApiType.joueur, $"supprimer/{_idDiscord}");
+
+        if (reponse is null)
             await RespondAsync("Erreur de suppression");
+
+        else if (reponse.IsSuccessStatusCode)
+            await RespondAsync("Le joueur a été supprimé" + new Emoji("👋"));
+
+        else
+        {
+            string msg = (await JsonSerializer.DeserializeAsync<string>(await reponse.Content.ReadAsStreamAsync()))!;
+            await RespondAsync(msg.Replace('"', ' '));
+        }
     }
 }

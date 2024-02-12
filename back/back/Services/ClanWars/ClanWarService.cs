@@ -18,12 +18,12 @@ internal sealed class ClanWarService: IClanWarService
     {
         IQueryable<ClanWar> requete = Context.ClanWars
             .OrderBy(x => x.Date)
-            .Where(x => x.Date >= DateTime.Now);
+            .Where(x => x.Date >= DateTime.Now.Date);
 
         requete = _eEtatClanWar switch
         {
-            EEtatClanWar.participePas => requete.Where(x => x.ClanWarJoueurs.Where(y => y.IdJoueurNavigation.IdDiscord == _idDiscord).Count() == 0),
-            EEtatClanWar.participe => requete.Where(x => x.ClanWarJoueurs.Where(y => y.IdJoueurNavigation.IdDiscord == _idDiscord).Count() == 1),
+            EEtatClanWar.participePas => requete.Where(x => x.ClanWarJoueurs.Any(y => y.IdJoueurNavigation.IdDiscord == _idDiscord) == false),
+            EEtatClanWar.participe => requete.Where(x => x.ClanWarJoueurs.Any(y => y.IdJoueurNavigation.IdDiscord == _idDiscord)),
             _ => requete
         };
 

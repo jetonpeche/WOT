@@ -2,26 +2,28 @@
 using BotDiscord.Models;
 using Discord;
 using Discord.Interactions;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace BotDiscord.Commande;
 
 public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("lister_clan_war", "Liste les clan war")]
-    public async Task Lister([Summary(description: "Filtre les clan war")] EEtatClanWar etatClanWar)
+    public async Task Lister([Summary("EtatClanWar", "Filtre les clan war")] EEtatClanWar _etatClanWar)
     {
-        List<ClanWar> liste = await ApiService.GetAsync<List<ClanWar>>(EApiType.clanWar, $"listerViaDiscord/{Context.User.Id}/{(int)etatClanWar}");
+        ClanWar[]? tabClanWar = await ApiService.GetAsync(EApiType.clanWar, 
+                                                          $"lister/{Context.User.Id}/{(int)_etatClanWar}",
+                                                          ClanWarContext.Default.ClanWarArray);
 
-        if(liste is null)
+        if(tabClanWar is null)
         {
             await RespondAsync("Erreur");
             return;
         }
 
-        if(liste.Count is 0)
+        if(tabClanWar.Length is 0)
         {
-            await RespondAsync("Aucun clan war programmée prochainement");
+            await RespondAsync("Aucun clan war");
             return;
         }
 
@@ -31,88 +33,104 @@ public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
             Color = Color.DarkRed
         };
 
-        foreach (var element in liste)
+        foreach (var element in tabClanWar)
             embedBuilder.AddField(element.Date, $"Participe: {(element.Participe ? "Oui" : "Non")} | Nb participant: {element.NbParticipant}");
 
         await RespondAsync(embed: embedBuilder.Build());
     }
 
     [SlashCommand("ajouter_clan_war", "Ajouter une clan war")]
-    public async Task Ajouter([Summary(description: "Date au format JJ/MM")] string _date)
+    public async Task Ajouter([Summary("Date", "Date au format JJ/MM ou JJ/MM/AAAA")] string _date)
     {
         if(!Outil.FormatDateOK(_date))
         {
-            await RespondAsync("La date doit être au format JJ/MM");
+            await RespondAsync("La date doit être au format JJ/MM ou JJ/MM/AAAA");
             return;
         }
 
-        DateTime date = DateTime.Parse($"{_date}/{DateTime.Now.Year}");
+        DateTime date = DateTime.Parse(_date.Split('/').Length is 2 ? $"{_date}/{DateTime.Now.Year}" : _date);
 
-        if(date <= DateTime.Now)
+        if(date < DateTime.Now.Date)
         {
             await RespondAsync("La date doit être supérieur à la date actuelle");
             return;
         }
 
-        string jsonString = JsonConvert.SerializeObject(new { Date = date, IdDiscord = Context.User.Id.ToString() });
+        string jsonString = JsonSerializer.Serialize(new { Date = date, IdDiscord = Context.User.Id.ToString() });
 
-        int id = await ApiService.PostAsync<int>(EApiType.clanWar, "ajouter", jsonString);
+        var reponse = await ApiService.PostAsync(EApiType.clanWar, "ajouter", jsonString);
 
-        if (id is -1)
-            await RespondAsync("La date de la clan war existe déjà");
-        else if (id is 0)
+        if (reponse is null)
             await RespondAsync("Erreur d'ajout");
+
+        else if (reponse.IsSuccessStatusCode)
+            await RespondAsync("La clan war a été programée");
+
         else
-            await RespondAsync("La clan war a été ajouté");
-        
+        {
+            string msg = (await JsonSerializer.DeserializeAsync<string>(await reponse.Content.ReadAsStreamAsync()))!;
+            await RespondAsync(msg.Replace('"', ' '));
+        }
     }
 
     [SlashCommand("participer_clan_war", "S'inscrire à la clan war (si pas de date => prochaine clan war)")]
-    public async Task Participer([Summary(description: "Date au format JJ/MM ou JJ/MM/AAAA")] string? _date = null)
+    public async Task Participer([Summary("Date", "Date au format JJ/MM ou JJ/MM/AAAA")] string? _date = null)
     {
-        string jsonString = JsonConvert.SerializeObject(new { Date = $"{_date}", IdDiscord = Context.User.Id.ToString() });
+        string jsonString = JsonSerializer.Serialize(new { Date = $"{_date}", IdDiscord = Context.User.Id.ToString() });
 
-        string retour = await ApiService.PostAsync<string>(EApiType.clanWar, "participerViaDiscord", jsonString);
+        string? retour = await ApiService.PostAsync<string>(EApiType.clanWar, "participer", jsonString);
 
-        if (retour == default)
+        if (retour is null)
             await RespondAsync("Erreur d'ajout à la clan war");
         else
             await RespondAsync(retour);
     }
 
     [SlashCommand("desinscrire_clan_war", "Se désinscrire de la clan war (si pas de date => prochaine clan war)")]
-    public async Task Desinscription([Summary(description: "Date au format JJ/MM ou JJ/MM/AAAA")] string? _date = null)
+    public async Task Desinscription([Summary("Date", "Date au format JJ/MM ou JJ/MM/AAAA")] string? _date = null)
     {
-        string jsonString = JsonConvert.SerializeObject(new { Date = _date, IdDiscord = Context.User.Id.ToString() });
+        string jsonString = JsonSerializer.Serialize(new { Date = _date, IdDiscord = Context.User.Id.ToString() });
 
-        string retour = await ApiService.PostAsync<string>(EApiType.clanWar, "desinscrireViaDiscord", jsonString);
+        var reponse = await ApiService.DeleteAsync(EApiType.clanWar, "desinscrire", jsonString);
 
-        if (retour == default)
+        if (reponse is null)
             await RespondAsync("Erreur lors de la désinscription");
-        else
-            await RespondAsync(retour);
-    }
 
+        else if (reponse.IsSuccessStatusCode)
+            await RespondAsync("Tu ne participes plus à cette clan war");
+
+        else
+        {
+            string msg = (await JsonSerializer.DeserializeAsync<string>(await reponse.Content.ReadAsStreamAsync()))!;
+            await RespondAsync(msg.Replace('"', ' '));
+        }
+    }
+     
     [SlashCommand("supprimer_clan_war", "Supprime la clan war")]
-    public async Task Supprimer([Summary(description: "Date au format JJ/MM")] string _date)
+    public async Task Supprimer([Summary("Date", "Date au format JJ/MM ou JJ/MM/AAAA")] string _date)
     {
         if (!Outil.FormatDateOK(_date))
         {
-            await RespondAsync("La date doit être au format JJ/MM");
+            await RespondAsync("La date doit être au format JJ/MM ou JJ/MM/AAAA");
             return;
         }
 
-        DateTime date = DateTime.Parse($"{_date}/{DateTime.Now.Year}");
+        DateTime date = DateTime.Parse(_date.Split('/').Length is 2 ? $"{_date}/{DateTime.Now.Year}" : _date);
 
-        string jsonString = JsonConvert.SerializeObject(new { Date = date, IdDiscord = Context.User.Id.ToString() });
+        string jsonString = JsonSerializer.Serialize(new { Date = date, IdDiscord = Context.User.Id.ToString() });
 
-        int id = await ApiService.PostAsync<int>(EApiType.clanWar, "supprimer", jsonString);
+        var reponse = await ApiService.DeleteAsync(EApiType.clanWar, "supprimer", jsonString);
 
-        if (id is -1)
-            await RespondAsync("La date de la clan war n'existe pas");
-        else if (id is 0)
+        if (reponse is null)
             await RespondAsync("Erreur de suppression");
+
+        else if (reponse.IsSuccessStatusCode)
+            await RespondAsync("La clan war a été supprimée");
+
         else
-            await RespondAsync("La clan war a été supprimé");
+        {
+            string msg = (await JsonSerializer.DeserializeAsync<string>(await reponse.Content.ReadAsStreamAsync()))!;
+            await RespondAsync(msg.Replace('"', ' '));
+        }
     }
 }

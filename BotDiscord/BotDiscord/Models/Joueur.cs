@@ -1,11 +1,19 @@
-﻿namespace BotDiscord.Models;
+﻿using System.Text.Json.Serialization;
 
-public sealed class Joueur
+namespace BotDiscord.Models;
+
+public sealed record Joueur
 {
-    public int Id { get; set; }
-    public string IdDiscord { get; set; } = null!;
-    public string Pseudo { get; set; } = null!;
-    public bool EstStrateur { get; set; }
-    public bool EstAdmin { get; set; }
-    public bool EstActiver { get; set; }
+    public int Id { get; init; }
+
+    public required string IdDiscord { get; init; }
+    public required string Pseudo { get; init; }
+
+    public bool EstStrateur { get; init; }
+    public bool EstAdmin { get; init; }
+    public bool EstActiver { get; init; }
 }
+
+[JsonSerializable(typeof(Joueur))]
+[JsonSerializable(typeof(Joueur[]))]
+public partial class JoueurContext: JsonSerializerContext { }

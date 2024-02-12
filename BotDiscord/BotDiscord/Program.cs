@@ -50,14 +50,16 @@ public class Program
 
         await serviceProvider.GetRequiredService<Interaction>().InitAsync();       
 
-        client.Log += async (LogMessage _msg) =>
+        client.Log += (LogMessage _msg) =>
         {
             Console.WriteLine(_msg.Message);
+            return Task.CompletedTask;
         };
 
-        sCommande.Log += async (LogMessage _msg) =>
+        sCommande.Log += (LogMessage _msg) =>
         {
             Console.WriteLine(_msg.Message);
+            return Task.CompletedTask;
         };
 
         //event apres lancement

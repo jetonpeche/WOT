@@ -28,7 +28,7 @@ public static class ClanWarRoute
             .ProducesNotFound()
             .ProducesNoContent();
 
-        builder.MapPut("desinscrire", DesinscrireAsync)
+        builder.MapDelete("desinscrire", DesinscrireAsync)
             .WithDescription("Permet de se désinscrire à la prochaine clan war (ne pas mettre de date) ou une clan war spécifique (avec la date)")
             .ProducesBadRequest()
             .ProducesNotFound()
@@ -67,7 +67,7 @@ public static class ClanWarRoute
         try
         {
             if (!await _joueurServ.ExisteAsync(_clanWarImport.IdDiscord))
-                return Results.NotFound();
+                return Results.NotFound("Je ne te connais pas");
 
             if (await _clanWarServ.ExisteAsync(_clanWarImport.Date))
                 return Results.BadRequest("Une clan war éxiste déjà à cette date");

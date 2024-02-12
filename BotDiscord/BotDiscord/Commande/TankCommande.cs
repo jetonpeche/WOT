@@ -1,18 +1,25 @@
 ﻿using BotDiscord.Models;
+using BotDiscord.ModelsExport;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using System.ComponentModel;
 using System.Text.Json;
 
 namespace BotDiscord.Commande;
 
 public class TankCommande : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("lister_tank", "liste les tanks en MP. L'Id est pour ajouter via discord avec la comande 'ajouter_tank_joueur'")]
-    public async Task ListerTank(ETier _tier, ETypeTank? _typeTank = null)
+    [SlashCommand("lister_tank", "liste les tanks. L'Id est pour ajouter via discord avec la comande 'ajouter_tank_joueur'")]
+    public async Task ListerTank([Summary("Tier")] ETier _tier, 
+                                 [Summary("Type_de_tank")] ETypeTank? _typeTank = null)
     {
-        List<Tank> liste = await ApiService.GetAsync<List<Tank>>(EApiType.tank, $"listerViaDiscord/{(int)_tier}/{(int?)_typeTank}");
+        Tank[]? tabTank = await ApiService.GetAsync(EApiType.tank, $"listerViaDiscord?IdTier={(int)_tier}{(_typeTank is not null ? $"&IdType={(int)_typeTank}" : "")}", TankContext.Default.TankArray);
+
+        if (tabTank is null)
+        {
+            await RespondAsync("Erreur réseau");
+            return;
+        }
 
         EmbedBuilder embedBuilder = new()
         {
@@ -21,7 +28,7 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
         };
 
         string nomTypeTank = "";
-        foreach (var element in liste)
+        foreach (var element in tabTank)
         {
             if (_typeTank is null && nomTypeTank != element.NomType)
             {
@@ -38,11 +45,13 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("lister_tank_joueur", "Liste les tanks du joueur au tier choisi")]
-    public async Task ListerTankJoueur(SocketUser _joueur, ETier _tier)
+    public async Task ListerTankJoueur(SocketUser _joueur, [Summary("Tier")] ETier _tier)
     {
-        List<Tank> liste = await ApiService.GetAsync<List<Tank>>(EApiType.tank, $"listerTankJoueurViaDiscord/{_joueur.Id}/{(int)_tier}");
+        Tank[]? tabTank = await ApiService.GetAsync(EApiType.tank, 
+                                                    $"listerTankJoueurViaDiscord/{_joueur.Id}/{(int)_tier}", 
+                                                    TankContext.Default.TankArray);
 
-        if(liste is null)
+        if(tabTank is null)
         {
             await RespondAsync($"Erreur réseau");
             return;
@@ -50,7 +59,7 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
 
         string nomTier = _tier.ToString().Replace("id", "");
 
-        if (liste.Count is 0)
+        if (tabTank.Length is 0)
         {
             await RespondAsync($"Il n'y a qu'un tank de {nomTier}");
             return;
@@ -63,7 +72,7 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
         };
 
         string nomTypeTank = "";
-        foreach (var element in liste)
+        foreach (var element in tabTank)
         {
             if(nomTypeTank != element.NomType)
             {
@@ -78,29 +87,32 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
     }
 
     [SlashCommand("ajouter_tank_joueur", "Ajouter un tank pour soi")]
-    public async Task AjouterTankJoueur([Description("l'idTank est visible via la commande 'lister_tank'"), MinValue(1)] int _idTank)
+    public async Task AjouterTankJoueur([Summary("Id_tank", "l'id Tank est visible via la commande 'lister_tank'"), MinValue(1)] int _idTank)
     {
         string jsonString = JsonSerializer.Serialize(new { IdDiscord = Context.User.Id.ToString(), IdTank = _idTank });
 
-        string retour = await ApiService.PostAsync<string>(EApiType.joueur, "ajouterTankJoueur", jsonString);
+        string? retour = await ApiService.PostAsync<string>(EApiType.joueur, "ajouterTankJoueur", jsonString);
 
-        await RespondAsync(retour == default ? "Erreur: \"idTank\" n'existe pas ou erreur serveur" : retour);
+        await RespondAsync(retour is null ? "Erreur: \"idTank\" n'existe pas ou erreur serveur" : retour);
     }
 
     [SlashCommand("ajouter_tank", "Ajouter un tank")]
-    public async Task Ajouter(string _nom, ETier _tier, ETypeTank _typeTank, EStatutTank _statutTank)
+    public async Task Ajouter([Summary("Nom")] string _nom,
+                              [Summary("Tier")] ETier _tier, 
+                              [Summary("Type_de_tank")] ETypeTank _typeTank, 
+                              [Summary("Statut_du_tank")] EStatutTank _statutTank)
     {
-        string jsonString = JsonSerializer.Serialize(new
+        string jsonString = JsonSerializer.Serialize(new TankExport
         {
             Nom = _nom,
             IdType = (int)_typeTank,
             IdStatut = (int)_statutTank,
             IdTier = (int)_tier
-        });
+        }, TankExportContext.Default.TankExport);
 
         int id = await ApiService.PostAsync<int>(EApiType.tank, "ajouter", jsonString);
 
-        if(id != 0)
+        if(id is not 0)
             await RespondAsync("Le tank a été ajouté");
         else
             await RespondAsync("Erreur d'ajout");

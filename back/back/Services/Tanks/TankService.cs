@@ -19,9 +19,9 @@ internal sealed class TankService: ITankService
         try
         {
             IQueryable<Tank> requete = Context.Tanks
-                .OrderBy(x => x.IdTierNavigation.Nom)
-                .OrderBy(x => x.IdTankStatut)
-                .OrderBy(x => x.Nom);
+                .OrderByDescending(x => x.IdTypeTank)
+                .ThenBy(x => x.IdTankStatut)
+                .ThenBy(x => x.Nom);
 
             if (_seulementVisible)
                 requete = requete.Where(x => x.EstVisible == 1);
@@ -50,10 +50,10 @@ internal sealed class TankService: ITankService
         try
         {
             var retour = await Context.Tanks
-                .Where(x => x.EstVisible == 0 && x.IdJoueurs.Any(y => y.Id == _idJoueur))
-                .OrderBy(x => x.IdTypeTank)
-                .OrderBy(x => x.IdTankStatut)
-                .OrderBy(x => x.Nom)
+                .Where(x => x.EstVisible == 1 && x.IdJoueurs.Any(y => y.Id == _idJoueur))
+                .OrderByDescending(x => x.IdTypeTank)
+                .ThenBy(x => x.IdTankStatut)
+                .ThenBy(x => x.Nom)
                 .Select(x => new TankExport
                 {
                     Id = x.Id,
@@ -78,7 +78,7 @@ internal sealed class TankService: ITankService
         try
         {
             var retour = await Context.Joueurs
-                .Where(j => j.Id == _idJoueur)
+                .Where(j => j.Id == _idJoueur && j.IdTanks.Any(x => x.EstVisible == 1))
                 .SelectMany(tanks => tanks.IdTanks.Select(j => j.Nom))
                 .ToArrayAsync();
 
@@ -93,10 +93,10 @@ internal sealed class TankService: ITankService
     public async Task<Tank2Export[]> ListerAsync(string _idDiscord, int _idTier)
     {
         var retour = await Context.Tanks
-            .Where(x => x.IdTier == _idTier && x.IdJoueurs.Any(y => y.IdDiscord == _idDiscord))
-            .OrderBy(x => x.IdTypeTank)
-            .OrderBy(x => x.IdTankStatut)
-            .OrderBy(x => x.Nom)
+            .Where(x => x.EstVisible == 1 && x.IdTier == _idTier && x.IdJoueurs.Any(y => y.IdDiscord == _idDiscord))
+            .OrderByDescending(x => x.IdTypeTank)
+            .ThenBy(x => x.IdTankStatut)
+            .ThenBy(x => x.Nom)
             .Select(x => new Tank2Export
             {
                 Id = x.Id,
@@ -112,10 +112,10 @@ internal sealed class TankService: ITankService
     public async Task<Tank2Export[]> ListerAsync(int _idTier, int _idType = 0)
     {
         IQueryable<Tank> requete = Context.Tanks
-            .OrderBy(x => x.IdTypeTank)
-            .OrderBy(x => x.IdTankStatut)
-            .OrderBy(x => x.Nom)
-            .Where(x => x.IdTier == _idTier);
+            .OrderByDescending(x => x.IdTypeTank)
+            .ThenBy(x => x.IdTankStatut)
+            .ThenBy(x => x.Nom)
+            .Where(x => x.IdTier == _idTier && x.EstVisible == 1);
 
         if(_idType > 0)
             requete = requete.Where(x => x.IdTypeTank == _idType);

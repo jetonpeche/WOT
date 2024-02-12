@@ -1,10 +1,9 @@
 ﻿using back.Extensions;
 using back.ModelExport;
-using back.ModelImport;
 using back.Models;
+using back.ModelsFiltre;
 using back.Services.Tanks;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace back.Routes;
 
@@ -23,7 +22,7 @@ public static class TankRoute
             .Produces<TankExport[]>()
             .ProducesBadRequest();
 
-        builder.MapGet("listerViaDiscord/{idTier}/{idType:int?}", ListerViaDiscordAsync)
+        builder.MapGet("listerViaDiscord", ListerViaDiscordAsync)
             .Produces<Tank2Export[]>()
             .ProducesBadRequest();
 
@@ -84,18 +83,17 @@ public static class TankRoute
     }
 
     async static Task<IResult> ListerViaDiscordAsync([FromServices] ITankService _tankServ,
-                                                     [FromRoute(Name = "idTier")] int _idTier, 
-                                                     [FromRoute(Name = "idType")] int? _idType = null)
+                                                     [AsParameters] FiltreTierTypeTank _filtre)
     {
         try
         {
-            if (_idTier <= 0)
+            if (_filtre.IdTier <= 0)
                 return Results.BadRequest("id tier doit être superieur à 0");
 
-            if(_idType.HasValue && _idType.Value <= 0)
+            if(_filtre.IdType.HasValue && _filtre.IdType.Value <= 0)
                 return Results.BadRequest("id type doit être superieur à 0");
 
-            var liste = await _tankServ.ListerAsync(_idTier, _idType ?? 0);
+            var liste = await _tankServ.ListerAsync(_filtre.IdTier, _filtre.IdType ?? 0);
 
             return Results.Extensions.OK(liste, Tank2ExportContext.Default);
         }
