@@ -125,7 +125,10 @@ public static class JoueurRoute
         try
         {
             if (await _joueurServ.ExisteAsync(_joueurImport.IdDiscord))
-                return Results.BadRequest("id discord éxiste déjà");
+                return Results.BadRequest("id discord existe déjà");
+
+            if (await _joueurServ.PseudoExisteAsync(_joueurImport.Pseudo))
+                return Results.BadRequest($"{_joueurImport.Pseudo} existe déjà");
 
             Joueur joueur = new()
             {

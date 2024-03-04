@@ -57,7 +57,7 @@ internal sealed class ClanWarService: IClanWarService
         }
     }
 
-    public async Task<int> GetProchaineClanWarAsync()
+    public async Task<int> GetIdProchaineClanWarAsync()
     {
         try
         {
@@ -68,6 +68,32 @@ internal sealed class ClanWarService: IClanWarService
                 .FirstOrDefaultAsync();
 
             return id;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    public async Task<ClanWarDetailExport?> GetDetailAsync(int _idClanWar)
+    {
+        try
+        {
+            var retour = await Context.ClanWars
+                .Where(x => x.Id == _idClanWar)
+                .Select(x => new ClanWarDetailExport
+                {
+                    Id = x.Id,
+                    Date = x.Date.ToString("d"),
+                    ListePersonne = x.ClanWarJoueurs.Select(y => new ClanWarParticipant
+                    {
+                        Id = y.IdJoueur,
+                        Pseudo = y.IdJoueurNavigation.Pseudo,
+                        NomTank = y.IdTankNavigation != null ? y.IdTankNavigation.Nom : string.Empty
+                    }).ToArray()
+                }).FirstOrDefaultAsync();
+
+            return retour;
         }
         catch
         {

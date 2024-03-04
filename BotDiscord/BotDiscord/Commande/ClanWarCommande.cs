@@ -76,14 +76,23 @@ public class ClanWarCommande: InteractionModuleBase<SocketInteractionContext>
     [SlashCommand("participer_clan_war", "S'inscrire à la clan war (si pas de date => prochaine clan war)")]
     public async Task Participer([Summary("Date", "Date au format JJ/MM ou JJ/MM/AAAA")] string? _date = null)
     {
-        string jsonString = JsonSerializer.Serialize(new { Date = $"{_date}", IdDiscord = Context.User.Id.ToString() });
+        string jsonString = JsonSerializer.Serialize(new { Date = _date, IdDiscord = Context.User.Id.ToString() });
 
-        string? retour = await ApiService.PostAsync<string>(EApiType.clanWar, "participer", jsonString);
+        var retour = await ApiService.PostAsync(EApiType.clanWar, "participer", jsonString);
+        string msg = "";
 
         if (retour is null)
-            await RespondAsync("Erreur d'ajout à la clan war");
+            msg = "Erreur d'ajout à la clan war";
+
+        else if (retour.IsSuccessStatusCode)
+            msg = "Tu as été inscrit a la prochaine clan war";
+
         else
-            await RespondAsync(retour);
+        {
+            msg = await retour.Content.ReadAsStringAsync();
+            //string msg = (await JsonSerializer.DeserializeAsync<string>())!;
+            await RespondAsync(msg);
+        }
     }
 
     [SlashCommand("desinscrire_clan_war", "Se désinscrire de la clan war (si pas de date => prochaine clan war)")]

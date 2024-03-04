@@ -25,7 +25,14 @@ public interface IClanWarService
     /// Recuperer l'id de la prochaine clan war par rapport à la date actuelle
     /// </summary>
     /// <returns>id de la clan wars / 0 => pas de clan war</returns>
-    Task<int> GetProchaineClanWarAsync();
+    Task<int> GetIdProchaineClanWarAsync();
+
+    /// <summary>
+    /// Permet de récuperer les details de la clan war
+    /// </summary>
+    /// <param name="_idClanWar">id clan war conserné</param>
+    /// <returns>les details ou null</returns>
+    Task<ClanWarDetailExport?> GetDetailAsync(int _idClanWar);
 
     /// <summary>
     /// Ajouter une nouvelle clan war

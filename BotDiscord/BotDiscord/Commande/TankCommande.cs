@@ -44,57 +44,6 @@ public class TankCommande : InteractionModuleBase<SocketInteractionContext>
         await RespondAsync(embed: embedBuilder.Build());
     }
 
-    [SlashCommand("lister_tank_joueur", "Liste les tanks du joueur au tier choisi")]
-    public async Task ListerTankJoueur(SocketUser _joueur, [Summary("Tier")] ETier _tier)
-    {
-        Tank[]? tabTank = await ApiService.GetAsync(EApiType.tank, 
-                                                    $"listerTankJoueurViaDiscord/{_joueur.Id}/{(int)_tier}", 
-                                                    TankContext.Default.TankArray);
-
-        if(tabTank is null)
-        {
-            await RespondAsync($"Erreur réseau");
-            return;
-        }
-
-        string nomTier = _tier.ToString().Replace("id", "");
-
-        if (tabTank.Length is 0)
-        {
-            await RespondAsync($"Il n'y a qu'un tank de {nomTier}");
-            return;
-        }
-
-        EmbedBuilder embedBuilder = new()
-        {
-            Title = $"Liste des tanks {nomTier} de {_joueur.Username}",
-            Color = Color.DarkPurple
-        };
-
-        string nomTypeTank = "";
-        foreach (var element in tabTank)
-        {
-            if(nomTypeTank != element.NomType)
-            {
-                nomTypeTank = element.NomType;
-                embedBuilder.AddField(element.NomType, "------------------");
-            }
-
-            embedBuilder.AddField(element.Nom, $"{element.NomStatut} | {element.NomType}");
-        }
-
-        await RespondAsync(embed: embedBuilder.Build());
-    }
-
-    [SlashCommand("ajouter_tank_joueur", "Ajouter un tank pour soi")]
-    public async Task AjouterTankJoueur([Summary("Id_tank", "l'id Tank est visible via la commande 'lister_tank'"), MinValue(1)] int _idTank)
-    {
-        string jsonString = JsonSerializer.Serialize(new { IdDiscord = Context.User.Id.ToString(), IdTank = _idTank });
-
-        string? retour = await ApiService.PostAsync<string>(EApiType.joueur, "ajouterTankJoueur", jsonString);
-
-        await RespondAsync(retour is null ? "Erreur: \"idTank\" n'existe pas ou erreur serveur" : retour);
-    }
 
     [SlashCommand("ajouter_tank", "Ajouter un tank")]
     public async Task Ajouter([Summary("Nom")] string _nom,

@@ -18,6 +18,12 @@ public static class ClanWarRoute
             .WithDescription("Lister les clan war avec la participant de la personne qui possede l'id discord")
             .Produces<ClanWarExport[]>();
 
+        builder.MapGet("detail/{idClanWar}", RecupererDetailAsync)
+            .WithDescription("Permet de recupérer les details d'une clan war")
+            .Produces<ClanWarDetailExport>()
+            .ProducesBadRequest()
+            .ProducesNotFound();
+
         builder.MapPost("ajouter", AjouterAsync)
             .WithDescription("Ajouter une nouvelle clan war")
             .ProducesCreated();
@@ -51,6 +57,24 @@ public static class ClanWarRoute
             var retour = await _clanWarServ.ListerAsync(_idDiscord, _etatClanWar);
 
             return Results.Extensions.OK(retour, ClanWarExportContext.Default);
+        }
+        catch
+        {
+            return Results.Extensions.ErreurConnexionBdd();
+        }
+    }
+
+    async static Task<IResult> RecupererDetailAsync([FromServices] IClanWarService _clanWarServ,
+                                                    [FromRoute(Name = "idClanWar")] int _idClanWar)
+    {
+        try
+        {
+            if (_idClanWar <= 0)
+                return Results.BadRequest("'idClanWar' doit être supérieur à 0");
+
+            var retour = await _clanWarServ.GetDetailAsync(_idClanWar);
+
+            return retour is null ? Results.NotFound("La clan war n'éxiste pas") : Results.Extensions.OK(retour, ClanWarDetailExportContext.Default);
         }
         catch
         {
@@ -122,7 +146,7 @@ public static class ClanWarRoute
             // inscription a la prochaine clan war
             else
             {
-                int idClanWar = await _clanWarServ.GetProchaineClanWarAsync();
+                int idClanWar = await _clanWarServ.GetIdProchaineClanWarAsync();
 
                 if (idClanWar is 0)
                     return Results.NotFound("Aucune clan war prochainement");
@@ -170,7 +194,7 @@ public static class ClanWarRoute
             }
             else
             {
-                idClanWar = await _clanWarServ.GetProchaineClanWarAsync();
+                idClanWar = await _clanWarServ.GetIdProchaineClanWarAsync();
 
                 if (idClanWar is 0)
                     return Results.NotFound("Aucune clan n'existe prochainement");

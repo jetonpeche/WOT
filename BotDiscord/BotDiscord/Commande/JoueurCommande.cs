@@ -111,18 +111,6 @@ public class JoueurCommande: InteractionModuleBase<SocketInteractionContext>
 
     private async Task SupprimerAsync(ulong _idDiscord)
     {
-        var reponse = await ApiService.DeleteAsync(EApiType.joueur, $"supprimer/{_idDiscord}");
-
-        if (reponse is null)
-            await RespondAsync("Erreur de suppression");
-
-        else if (reponse.IsSuccessStatusCode)
-            await RespondAsync("Le joueur a été supprimé" + new Emoji("👋"));
-
-        else
-        {
-            string msg = (await JsonSerializer.DeserializeAsync<string>(await reponse.Content.ReadAsStreamAsync()))!;
-            await RespondAsync(msg.Replace('"', ' '));
-        }
+        
     }
 }
