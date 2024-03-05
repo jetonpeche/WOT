@@ -19,6 +19,11 @@ export const JwtInterceptor: HttpInterceptorFn = (req, next) =>
           case 500:
             toastrServ.warning("Erreur interne c'est produite");
             break;
+
+          case 404:
+          case 400:
+            toastrServ.error(erreur.error);
+            break;
         
           default:
             toastrServ.error("Erreur pas de réseau");

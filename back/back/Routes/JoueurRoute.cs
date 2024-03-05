@@ -108,7 +108,7 @@ public static class JoueurRoute
 
             var retour = await _joueurServ.GetInfoAsync(_pseudo);
 
-            return retour is null ? Results.NotFound() : Results.Extensions.OK(retour, JoueurExportContext.Default);
+            return retour is null ? Results.NotFound("Tu n'existes pas") : Results.Extensions.OK(retour, JoueurExportContext.Default);
         }
         catch
         {
