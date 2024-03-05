@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
+import { ERoleJoueur } from 'src/app/enums/ERoleJoueur';
 import { AjouterJoueurComponent } from 'src/app/modal/ajouter-joueur/ajouter-joueur.component';
 import { ModifierJoueurComponent } from 'src/app/modal/modifier-joueur/modifier-joueur.component';
 import { TankJoueurComponent } from 'src/app/modal/tank-joueur/tank-joueur.component';
@@ -201,7 +202,7 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
 
   private ListerJoueur(): void
   {
-    this.joueurServ.Lister().subscribe({
+    this.joueurServ.Lister(ERoleJoueur.Tous).subscribe({
       next: (retour: Joueur[]) => 
       {
         console.log(retour);

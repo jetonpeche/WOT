@@ -24,9 +24,9 @@ export class TankService
     return this.http.get<Tank[] | TankAdmin[]>(`${this.NOM_API}/lister/${_seulementVisible}`);
   }
 
-  Lister2(_idJoueur: number): Observable<string[]>
+  Lister2(_idJoueur: number): Observable<Tank[]>
   {
-    return this.http.get<string[]>(`${this.NOM_API}/lister2/${_idJoueur}`);
+    return this.http.get<Tank[]>(`${this.NOM_API}/lister/${_idJoueur}`);
   }
 
   Ajouter(_tank: TankExport): Observable<number>
@@ -36,11 +36,11 @@ export class TankService
 
   Modifier(_tank: TankModifierExport): Observable<boolean>
   {
-    return this.http.post<boolean>(`${this.NOM_API}/modifier`, _tank);
+    return this.http.put<boolean>(`${this.NOM_API}/modifier`, _tank);
   }
 
   Supprimer(_idTank: number): Observable<boolean>
   {
-    return this.http.get<boolean>(`${this.NOM_API}/supprimer/${_idTank}`);
+    return this.http.delete<boolean>(`${this.NOM_API}/supprimer/${_idTank}`);
   }
 }

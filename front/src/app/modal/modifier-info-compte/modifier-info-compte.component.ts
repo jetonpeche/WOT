@@ -39,7 +39,7 @@ export class ModifierInfoCompteComponent implements OnInit
   }
 
   protected ChoisirPasChoisirTank(_tank: Tank): void
-  {
+  {    
     if(_tank.estPosseder)
       this.SupprimerPossession(_tank);
     else
@@ -133,18 +133,13 @@ export class ModifierInfoCompteComponent implements OnInit
   private AjouterPossession(_tank: Tank): void
   {
     this.joueurServ.AjouterTankJoueur(_tank.Id).subscribe({
-      next: (retour: boolean) => 
+      next: () => 
       {
-        if(retour === true)
-        {
-          this.toastrServ.success("Le tank a été ajouté");
-          _tank.estPosseder = true;
-          environment.infoJoueur.ListeIdTank.push(_tank.Id);
+        this.toastrServ.success("Le tank a été ajouté");
+        _tank.estPosseder = true;
+        environment.infoJoueur.ListeIdTank.push(_tank.Id);
 
-          sessionStorage.setItem(ECache.joueur, JSON.stringify(environment.infoJoueur));
-        }
-        else
-          this.toastrServ.error("Erreur d'ajout");
+        sessionStorage.setItem(ECache.joueur, JSON.stringify(environment.infoJoueur));
       }
     });
   }
@@ -152,20 +147,15 @@ export class ModifierInfoCompteComponent implements OnInit
   private SupprimerPossession(_tank: Tank): void
   {
     this.joueurServ.SupprimerTankJoueur(_tank.Id).subscribe({
-      next: (retour: boolean) =>
+      next: () =>
       {
-        if(retour === true)
-        {
-          this.toastrServ.success("Le tank a été dépossédé");
-          _tank.estPosseder = false;
+        this.toastrServ.success("Le tank a été dépossédé");
+        _tank.estPosseder = false;
 
-          const INDEX = environment.infoJoueur.ListeIdTank.findIndex(x => x == _tank.Id);
-          environment.infoJoueur.ListeIdTank.splice(INDEX, 1);
+        const INDEX = environment.infoJoueur.ListeIdTank.findIndex(x => x == _tank.Id);
+        environment.infoJoueur.ListeIdTank.splice(INDEX, 1);
 
-          sessionStorage.setItem(ECache.joueur, JSON.stringify(environment.infoJoueur));
-        }
-        else
-          this.toastrServ.error("Erreur de dépossédage");
+        sessionStorage.setItem(ECache.joueur, JSON.stringify(environment.infoJoueur));
       }
     });
   }

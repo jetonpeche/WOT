@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { JoueurExport } from '../types/export/JoueurExport';
 import { JoueurModifierExport } from '../types/export/JoueurModifierExport';
 import { Joueur } from '../types/Joueur';
+import { ERoleJoueur } from '../enums/ERoleJoueur';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +16,9 @@ export class JoueurService
 
   constructor(private http: HttpClient) { }
 
-  Lister(): Observable<Joueur[]>
+  Lister(_roleJoueur: ERoleJoueur): Observable<Joueur[]>
   {
-    return this.http.get<Joueur[]>(`${this.NOM_API}/lister`);
+    return this.http.get<Joueur[]>(`${this.NOM_API}/lister/${_roleJoueur}`);
   }
 
   ListerPossedeTank(_idTank: number): Observable<string[]>
@@ -49,25 +50,25 @@ export class JoueurService
     return this.http.post<number>(`${this.NOM_API}/ajouter`, _joueur);
   }
 
-  AjouterTankJoueur(_idTank: number): Observable<boolean>
+  AjouterTankJoueur(_idTank: number): Observable<void>
   {
     const DATA = { IdTank: _idTank, IdJoueur: environment.infoJoueur.Id };
-    return this.http.post<boolean>(`${this.NOM_API}/ajouterTankJoueur`, DATA);
+    return this.http.post<void>(`${this.NOM_API}/ajouterTankJoueur`, DATA);
   }
 
   Modifier(_joueur: JoueurModifierExport): Observable<boolean>
   {
-    return this.http.post<boolean>(`${this.NOM_API}/modifier`, _joueur);
+    return this.http.put<boolean>(`${this.NOM_API}/modifier`, _joueur);
   }
 
-  SupprimerTankJoueur(_idTank: number): Observable<boolean>
+  SupprimerTankJoueur(_idTank: number): Observable<void>
   {
     const DATA = { IdTank: _idTank, IdJoueur: environment.infoJoueur.Id };
-    return this.http.post<boolean>(`${this.NOM_API}/supprimerTankJoueur`, DATA);
+    return this.http.put<void>(`${this.NOM_API}/supprimerTankJoueur`, DATA);
   }
 
   Supprimer(_idDiscord: string): Observable<boolean>
   {
-    return this.http.get<boolean>(`${this.NOM_API}/supprimer/${_idDiscord}`);
+    return this.http.delete<boolean>(`${this.NOM_API}/supprimer/${_idDiscord}`);
   }
 }
