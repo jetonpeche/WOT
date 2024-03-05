@@ -11,7 +11,7 @@ import { ECache } from 'src/app/enums/ECache';
 import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle } from '@angular/material/card';
 import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
-import { NgFor, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { MatInput } from '@angular/material/input';
@@ -23,7 +23,7 @@ import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } fr
     templateUrl: './modifier-info-compte.component.html',
     styleUrls: ['./modifier-info-compte.component.scss'],
     standalone: true,
-    imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatInput, MatSelect, MatOption, NgFor, MatRadioGroup, MatRadioButton, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatDialogActions, MatButton, MatDialogClose, TitleCasePipe]
+    imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatInput, MatSelect, MatOption, MatRadioGroup, MatRadioButton, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatDialogActions, MatButton, MatDialogClose, TitleCasePipe]
 })
 export class ModifierInfoCompteComponent implements OnInit
 {

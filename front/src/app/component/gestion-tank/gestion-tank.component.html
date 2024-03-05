@@ -24,9 +24,12 @@
                                 (selectionChange)="Filtrer($event.value, selectIdType.value, 
                                                            selectIdStatut.value, checkboxTankPossedeJoueur.checked)">
                         <mat-option value="0">Tous</mat-option>
-                        <mat-option *ngFor="let element of listeTier" [value]="element.Id">
-                            {{ element.Nom }}
-                        </mat-option>
+                        @for (element of listeTier; track $index) 
+                        {
+                            <mat-option [value]="element.Id">
+                                {{ element.Nom }}
+                            </mat-option>
+                        }
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -39,9 +42,12 @@
                                 (selectionChange)="Filtrer(selectIdTier.value, $event.value, 
                                                            selectIdStatut.value, checkboxTankPossedeJoueur.checked)">
                         <mat-option value="0">Tous</mat-option>
-                        <mat-option *ngFor="let element of listeTypeTank" [value]="element.Id">
-                            {{ element.Nom }}
-                        </mat-option>
+                        @for (element of listeTypeTank; track $index) 
+                        {
+                            <mat-option [value]="element.Id">
+                                {{ element.Nom }}
+                            </mat-option>
+                        }
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -54,9 +60,12 @@
                                 (selectionChange)="Filtrer(selectIdTier.value, selectIdType.value, 
                                                            $event.value, checkboxTankPossedeJoueur.checked)">
                         <mat-option value="0">Tous</mat-option>
-                        <mat-option *ngFor="let element of listeStatutTank" [value]="element.Id">
-                            {{ element.Nom }}
-                        </mat-option>
+                        @for (element of listeStatutTank; track $index) 
+                        {
+                            <mat-option [value]="element.Id">
+                                {{ element.Nom }}
+                            </mat-option>
+                        }
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -72,7 +81,9 @@
     
         <!-- card tank -->
         <div class="row scrollBar">
-            <div class="col-lg-4 col-sm-6" *ngFor="let element of listeTank">
+        @for (element of listeTank; track $index)
+        {
+            <div class="col-lg-4 col-sm-6">
                 <mat-card>
                     <mat-card-header>
     
@@ -95,26 +106,28 @@
                         <button mat-raised-button color="warn"
                                 (click)="OuvrirModalConfirmation(element.Id, element.Nom)">
 
-                                <ng-container *ngIf="tailleEcran <= TAILLE_375">
+                                @if(tailleEcran <= TAILLE_375)
+                                {
                                     <mat-icon>delete</mat-icon>
-                                </ng-container>
-                                
-                                <ng-container *ngIf="tailleEcran > TAILLE_375">
+                                } 
+                                @else
+                                {
                                     Supprimer
-                                </ng-container>
+                                }
                         </button>&nbsp;
 
                         <!-- btn modifier -->
                         <button mat-raised-button color="accent"
                                 (click)="OuvrirModalJModifierTank(element)">
 
-                                <ng-container *ngIf="tailleEcran <= TAILLE_375">
+                                @if(tailleEcran <= TAILLE_375)
+                                {
                                     <mat-icon>edit</mat-icon>
-                                </ng-container>
-
-                                <ng-container *ngIf="tailleEcran > TAILLE_375">
+                                } 
+                                @else
+                                {
                                     Modifier
-                                </ng-container>
+                                }
                         </button>&nbsp;
 
                         <!-- btn lister joueurs qui possede le tank -->
@@ -127,6 +140,7 @@
                     
                 </mat-card>
             </div>
+        }
         </div>
     </div>
 </div>

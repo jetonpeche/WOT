@@ -10,7 +10,6 @@ import { environment } from 'src/environments/environment';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
-import { NgFor, NgIf } from '@angular/common';
 import { MatSelect } from '@angular/material/select';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
@@ -20,7 +19,7 @@ import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
     templateUrl: './modifier-tank.component.html',
     styleUrls: ['./modifier-tank.component.scss'],
     standalone: true,
-    imports: [MatDialogTitle, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatSelect, NgFor, MatOption, MatDialogActions, MatButton, MatDialogClose, NgIf, MatProgressSpinner]
+    imports: [MatDialogTitle, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatSelect, MatOption, MatDialogActions, MatButton, MatDialogClose, MatProgressSpinner]
 })
 export class ModifierTankComponent implements OnInit
 {

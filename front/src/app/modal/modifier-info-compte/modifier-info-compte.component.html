@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>Infos compte de: Turlututu</h2>
-<mat-dialog-content style="padding-top: 10px; padding-bottom: 10px; overflow: hidden;">
+<mat-dialog-content style="padding-top: 10px; overflow: hidden;">
 
     <!-- filtre / recherche -->
     <div class="row">
@@ -20,9 +20,12 @@
                             (selectionChange)="Filtrer($event.value, selectIdType.value, 
                                                        selectIdStatut.value, +radioBtn)">
                     <mat-option value="0">Tous</mat-option>
-                    <mat-option *ngFor="let element of listeTier" [value]="element.Id">
-                        {{ element.Nom }}
-                    </mat-option>
+                    @for (element of listeTier; track $index) 
+                    {
+                        <mat-option [value]="element.Id">
+                            {{ element.Nom }}
+                        </mat-option>
+                    }
                 </mat-select>
             </mat-form-field>
         </div>
@@ -35,9 +38,12 @@
                             (selectionChange)="Filtrer(selectIdTier.value, $event.value, 
                                                        selectIdStatut.value, +radioBtn)">
                     <mat-option value="0">Tous</mat-option>
-                    <mat-option *ngFor="let element of listeTypeTank" [value]="element.Id">
-                        {{ element.Nom }}
-                    </mat-option>
+                    @for (element of listeTypeTank; track $index) 
+                    {
+                        <mat-option [value]="element.Id">
+                            {{ element.Nom }}
+                        </mat-option>
+                    }
                 </mat-select>
             </mat-form-field>
         </div>
@@ -50,9 +56,13 @@
                             (selectionChange)="Filtrer(selectIdTier.value, selectIdType.value, 
                                                        $event.value, +radioBtn)">
                     <mat-option value="0">Tous</mat-option>
-                    <mat-option *ngFor="let element of listeStatutTank" [value]="element.Id">
-                        {{ element.Nom }}
-                    </mat-option>
+
+                    @for (element of listeStatutTank; track $index) 
+                    {
+                        <mat-option [value]="element.Id">
+                            {{ element.Nom }}
+                        </mat-option>
+                    }
                 </mat-select>
             </mat-form-field>
         </div>
@@ -71,24 +81,30 @@
 
     <!-- card tank -->
     <div class="row scrollBar">
-        <div class="col-lg-4" *ngFor="let element of listeTank">
-            <mat-card [class.posseder]="element.estPosseder" (click)="ChoisirPasChoisirTank(element)">
-                <mat-card-header>
 
-                    <mat-card-title>
-                        <img mat-card-image src="assets/{{ GetImageTypeTank(element.IdTypeTank) }}" alt="logo type tank"> 
-                        {{ element.Nom | titlecase }}
-                    </mat-card-title>
-
-                    <mat-card-subtitle>
-                        Statut: {{ GetNomStatut(element.IdStatut) }} | 
-                        Char: {{ GetNomType(element.IdTypeTank) }} |
-                        {{ GetNomTier(element.IdTier) }}
-                    </mat-card-subtitle>
-                    
-                </mat-card-header>
-            </mat-card>
-        </div>
+        @for (element of listeTank; track $index) 
+        {
+            <div class="col-lg-4">
+                <mat-card style="cursor: pointer;" 
+                           [class.posseder]="element.estPosseder" 
+                           (click)="ChoisirPasChoisirTank(element)">
+                    <mat-card-header>
+    
+                        <mat-card-title>
+                            <img mat-card-image src="assets/{{ GetImageTypeTank(element.IdTypeTank) }}" alt="logo type tank"> 
+                            {{ element.Nom | titlecase }}
+                        </mat-card-title>
+    
+                        <mat-card-subtitle>
+                            Statut: {{ GetNomStatut(element.IdStatut) }} | 
+                            Char: {{ GetNomType(element.IdTypeTank) }} |
+                            {{ GetNomTier(element.IdTier) }}
+                        </mat-card-subtitle>
+                        
+                    </mat-card-header>
+                </mat-card>
+            </div>
+        }
     </div>
     
 </mat-dialog-content>

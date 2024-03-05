@@ -49,5 +49,6 @@ table, .mat-mdc-form-field
 // btn raised icon decaler
 .mat-mdc-raised-button .mat-icon
 {
-  margin-top: 5px;
+  margin: 0 !important;
+  zoom: 1.3;
 }

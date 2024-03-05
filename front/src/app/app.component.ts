@@ -36,6 +36,6 @@ export class AppComponent implements OnInit
 
   OuvrirModalModifInfoCompte(): void
   {
-    this.dialog.open(ModifierInfoCompteComponent, { width: "100%" });
+    this.dialog.open(ModifierInfoCompteComponent);
   }
 }

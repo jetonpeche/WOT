@@ -4,7 +4,6 @@ import { MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDi
 import { ToastrService } from 'ngx-toastr';
 import { JoueurService } from 'src/app/service/joueur.service';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { NgIf } from '@angular/common';
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatInput } from '@angular/material/input';
@@ -15,7 +14,7 @@ import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
     templateUrl: './ajouter-joueur.component.html',
     styleUrls: ['./ajouter-joueur.component.scss'],
     standalone: true,
-    imports: [MatDialogTitle, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatCheckbox, MatDialogActions, MatButton, MatDialogClose, NgIf, MatProgressSpinner]
+    imports: [MatDialogTitle, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatCheckbox, MatDialogActions, MatButton, MatDialogClose, MatProgressSpinner]
 })
 export class AjouterJoueurComponent implements OnInit
 {
