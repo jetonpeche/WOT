@@ -1,31 +1,32 @@
-import { Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor
-} from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+
+import { catchError, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { inject } from '@angular/core';
+import { HttpInterceptorFn } from '@angular/common/http';
 
-@Injectable()
-export class JwtInterceptor implements HttpInterceptor {
+export const JwtInterceptor: HttpInterceptorFn = (req, next) => 
+{
+  let toastrServ = inject(ToastrService);
 
-  constructor(private toastrServ: ToastrService) {}
+  return next(req).pipe(
+    catchError(
+      (erreur) =>
+      {
+        console.log(erreur);
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return next.handle(request).pipe(
-      catchError(
-        (erreur) =>
+        switch (erreur.status) 
         {
-          if(erreur.status == 500)
-            this.toastrServ.warning("Erreur interne c'est produite");
-          else if(erreur.status == 0)
-            this.toastrServ.error("Erreur pas de réseau");
-
-          return throwError(() => null);
+          case 500:
+            toastrServ.warning("Erreur interne c'est produite");
+            break;
+        
+          default:
+            toastrServ.error("Erreur pas de réseau");
+            break;
         }
-      )
-    );
-  }
-}
+          
+        return throwError(() => null);
+      }
+    )
+  );
+};

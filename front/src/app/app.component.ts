@@ -3,11 +3,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { environment } from 'src/environments/environment';
 import { ECache } from './enums/ECache';
 import { ModifierInfoCompteComponent } from './modal/modifier-info-compte/modifier-info-compte.component';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatToolbar } from '@angular/material/toolbar';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatToolbar, MatIconButton, MatIcon, MatButton, RouterLink, RouterOutlet]
 })
 export class AppComponent implements OnInit
 {

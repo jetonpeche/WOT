@@ -1,8 +1,8 @@
 import { Component, ViewChild, OnInit, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { ERoleJoueur } from 'src/app/enums/ERoleJoueur';
 import { AjouterJoueurComponent } from 'src/app/modal/ajouter-joueur/ajouter-joueur.component';
@@ -11,11 +11,21 @@ import { TankJoueurComponent } from 'src/app/modal/tank-joueur/tank-joueur.compo
 import { JoueurService } from 'src/app/service/joueur.service';
 import { OutilService } from 'src/app/service/outil.service';
 import { Joueur } from 'src/app/types/Joueur';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { NgIf, NgFor } from '@angular/common';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatButton, MatMiniFabButton } from '@angular/material/button';
 
 @Component({
-  selector: 'app-gestion-joueur',
-  templateUrl: './gestion-joueur.component.html',
-  styleUrls: ['./gestion-joueur.component.scss']
+    selector: 'app-gestion-joueur',
+    templateUrl: './gestion-joueur.component.html',
+    styleUrls: ['./gestion-joueur.component.scss'],
+    standalone: true,
+    imports: [MatButton, MatFormField, MatLabel, MatInput, NgIf, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatMiniFabButton, MatTooltip, MatIcon, MatProgressSpinner, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, NgFor, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions]
 })
 export class GestionJoueurComponent implements OnInit, AfterViewInit
 {

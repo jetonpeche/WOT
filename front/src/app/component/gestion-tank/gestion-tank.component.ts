@@ -12,11 +12,22 @@ import { TankAdmin } from 'src/app/types/TankAdmin';
 import { Tier } from 'src/app/types/Tier';
 import { TypeTank } from 'src/app/types/TypeTank';
 import { environment } from 'src/environments/environment';
+import { MatIcon } from '@angular/material/icon';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatCardActions } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  selector: 'app-gestion-tank',
-  templateUrl: './gestion-tank.component.html',
-  styleUrls: ['./gestion-tank.component.scss']
+    selector: 'app-gestion-tank',
+    templateUrl: './gestion-tank.component.html',
+    styleUrls: ['./gestion-tank.component.scss'],
+    standalone: true,
+    imports: [MatButton, MatFormField, MatLabel, MatInput, MatSelect, MatOption, NgFor, MatCheckbox, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatCardActions, NgIf, MatIcon, TitleCasePipe]
 })
 export class GestionTankComponent implements OnInit
 {

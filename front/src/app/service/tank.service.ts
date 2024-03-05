@@ -1,20 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Tank } from '../types/Tank';
 import { TankExport } from '../types/export/TankExport';
 import { TankModifierExport } from '../types/export/TankModifierExport';
 import { TankAdmin } from '../types/TankAdmin';
+import { inject } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class TankService 
 {
   private readonly NOM_API = `${environment.urlApi}/tank`;
 
-  constructor(private http: HttpClient) { }
+  private http: HttpClient = inject(HttpClient);
 
   /**
    * @param _seulementVisible false => TOUT les tanks

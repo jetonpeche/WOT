@@ -8,11 +8,22 @@ import { TypeTank } from 'src/app/types/TypeTank';
 import { environment } from 'src/environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import { ECache } from 'src/app/enums/ECache';
+import { MatButton } from '@angular/material/button';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle } from '@angular/material/card';
+import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
+import { NgFor, TitleCasePipe } from '@angular/common';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-modifier-info-compte',
-  templateUrl: './modifier-info-compte.component.html',
-  styleUrls: ['./modifier-info-compte.component.scss']
+    selector: 'app-modifier-info-compte',
+    templateUrl: './modifier-info-compte.component.html',
+    styleUrls: ['./modifier-info-compte.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatInput, MatSelect, MatOption, NgFor, MatRadioGroup, MatRadioButton, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatDialogActions, MatButton, MatDialogClose, TitleCasePipe]
 })
 export class ModifierInfoCompteComponent implements OnInit
 {

@@ -1,17 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ClanWar } from '../types/ClanWar';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class ClanWarService 
 {
   private readonly NOM_API = `${environment.urlApi}/clanWar`;
 
-  constructor(private http: HttpClient) { }
+  private http: HttpClient = inject(HttpClient);
 
   Lister(_idDiscord: string): Observable<ClanWar[]>
   {

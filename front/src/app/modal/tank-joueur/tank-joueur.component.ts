@@ -1,12 +1,17 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { TankService } from 'src/app/service/tank.service';
 import { Tank } from 'src/app/types/Tank';
+import { MatButton } from '@angular/material/button';
+import { NgFor } from '@angular/common';
+import { MatList, MatListItem } from '@angular/material/list';
 
 @Component({
-  selector: 'app-tank-joueur',
-  templateUrl: './tank-joueur.component.html',
-  styleUrls: ['./tank-joueur.component.scss']
+    selector: 'app-tank-joueur',
+    templateUrl: './tank-joueur.component.html',
+    styleUrls: ['./tank-joueur.component.scss'],
+    standalone: true,
+    imports: [MatDialogTitle, MatDialogContent, MatList, NgFor, MatListItem, MatDialogActions, MatButton, MatDialogClose]
 })
 export class TankJoueurComponent implements OnInit
 {

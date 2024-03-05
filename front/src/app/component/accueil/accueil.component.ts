@@ -2,11 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ClanWarService } from 'src/app/service/clan-war.service';
 import { ClanWar } from 'src/app/types/ClanWar';
 import { environment } from 'src/environments/environment';
+import { MatButton } from '@angular/material/button';
+import { MatCard, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-accueil',
-  templateUrl: './accueil.component.html',
-  styleUrls: ['./accueil.component.scss']
+    selector: 'app-accueil',
+    templateUrl: './accueil.component.html',
+    styleUrls: ['./accueil.component.scss'],
+    standalone: true,
+    imports: [NgFor, MatCard, MatCardTitle, MatCardContent, MatCardActions, MatButton]
 })
 export class AccueilComponent implements OnInit
 {

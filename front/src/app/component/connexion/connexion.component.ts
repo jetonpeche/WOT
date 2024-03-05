@@ -1,16 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ECache } from 'src/app/enums/ECache';
 import { JoueurService } from 'src/app/service/joueur.service';
 import { Joueur } from 'src/app/types/Joueur';
 import { environment } from 'src/environments/environment';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { NgIf } from '@angular/common';
+import { MatButton } from '@angular/material/button';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatCard, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
 
 @Component({
-  selector: 'app-connexion',
-  templateUrl: './connexion.component.html',
-  styleUrls: ['./connexion.component.scss']
+    selector: 'app-connexion',
+    templateUrl: './connexion.component.html',
+    styleUrls: ['./connexion.component.scss'],
+    standalone: true,
+    imports: [MatCard, MatCardTitle, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatCardActions, MatButton, NgIf, MatProgressSpinner]
 })
 export class ConnexionComponent implements OnInit
 {

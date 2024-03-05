@@ -1,20 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { JoueurExport } from '../types/export/JoueurExport';
 import { JoueurModifierExport } from '../types/export/JoueurModifierExport';
 import { Joueur } from '../types/Joueur';
 import { ERoleJoueur } from '../enums/ERoleJoueur';
+import { inject } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class JoueurService 
 {
   private readonly NOM_API = `${environment.urlApi}/joueur`;
 
-  constructor(private http: HttpClient) { }
+  private http: HttpClient = inject(HttpClient);
 
   Lister(_roleJoueur: ERoleJoueur): Observable<Joueur[]>
   {

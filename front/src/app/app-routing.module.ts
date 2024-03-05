@@ -1,21 +1,28 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AccueilComponent } from './component/accueil/accueil.component';
-import { ConnexionComponent } from './component/connexion/connexion.component';
-import { GestionClanWarComponent } from './component/gestion-clan-war/gestion-clan-war.component';
-import { GestionJoueurComponent } from './component/gestion-joueur/gestion-joueur.component';
-import { GestionTankComponent } from './component/gestion-tank/gestion-tank.component';
+import { Routes } from '@angular/router';
 
-const routes: Routes = [
-  { path: "", component: ConnexionComponent, title: "Connexion" },
-  { path: "accueil", component: AccueilComponent },
-  { path: "gestion-joueur", component: GestionJoueurComponent, title: "Gestion des joueurs" },
-  { path: "gestion-tank", component: GestionTankComponent, title: "Gestion des tanks" },
-  { path: "gestion-clan-war", component: GestionClanWarComponent, title: "Gestion des clan war" }
+export const routes: Routes = [
+  { 
+    path: "", 
+    loadComponent: () => import("./component/connexion/connexion.component").then(x => x.ConnexionComponent), 
+    title: "Connexion" 
+  },
+  { 
+    path: "accueil", 
+    loadComponent: () => import("./component/accueil/accueil.component").then(x => x.AccueilComponent) 
+  },
+  { 
+    path: "gestion-joueur", 
+    loadComponent: () => import("./component/gestion-joueur/gestion-joueur.component").then(x => x.GestionJoueurComponent), 
+    title: "Gestion des joueurs" 
+  },
+  { 
+    path: "gestion-tank", 
+    loadComponent: () => import("./component/gestion-tank/gestion-tank.component").then(x => x.GestionTankComponent), 
+    title: "Gestion des tanks"
+  },
+  { 
+    path: "gestion-clan-war", 
+    loadComponent: () => import("./component/gestion-clan-war/gestion-clan-war.component").then(x => x.GestionClanWarComponent), 
+    title: "Gestion des clan war" 
+  }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
