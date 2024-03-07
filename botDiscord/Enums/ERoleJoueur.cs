@@ -1,4 +1,4 @@
-﻿namespace BotDiscord.Enums;
+﻿namespace botDiscord.Enums;
 
 public enum ERoleJoueur
 {
