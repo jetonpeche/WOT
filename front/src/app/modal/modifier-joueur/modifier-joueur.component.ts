@@ -46,19 +46,14 @@ export class ModifierJoueurComponent implements OnInit
     this.btnClicker = true;
 
     this.joueurServ.Modifier(this.form.value).subscribe({
-      next: (retour: boolean) =>
+      next: () =>
       {
         this.btnClicker = false;
 
-        if(retour)
-        {
-          this.toastrServ.success("Le joueur a été modifié");
+        this.toastrServ.success("Le joueur a été modifié");
 
-          this.form.value.ListeIdTank = this.data.joueur.ListeIdTank;
-          this.dialogRef.close(this.form.value);
-        }
-        else
-          this.toastrServ.error("Erreur impossible de modifier le compte");
+        this.form.value.ListeIdTank = this.data.joueur.ListeIdTank;
+        this.dialogRef.close(this.form.value);
       },
       error: () => this.btnClicker = false
     });

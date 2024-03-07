@@ -4,20 +4,37 @@
 
 <div class="container">
     <div class="row">
-        <mat-card class="col-lg-4 col-xs-12" *ngFor="let element of listeClanWar">
-            <mat-card-title>{{ element.Date }}</mat-card-title>
+        @for (element of listeClanWar; track $index) 
+        {
+            <mat-card class="col col-xs-12">
+                <mat-card-title>{{ element.Date }}</mat-card-title>
+    
+                <mat-card-content>
+                    Participe: {{ element.Participe ? 'Oui' : 'Non' }} <br>
+                    Nombre de participant(s): {{ element.NbParticipant }}
+                </mat-card-content>
+    
+                <mat-card-actions align="end">
+                    <button mat-raised-button color="primary"
+                            (click)="Action(element)">
+                        {{ element.Participe ? "Désinscrire" : "Participer" }}
+                    </button>
+                </mat-card-actions>
 
-            <mat-card-content>
-                Participe: {{ element.Participe ? 'Oui' : 'Non' }} <br>
-                Nombre de participant(s): {{ element.NbParticipant }}
-            </mat-card-content>
+                <mat-card-actions align="end">
+                    <button mat-raised-button color="primary"
+                            (click)="OuvrirModalParticipant(element)">
+                        Voir participant
+                    </button>
+                </mat-card-actions>
 
-            <mat-card-actions align="end">
-                <button mat-raised-button color="primary"
-                        (click)="Participer(element)">
-                    Participer
-                </button>
-            </mat-card-actions>
-        </mat-card>
+                <mat-card-actions align="end">
+                    <button mat-raised-button color="primary"
+                            (click)="OuvrirModalConfigClanWar(element)">
+                        Configurer
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        }
     </div>
 </div>

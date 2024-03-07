@@ -53,9 +53,9 @@ export class JoueurService
     return this.http.post<void>(`${this.NOM_API}/ajouterTankJoueur`, DATA);
   }
 
-  Modifier(_joueur: JoueurModifierExport): Observable<boolean>
+  Modifier(_joueur: JoueurModifierExport): Observable<void>
   {
-    return this.http.put<boolean>(`${this.NOM_API}/modifier`, _joueur);
+    return this.http.put<void>(`${this.NOM_API}/modifier`, _joueur);
   }
 
   SupprimerTankJoueur(_idTank: number): Observable<void>
