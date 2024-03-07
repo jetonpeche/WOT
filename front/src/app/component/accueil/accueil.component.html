@@ -18,18 +18,16 @@
                     <button mat-raised-button color="primary"
                             (click)="Action(element)">
                         {{ element.Participe ? "Désinscrire" : "Participer" }}
-                    </button>
-                </mat-card-actions>
+                    </button>&nbsp;
 
-                <mat-card-actions align="end">
                     <button mat-raised-button color="primary"
+                            [disabled]="element.NbParticipant == 0"
                             (click)="OuvrirModalParticipant(element)">
                         Voir participant
-                    </button>
-                </mat-card-actions>
+                    </button>&nbsp;
 
-                <mat-card-actions align="end">
                     <button mat-raised-button color="primary"
+                            [disabled]="element.NbParticipant == 0"
                             (click)="OuvrirModalConfigClanWar(element)">
                         Configurer
                     </button>

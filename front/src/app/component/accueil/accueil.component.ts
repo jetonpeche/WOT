@@ -7,6 +7,8 @@ import { MatCard, MatCardTitle, MatCardContent, MatCardActions } from '@angular/
 import { EEtatClanWar } from 'src/app/enums/EEtatClanWar';
 import { MatDialog } from '@angular/material/dialog';
 import { JoueurPossedeTankComponent } from 'src/app/modal/joueur-possede-tank/joueur-possede-tank.component';
+import { ClanWarDetail } from 'src/app/types/ClanWarDetail';
+import { ListerJoueurComponent } from 'src/app/modal/lister-joueur/lister-joueur.component';
 
 @Component({
     selector: 'app-accueil',
@@ -38,9 +40,23 @@ export class AccueilComponent implements OnInit
       this.Participer(_clanWar);
   }
 
-  protected OuvrirModalParticipant(): void
+  protected OuvrirModalConfigClanWar(_clanWar: ClanWar): void
   {
 
+  }
+
+  protected OuvrirModalParticipant(_clanWar: ClanWar): void
+  {
+    this.clanWarServ.Detail(_clanWar.Id).subscribe({
+      next: (retour: ClanWarDetail) => 
+      {
+        let liste: string[] = []
+        for (const element of retour.ListePersonne)
+          liste.push(element.Pseudo);
+
+        this.dialog.open(ListerJoueurComponent, { data: { listeNomJoueur: liste }});
+      }
+    })
   }
 
   protected Participer(_clanWar: ClanWar): void

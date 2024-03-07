@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ClanWar } from '../types/ClanWar';
 import { EEtatClanWar } from '../enums/EEtatClanWar';
+import { ClanWarDetail } from '../types/ClanWarDetail';
 
 export class ClanWarService 
 {
@@ -14,6 +15,11 @@ export class ClanWarService
   Lister(_idDiscord: string, _etat: EEtatClanWar): Observable<ClanWar[]>
   {
     return this.http.get<ClanWar[]>(`${this.NOM_API}/lister/${_idDiscord}/${_etat}`);
+  }
+
+  Detail(_idClanWar: number): Observable<ClanWarDetail>
+  {
+    return this.http.get<ClanWarDetail>(`${this.NOM_API}/detail/${_idClanWar}`);
   }
 
   Participer(_date: string, _idDiscord: string): Observable<void>
