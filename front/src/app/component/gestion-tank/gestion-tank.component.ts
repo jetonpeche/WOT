@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { AjouterTankComponent } from 'src/app/modal/ajouter-tank/ajouter-tank.component';
-import { JoueurPossedeTankComponent } from 'src/app/modal/joueur-possede-tank/joueur-possede-tank.component';
-import { ModifierTankComponent } from 'src/app/modal/modifier-tank/modifier-tank.component';
 import { OutilService } from 'src/app/service/outil.service';
 import { TankService } from 'src/app/service/tank.service';
 import { TankModifierExport } from 'src/app/types/export/TankModifierExport';
@@ -15,19 +12,22 @@ import { environment } from 'src/environments/environment';
 import { MatIcon } from '@angular/material/icon';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatCardActions } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatButton } from '@angular/material/button';
+import { JoueurService } from 'src/app/service/joueur.service';
+import { ListerJoueurComponent } from 'src/app/modal/lister-joueur/lister-joueur.component';
+import { AjouterModifierTankComponent } from 'src/app/modal/ajouter-modifier-tank/ajouter-modifier-tank.component';
 
 @Component({
     selector: 'app-gestion-tank',
     templateUrl: './gestion-tank.component.html',
     styleUrls: ['./gestion-tank.component.scss'],
     standalone: true,
-    imports: [MatButton, MatFormField, MatLabel, MatInput, MatSelect, MatOption, NgFor, MatCheckbox, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatCardActions, NgIf, MatIcon, TitleCasePipe]
+    imports: [MatButton, MatFormField, MatLabel, MatInput, MatSelect, MatOption, MatCheckbox, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatCardActions, MatIcon, TitleCasePipe]
 })
 export class GestionTankComponent implements OnInit
 {
@@ -46,7 +46,8 @@ export class GestionTankComponent implements OnInit
     private dialog: MatDialog, 
     private tankServ: TankService,
     private outilServ: OutilService,
-    private toastrServ: ToastrService
+    private toastrServ: ToastrService,
+    private joueurSedrv: JoueurService
     ) { }
 
   ngOnInit(): void 
@@ -60,7 +61,7 @@ export class GestionTankComponent implements OnInit
 
   protected OuvrirModalAjouterTank(): void
   {
-    const DIALOG_REF = this.dialog.open(AjouterTankComponent);
+    const DIALOG_REF = this.dialog.open(AjouterModifierTankComponent);
 
     DIALOG_REF.afterClosed().subscribe({
       next: (retour: TankAdmin) =>
@@ -88,12 +89,22 @@ export class GestionTankComponent implements OnInit
 
   protected OuvrirModalJoueurPossedeTank(_idTank: number, _nomTank: string): void
   {
-    this.dialog.open(JoueurPossedeTankComponent, { data: { idTank: _idTank, nomTank: _nomTank }});
+    this.joueurSedrv.ListerPossedeTank(_idTank).subscribe({
+      next: (retour: string[]) =>
+      {
+        this.dialog.open(ListerJoueurComponent, { data: 
+          { 
+            titre: `Liste des joueurs pour le tank: ${_nomTank}`, 
+            listeNomJoueur: retour 
+          }
+        });
+      }
+    })
   }
 
   protected OuvrirModalJModifierTank(_tank: TankAdmin): void
   {
-    const DIALOG_REF = this.dialog.open(ModifierTankComponent, { data: {tank: _tank }});
+    const DIALOG_REF = this.dialog.open(AjouterModifierTankComponent, { data: {tank: _tank }});
 
     DIALOG_REF.afterClosed().subscribe({
       next: (retour: TankModifierExport) =>

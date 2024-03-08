@@ -5,27 +5,25 @@ import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { ERoleJoueur } from 'src/app/enums/ERoleJoueur';
-import { AjouterJoueurComponent } from 'src/app/modal/ajouter-joueur/ajouter-joueur.component';
-import { ModifierJoueurComponent } from 'src/app/modal/modifier-joueur/modifier-joueur.component';
 import { TankJoueurComponent } from 'src/app/modal/tank-joueur/tank-joueur.component';
 import { JoueurService } from 'src/app/service/joueur.service';
 import { OutilService } from 'src/app/service/outil.service';
 import { Joueur } from 'src/app/types/Joueur';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NgIf, NgFor } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatButton, MatMiniFabButton } from '@angular/material/button';
+import { AjouterModifierJoueurComponent } from 'src/app/modal/ajouter-modifier-joueur/ajouter-modifier-joueur.component';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-gestion-joueur',
     templateUrl: './gestion-joueur.component.html',
     styleUrls: ['./gestion-joueur.component.scss'],
     standalone: true,
-    imports: [MatButton, MatFormField, MatLabel, MatInput, NgIf, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatMiniFabButton, MatTooltip, MatIcon, MatProgressSpinner, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, NgFor, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions]
+    imports: [MatIcon, MatButton, MatFormField, MatLabel, MatInput, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatMiniFabButton, MatTooltip, MatProgressSpinner, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions]
 })
 export class GestionJoueurComponent implements OnInit, AfterViewInit
 {
@@ -66,7 +64,7 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
     }
   }
 
-  Rechercher(event: Event): void
+  protected Rechercher(event: Event): void
   {
     const filterValue = (event.target as HTMLInputElement).value;
 
@@ -89,22 +87,30 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
     }
   }
 
-  ActiverDesactiverJoueur(_joueur: Joueur, _event: Event): void
+  protected ActiverDesactiverJoueur(_joueur: Joueur, _event: Event): void
   {
     _event.stopPropagation();
 
     if(this.btnClicker)
       return;
 
-    if(_joueur.EstActiver)
-      this.DesactiverJoueur(_joueur);
-    else
-      this.ActiverJoueur(_joueur);
+    this.btnClicker = true;
+
+    this.joueurServ.InserverEtatActiver(_joueur.Id).subscribe({
+      next: () =>
+      {
+        this.btnClicker = false;
+        
+        _joueur.EstActiver = !_joueur.EstActiver;
+        this.toastrServ.success(`Le compte est ${_joueur.EstActiver ? 'activé' : 'désactivé' }`);
+      },
+      error: () => this.btnClicker = false
+    });
   }
 
-  OuvrirModalAjouterJoueur(): void
+  protected OuvrirModalAjouterJoueur(): void
   {
-    const DIALOG_REF = this.dialog.open(AjouterJoueurComponent);
+    const DIALOG_REF = this.dialog.open(AjouterModifierJoueurComponent);
 
     DIALOG_REF.afterClosed().subscribe({
       next: (retour: Joueur) =>
@@ -119,9 +125,9 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
     });
   }
 
-  OuvrirModalModifierJoueur(_joueur: Joueur): void
+  protected OuvrirModalModifierJoueur(_joueur: Joueur): void
   {
-    const DIALOG_REF = this.dialog.open(ModifierJoueurComponent, { data: { joueur: _joueur }});
+    const DIALOG_REF = this.dialog.open(AjouterModifierJoueurComponent, { data: { joueur: _joueur }});
 
     DIALOG_REF.afterClosed().subscribe({
       next: (retour: Joueur) =>
@@ -137,14 +143,14 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
     });
   }
 
-  ModalOuvrirModalTankJoueur(_idJoueur: number, _nomJoueur: string, _event: Event): void
+  protected ModalOuvrirModalTankJoueur(_idJoueur: number, _nomJoueur: string, _event: Event): void
   {
     _event.stopPropagation();
 
     this.dialog.open(TankJoueurComponent, { data: { idJoueur: _idJoueur, nomJoueur: _nomJoueur }});
   }
 
-  SupprimerJoueur(_idDiscord: string, _event: Event): void
+  protected SupprimerJoueur(_idDiscord: string, _event: Event): void
   {
     _event.stopPropagation();
 
@@ -156,56 +162,24 @@ export class GestionJoueurComponent implements OnInit, AfterViewInit
     this.outilServ.retourConfirmation.subscribe({
       next: (retour: boolean) =>
       {
-        if(!retour)
+        if(!retour || this.btnClicker)
           return;
 
+        this.btnClicker = true;
+
         this.joueurServ.Supprimer(_idDiscord).subscribe({
-          next: (retour: boolean) =>
+          next: () =>
           {
-            if(retour)
-            {
-              const INDEX = this.listeJoueur.data.findIndex(x => x.IdDiscord == _idDiscord);
-              this.listeJoueur.data.splice(INDEX, 1);
-              this.listeJoueur.data = this.listeJoueur.data;
-    
-              this.toastrServ.success("Le joueur a été supprimé");
-            }
-            else
-              this.toastrServ.error("Erreur le joueur n'a pas pu être supprimé");
-          }
+            this.btnClicker = false;
+
+            const INDEX = this.listeJoueur.data.findIndex(x => x.IdDiscord == _idDiscord);
+            this.listeJoueur.data.splice(INDEX, 1);
+            this.listeJoueur.data = this.listeJoueur.data;
+  
+            this.toastrServ.success("Le joueur a été supprimé");
+          },
+          error: () => this.btnClicker = false
         });
-      }
-    });
-  }
-
-  private ActiverJoueur(_joueur: Joueur): void
-  {
-    this.joueurServ.Activer(_joueur.Id).subscribe({
-      next: (retour: boolean) =>
-      {
-        if(retour === true)
-        {
-          this.toastrServ.success("Le joueur est activé");
-          _joueur.EstActiver = true;
-        }
-        else
-          this.toastrServ.error("Erreur impossible d'activer le joueur");
-      }
-    });
-  }
-
-  private DesactiverJoueur(_joueur: Joueur): void
-  {
-    this.joueurServ.Desactiver(_joueur.Id).subscribe({
-      next: (retour: boolean) =>
-      {
-        if(retour === true)
-        {
-          this.toastrServ.success("Le joueur est désactivé");
-          _joueur.EstActiver = false;
-        }
-        else
-          this.toastrServ.error("Erreur impossible de désactiver le joueur");
       }
     });
   }

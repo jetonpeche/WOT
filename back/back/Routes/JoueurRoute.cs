@@ -46,7 +46,7 @@ public static class JoueurRoute
             .ProducesBadRequest()
             .ProducesNotFound();            
 
-        builder.MapPut("InserverEtatActiver/{idJoueur:int}", InserverEtatActiverAsync)
+        builder.MapPut("inserverEtatActiver/{idJoueur:int}", InserverEtatActiverAsync)
             .WithDescription("Inserse l'état du compte du joueur (exemple: activer => désactiver)")
             .ProducesNoContent()
             .ProducesBadRequest()

@@ -6,7 +6,6 @@ import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
 import { EEtatClanWar } from 'src/app/enums/EEtatClanWar';
 import { MatDialog } from '@angular/material/dialog';
-import { JoueurPossedeTankComponent } from 'src/app/modal/joueur-possede-tank/joueur-possede-tank.component';
 import { ClanWarDetail } from 'src/app/types/ClanWarDetail';
 import { ListerJoueurComponent } from 'src/app/modal/lister-joueur/lister-joueur.component';
 

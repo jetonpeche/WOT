@@ -28,20 +28,11 @@ export class JoueurService
     return this.http.get<Joueur>(`${this.NOM_API}/info/${_pseudo}`);
   }
 
-  Activer(_idJoueur: number): Observable<boolean>
+  InserverEtatActiver(_idJoueur: number): Observable<void>
   {
-    return this.http.post<boolean>(`${this.NOM_API}/activer/${_idJoueur}`, "");
+    return this.http.put<void>(`${this.NOM_API}/inserverEtatActiver/${_idJoueur}`, "");
   }
 
-  Desactiver(_idJoueur: number): Observable<boolean>
-  {
-    return this.http.post<boolean>(`${this.NOM_API}/desactiver/${_idJoueur}`, "");
-  }
-
-  /**
-   * Ajouter un nouveau joueur
-   * @returns 0 => erreur / -1 => id discord existe déjà / Autre => OK
-   */
   Ajouter(_joueur: JoueurExport): Observable<number>
   {
     return this.http.post<number>(`${this.NOM_API}/ajouter`, _joueur);
@@ -64,8 +55,8 @@ export class JoueurService
     return this.http.put<void>(`${this.NOM_API}/supprimerTankJoueur`, DATA);
   }
 
-  Supprimer(_idDiscord: string): Observable<boolean>
+  Supprimer(_idDiscord: string): Observable<void>
   {
-    return this.http.delete<boolean>(`${this.NOM_API}/supprimer/${_idDiscord}`);
+    return this.http.delete<void>(`${this.NOM_API}/supprimer/${_idDiscord}`);
   }
 }

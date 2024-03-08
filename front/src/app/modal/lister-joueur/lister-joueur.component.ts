@@ -13,11 +13,13 @@ import { MatList, MatListItem } from '@angular/material/list';
 export class ListerJoueurComponent implements OnInit
 {
   protected listeNomJoueur: string[] = [];
+  protected titre: string;
 
   constructor(@Inject(MAT_DIALOG_DATA) private data: any) { }
 
   ngOnInit(): void 
   {
+    this.titre = this.data.titre;
     this.listeNomJoueur = this.data.listeNomJoueur;  
   }
 }

@@ -9,8 +9,8 @@
         <input matInput type="search" (keyup)="Rechercher($event)" #input>
     </mat-form-field>
     
-    <ng-container *ngIf="tailleEcran > TAILLE_768">
-
+    @if(tailleEcran > TAILLE_768)
+    {
         <div class="mat-elevation-z8">
             <table mat-table [dataSource]="listeJoueur" matSort>
         
@@ -64,15 +64,26 @@
                         <!-- activer / desactiver -->
                         <button mat-mini-fab color="primary" matTooltip="Activer / désactiver joueur" 
                                 (click)="ActiverDesactiverJoueur(element, $event)">
-                            <mat-icon *ngIf="!btnClicker">{{ element.EstActiver ? 'power' : 'power_off' }}</mat-icon>
-                            <mat-spinner *ngIf="btnClicker" diameter="23"></mat-spinner>
+
+                            @if(btnClicker)
+                            {
+                                <mat-spinner diameter="23"></mat-spinner>
+                            }
+                            @else {
+                                <mat-icon>{{ element.EstActiver ? 'power' : 'power_off' }}</mat-icon>
+                            }
                         </button>&nbsp;
 
                         <!-- supprimer -->
                         <button mat-mini-fab color="warn" matTooltip="Supprimer joueur" 
                                 (click)="SupprimerJoueur(element.IdDiscord, $event)">
-                            <mat-icon *ngIf="!btnClicker">delete</mat-icon>
-                            <mat-spinner *ngIf="btnClicker" diameter="23"></mat-spinner>
+                                @if(btnClicker)
+                                {
+                                    <mat-spinner diameter="23"></mat-spinner>
+                                }
+                                @else {
+                                    <mat-icon>delete</mat-icon>
+                                }
                         </button>
                     </td>
                 </ng-container>
@@ -89,56 +100,67 @@
         
             <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
         </div>
-    </ng-container>
-
-    <!-- format tel / mini tablette -->
-    <ng-container *ngIf="tailleEcran <= TAILLE_768">
+    }
+    @else {
+        <!-- format tel / mini tablette -->
         <div class="row scrollBar">
-            <div class="col-xs-12 col-sm-6" *ngFor="let element of listeJoueur.data">
-                <mat-card>
-                    <mat-card-header>
-                        <mat-card-title>{{ element.Pseudo }}</mat-card-title>
-                    </mat-card-header>
-    
-                    <mat-card-content>
-                        <ul>
-                            <li><b>Id discord:</b> {{ element.IdDiscord }}</li>
-                            <li><b>Nb tanks:</b> {{ element.ListeIdTank.length }}</li>
+            @for (element of listeJoueur.data; track $index) 
+            {
+                <div class="col-xs-12 col-sm-6">
+                    <mat-card>
+                        <mat-card-header>
+                            <mat-card-title>{{ element.Pseudo }}</mat-card-title>
+                        </mat-card-header>
+        
+                        <mat-card-content>
+                            <ul>
+                                <li><b>Id discord:</b> {{ element.IdDiscord }}</li>
+                                <li><b>Nb tanks:</b> {{ element.ListeIdTank.length }}</li>
 
-                            <li><b>Strateur:</b> {{ element.EstStrateur ? 'Oui' : 'Non' }}</li>
-                            <li><b>Admin:</b> {{ element.EstAdmin ? 'Oui' : 'Non' }}</li>
+                                <li><b>Strateur:</b> {{ element.EstStrateur ? 'Oui' : 'Non' }}</li>
+                                <li><b>Admin:</b> {{ element.EstAdmin ? 'Oui' : 'Non' }}</li>
 
-                            <li><b>Activer: </b> {{ element.EstActiver ? 'Oui' : 'Non' }}</li>
-                        </ul>
+                                <li><b>Activer: </b> {{ element.EstActiver ? 'Oui' : 'Non' }}</li>
+                            </ul>
+                            
+                        </mat-card-content>
+
+                        <mat-card-actions align="end">  
+
+                            <!-- btn supprimer -->
+                            <button mat-raised-button color="warn"
+                                    (click)="SupprimerJoueur(element.IdDiscord, $event)">
+                                    @if(btnClicker)
+                                    {
+                                        <mat-spinner diameter="23"></mat-spinner>
+                                    }
+                                    @else {
+                                        <mat-icon>delete</mat-icon>
+                                    }
+                            </button>&nbsp;
+
+                            <!-- activer / desactiver -->
+                            <button mat-raised-button color="primary" (click)="ActiverDesactiverJoueur(element, $event)">
+                                @if(btnClicker)
+                                {
+                                    <mat-spinner diameter="23"></mat-spinner>
+                                }
+                                @else {
+                                    <mat-icon>{{ element.EstActiver ? 'power' : 'power_off' }}</mat-icon>
+                                }                            
+                            </button>&nbsp;
+
+                            <!-- lister tank joueur -->
+                            <button mat-raised-button color="primary"
+                                    (click)="ModalOuvrirModalTankJoueur(element.Id, element.Pseudo, $event)">
+                                <mat-icon>list</mat-icon>
+                            </button>
+                        </mat-card-actions>
                         
-                    </mat-card-content>
-
-                    <mat-card-actions align="end">  
-
-                        <!-- btn supprimer -->
-                        <button mat-raised-button color="warn"
-                                (click)="SupprimerJoueur(element.IdDiscord, $event)">
-                            <mat-icon *ngIf="!btnClicker">delete</mat-icon>
-                            <mat-spinner *ngIf="btnClicker" diameter="23"></mat-spinner>
-                        </button>&nbsp;
-
-                        <!-- activer / desactiver -->
-                        <button mat-raised-button color="primary" (click)="ActiverDesactiverJoueur(element, $event)">
-                            <mat-icon *ngIf="!btnClicker">{{ element.EstActiver ? 'power' : 'power_off' }}</mat-icon>
-                            <mat-spinner *ngIf="btnClicker" diameter="23"></mat-spinner>
-                        </button>&nbsp;
-
-                        <!-- lister tank joueur -->
-                        <button mat-raised-button color="primary"
-                                (click)="ModalOuvrirModalTankJoueur(element.Id, element.Pseudo, $event)">
-                            <mat-icon>list</mat-icon>
-                        </button>
-                    </mat-card-actions>
-                    
-                </mat-card>
-            </div>
+                    </mat-card>
+                </div>
+            }
         </div>
-    </ng-container>
-
+    }
 </div>
 

@@ -13,7 +13,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions, MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { ToastrModule } from 'ngx-toastr';
@@ -29,6 +29,10 @@ import { TankService } from './app/service/tank.service';
 import { ClanWarService } from './app/service/clan-war.service';
 import { JwtInterceptor } from './app/interceptor/jwt.interceptor';
 import { provideRouter } from '@angular/router';
+
+const matInput: MatFormFieldDefaultOptions = {
+    appearance: 'outline'
+  };
 
 bootstrapApplication(AppComponent, {
     providers: [
@@ -48,6 +52,8 @@ bootstrapApplication(AppComponent, {
         { provide: OutilService, useClass: OutilService },
         { provide: TankService, useClass: TankService },
         { provide: ClanWarService, useClass: ClanWarService },
+
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: matInput }
     ]
 })
   .catch(err => console.error(err));

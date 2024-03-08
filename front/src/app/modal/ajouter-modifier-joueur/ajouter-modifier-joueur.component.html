@@ -1,12 +1,15 @@
-<h2 mat-dialog-title>Modifier le joueur</h2>
+<h2 mat-dialog-title>Ajouter un joueur</h2>
 <mat-dialog-content style="padding-top: 10px;">
     <form [formGroup]="form">
 
         <div class="row">
 
+            <!-- id joueur SI modifier -->
+            <input formControlName="Id" type="hidden" required>
+
             <!-- input pseudo -->
             <div style="margin-bottom: 10px;" class="col-lg-6 col-md-6">
-                <mat-form-field appearance="outline">
+                <mat-form-field>
                     <mat-label>Pseudo</mat-label>
                     <input matInput type="text" formControlName="Pseudo" required>
                     <mat-error>Obligatoire</mat-error>
@@ -15,7 +18,7 @@
 
             <!-- input id id discord -->
             <div class="col-lg-6 col-md-6">
-                <mat-form-field appearance="outline">
+                <mat-form-field>
                     <mat-label>Id Discord</mat-label>
                     <input matInput type="number" formControlName="IdDiscord" required>
                     <mat-error>Obligatoire</mat-error>
@@ -35,12 +38,14 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end"> 
     <button mat-raised-button color="warn" [mat-dialog-close]="undefined">Annuler</button>
-    <button mat-raised-button color="primary" (click)="ModifierJoueur()">
+    <button mat-raised-button color="primary" (click)="Action()">
 
         @if (btnClicker) 
         {
             <mat-spinner diameter="21"></mat-spinner>
         }
-            {{ btnClicker ? '' : 'Modifier' }}
+        @else {
+            <mat-icon>check</mat-icon>
+        }
     </button>
 </mat-dialog-actions>
