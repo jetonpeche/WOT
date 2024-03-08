@@ -17,13 +17,14 @@ import { MatSelect } from '@angular/material/select';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-modifier-info-compte',
     templateUrl: './modifier-info-compte.component.html',
     styleUrls: ['./modifier-info-compte.component.scss'],
     standalone: true,
-    imports: [MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatInput, MatSelect, MatOption, MatRadioGroup, MatRadioButton, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatDialogActions, MatButton, MatDialogClose, TitleCasePipe]
+    imports: [MatIcon, MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatInput, MatSelect, MatOption, MatRadioGroup, MatRadioButton, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatDialogActions, MatButton, MatDialogClose, TitleCasePipe]
 })
 export class ModifierInfoCompteComponent implements OnInit
 {

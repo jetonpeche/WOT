@@ -37,7 +37,9 @@
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end"> 
-    <button mat-raised-button color="warn" [mat-dialog-close]="undefined">Annuler</button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="undefined">
+        <mat-icon>close</mat-icon>
+    </button>
     <button mat-raised-button color="primary" (click)="Action()">
 
         @if (btnClicker) 
@@ -45,7 +47,7 @@
             <mat-spinner diameter="21"></mat-spinner>
         }
         @else {
-            <mat-icon>check</mat-icon>
+            <mat-icon>done</mat-icon>
         }
     </button>
 </mat-dialog-actions>

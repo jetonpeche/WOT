@@ -5,13 +5,14 @@ import { Tank } from 'src/app/types/Tank';
 import { MatButton } from '@angular/material/button';
 import { NgFor } from '@angular/common';
 import { MatList, MatListItem } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-tank-joueur',
     templateUrl: './tank-joueur.component.html',
     styleUrls: ['./tank-joueur.component.scss'],
     standalone: true,
-    imports: [MatDialogTitle, MatDialogContent, MatList, NgFor, MatListItem, MatDialogActions, MatButton, MatDialogClose]
+    imports: [MatIcon, MatDialogTitle, MatDialogContent, MatList, NgFor, MatListItem, MatDialogActions, MatButton, MatDialogClose]
 })
 export class TankJoueurComponent implements OnInit
 {

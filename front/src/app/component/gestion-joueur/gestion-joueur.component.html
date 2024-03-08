@@ -107,7 +107,7 @@
             @for (element of listeJoueur.data; track $index) 
             {
                 <div class="col-xs-12 col-sm-6">
-                    <mat-card>
+                    <mat-card (click)="OuvrirModalModifierJoueur(element)">
                         <mat-card-header>
                             <mat-card-title>{{ element.Pseudo }}</mat-card-title>
                         </mat-card-header>
