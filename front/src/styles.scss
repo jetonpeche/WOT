@@ -28,7 +28,7 @@ table, .mat-mdc-form-field
 
 .headerTitre
 {
-  margin-top: 80px;
+  margin-top: 10px;
   margin-bottom: 30px;
   text-align: center;
 }
@@ -44,4 +44,11 @@ table, .mat-mdc-form-field
   color: black;
   font-size: 1.3em;
   margin-bottom: 10px;
+}
+
+.mat-mdc-raised-button>.mat-icon
+{
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    zoom: 1.3;
 }

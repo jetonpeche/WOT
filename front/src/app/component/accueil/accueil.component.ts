@@ -8,13 +8,14 @@ import { EEtatClanWar } from 'src/app/enums/EEtatClanWar';
 import { MatDialog } from '@angular/material/dialog';
 import { ClanWarDetail } from 'src/app/types/ClanWarDetail';
 import { ListerJoueurComponent } from 'src/app/modal/lister-joueur/lister-joueur.component';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-accueil',
     templateUrl: './accueil.component.html',
     styleUrls: ['./accueil.component.scss'],
     standalone: true,
-    imports: [MatCard, MatCardTitle, MatCardContent, MatCardActions, MatButton]
+    imports: [MatIcon, MatCard, MatCardTitle, MatCardContent, MatCardActions, MatButton]
 })
 export class AccueilComponent implements OnInit
 {

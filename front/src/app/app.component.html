@@ -1,37 +1,59 @@
-<mat-toolbar *ngIf="EstConnecter()" class="mat-elevation-z6" color="primary">
-  @if(false)
-  {
-    <button mat-icon-button>
-      <mat-icon>menu</mat-icon>
-    </button>
-  }
-    <span style="font-weight: bold; font-size: 1.2em; letter-spacing: 1px;">Peche App</span>
 
-    <button mat-button routerLink="/gestion-tank">
-      gestion tank
-    </button>
+@if(EstConnecter())
+{
+  <mat-toolbar color="primary" class="mat-elevation-z6">
+    <span routerLink="/accueil" style="cursor: pointer;">WOT</span>
 
-    <button mat-button routerLink="/gestion-joueur">
-      gestion joueur
-    </button>
+    @if(isHandset$ | async)
+    {
+      <button type="button" 
+              aria-label="Toggle sidenav" 
+              mat-icon-button 
+              [ngStyle]="{ 'visibility': EstConnecter() ? 'visible' : 'hidden' }"
+              (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+      </button>
+    }
+    @else 
+    {
+      <button mat-button routerLink="/gestion-tank">
+        gestion tank
+      </button>
+    
+      <button mat-button routerLink="/gestion-joueur">
+        gestion joueur
+      </button>
+    
+      <button mat-button routerLink="/gestion-clan-war">
+        gestion CW
+      </button>
+    }
 
-    <button mat-button routerLink="/gestion-clan-war">
-      gestion CW
-    </button>
-
-    <span style="flex: 1 1 auto;"></span>
+    <div id="flex"></div>
 
     <button mat-raised-button (click)="OuvrirModalModifInfoCompte()">
-
-      @if(tailleEcran <= TAILLE_375)
-      {
-        <mat-icon>account_circle</mat-icon>
-      }
-      @else
-      {
-        Mon compte
-      }
+      <mat-icon>account_circle</mat-icon>
     </button>
-</mat-toolbar>
-
-<router-outlet></router-outlet>
+  </mat-toolbar>
+}
+<mat-sidenav-container>
+  <mat-sidenav 
+      #sidenav (click)="FermerApresClick(sidenav)"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="EstOuvert((isHandset$ | async))">
+      <mat-list>
+          <mat-list-item routerLink="/gestion-tank">
+            Gestion des tanks
+          </mat-list-item>
+          <mat-list-item routerLink="/gestion-joueur">
+            Gestion des joueurs
+          </mat-list-item>
+          <mat-list-item routerLink="/gestion-clan-war">
+            Gestion CW
+          </mat-list-item>
+      </mat-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+      <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

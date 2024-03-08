@@ -1,5 +1,5 @@
 <div class="headerTitre">
-    <h1>Liste des clan war dispo</h1>
+    <h1>Liste des clans war dispo</h1>
 </div>
 
 <div class="container">
@@ -17,19 +17,20 @@
                 <mat-card-actions align="end">
                     <button mat-raised-button color="primary"
                             (click)="Action(element)">
-                        {{ element.Participe ? "Désinscrire" : "Participer" }}
+                        
+                        <mat-icon>{{ element.Participe ? "close" : "done" }}</mat-icon>
                     </button>&nbsp;
 
                     <button mat-raised-button color="primary"
                             [disabled]="element.NbParticipant == 0"
                             (click)="OuvrirModalParticipant(element)">
-                        Voir participant
+                        <mat-icon>list</mat-icon>
                     </button>&nbsp;
 
                     <button mat-raised-button color="primary"
                             [disabled]="element.NbParticipant == 0"
                             (click)="OuvrirModalConfigClanWar(element)">
-                        Configurer
+                        <mat-icon>settings</mat-icon>
                     </button>
                 </mat-card-actions>
             </mat-card>
