@@ -8,10 +8,10 @@ namespace back.Services.Joueurs;
 
 internal class JoueurService: IJoueurService
 {
-    private WOTContext Context { get; init; }
+    private WotContext Context { get; init; }
     private IConfiguration Config { get; init; }
 
-    public JoueurService(WOTContext _context, IConfiguration _config)
+    public JoueurService(WotContext _context, IConfiguration _config)
     {
         Context = _context;
         Config = _config;
@@ -102,6 +102,20 @@ internal class JoueurService: IJoueurService
                 .FirstOrDefaultAsync();
 
             return id;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    public async Task<string?> GetMdpAsync(string _pseudo)
+    {
+        try
+        {
+            return await Context.Joueurs.Where(x => x.Pseudo == _pseudo)
+                .Select(x => x.Mdp)
+                .FirstOrDefaultAsync();
         }
         catch
         {

@@ -56,7 +56,7 @@ export class AccueilComponent implements OnInit
 
         this.dialog.open(ListerJoueurComponent, { data: { listeNomJoueur: liste }});
       }
-    })
+    });
   }
 
   protected Participer(_clanWar: ClanWar): void

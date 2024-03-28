@@ -23,9 +23,10 @@ export class JoueurService
     return this.http.get<string[]>(`${this.NOM_API}/listerPossedeTank/${_idTank}`);
   }
 
-  Connexion(_pseudo: string): Observable<Joueur>
+  Connexion(_pseudo: string, _mdp: string): Observable<Joueur>
   {
-    return this.http.get<Joueur>(`${this.NOM_API}/info/${_pseudo}`);
+    const DATA = { Pseudo: _pseudo, Mdp: _mdp };
+    return this.http.post<Joueur>(`${this.NOM_API}/connexion`, DATA);
   }
 
   InserverEtatActiver(_idJoueur: number): Observable<void>

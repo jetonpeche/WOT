@@ -11,6 +11,7 @@ public sealed record JoueurExport
     public required bool EstStrateur { get; init; }
     public required bool EstActiver { get; init; }
     public required int[] ListeIdTank { get; init; }
+    public string? Jwt {  get; set; }
 }
 
 [JsonSerializable(typeof(JoueurExport[]))]

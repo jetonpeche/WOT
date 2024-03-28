@@ -10,6 +10,9 @@ using back.Services.ClanWars;
 using back.Routes;
 using back.Services.Joueurs;
 using back.Services.Tanks;
+using certyAPI.Services.Mdp;
+using Outil.Services;
+using Services.Jwts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,7 +75,7 @@ builder.Services.AddSwaggerGen(swagger =>
 ConfigurationManager config = builder.Configuration;
 
 // connexion a la base de donnée
-builder.Services.AddDbContext<WOTContext>(o => o.UseSqlServer(config.GetConnectionString("Defaut")));
+builder.Services.AddDbContext<WotContext>(o => o.UseSqlServer(config.GetConnectionString("Defaut")));
 
 // injection de dependance
 builder.Services
@@ -80,7 +83,9 @@ builder.Services
     .AddScoped<IJoueurService, JoueurService>()
     .AddScoped<IClanWarService, ClanWarService>()
     .AddSingleton(x => new TokenService(rsa, "wotApp"))
-    .AddSingleton<ProtectionService>();
+    .AddSingleton<ProtectionService>()
+    .AddTransient<IMdpService, MdpService>()
+    .AddTransient<IJwtService>(x => new JwtService(rsa, ""));
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(c => c.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()));
 
@@ -129,9 +134,3 @@ app.Run();
 
 //Scaffold-DbContext "Data Source=DESKTOP-U41J905\SQLEXPRESS;Initial Catalog=WOT;Integrated Security=True;Encrypt=False" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
 // supp warning swagger => 1591 dans build général
-/*
- * pour le summary dans swagger (fichier du projet)
-  <PropertyGroup>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	</PropertyGroup>
- */

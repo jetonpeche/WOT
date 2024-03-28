@@ -7,9 +7,9 @@ namespace back.Services.Tanks;
 
 internal sealed class TankService: ITankService
 {
-    private WOTContext Context { get; init; }
+    private WotContext Context { get; init; }
 
-    public TankService(WOTContext _context)
+    public TankService(WotContext _context)
     {
         Context = _context;
     }

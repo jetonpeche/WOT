@@ -53,7 +53,8 @@ public static class ClanWarRoute
             .WithDescription("Permet de supprimer une clan war via l'application")
             .ProducesBadRequest()
             .ProducesNotFound()
-            .ProducesNoContent();
+            .ProducesNoContent()
+            .RequireAuthorization();
 
         return builder;
     }
@@ -123,7 +124,7 @@ public static class ClanWarRoute
 
             ClanWar clanWar = new()
             {
-                Date = _clanWarImport.Date
+                Date = DateOnly.FromDateTime(_clanWarImport.Date)
             };
 
             await _clanWarServ.AjouterAsync(clanWar);

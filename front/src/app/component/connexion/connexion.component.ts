@@ -34,7 +34,8 @@ export class ConnexionComponent implements OnInit
   ngOnInit(): void 
   {
     this.form = new FormGroup({
-      Pseudo: new FormControl("", [Validators.required])
+      Pseudo: new FormControl("", [Validators.required]),
+      Mdp: new FormControl("", [Validators.required])
     });
   }
 
@@ -45,7 +46,7 @@ export class ConnexionComponent implements OnInit
      
     this.btnClicker = true;
 
-    this.joueurServ.Connexion(this.form.value.Pseudo).subscribe({
+    this.joueurServ.Connexion(this.form.value.Pseudo, this.form.value.Mdp).subscribe({
       next: (retour: Joueur) =>
       {
         this.btnClicker = false;

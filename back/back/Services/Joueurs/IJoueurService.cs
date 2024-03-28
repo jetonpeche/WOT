@@ -28,6 +28,13 @@ public interface IJoueurService
     Task<JoueurExport?> GetInfoAsync(string _pseudo);
 
     /// <summary>
+    /// Donne le mdp 
+    /// </summary>
+    /// <param name="_pseudo">pseudo conserné</param>
+    /// <returns>null => existe pas / mdp</returns>
+    Task<string?> GetMdpAsync(string _pseudo);
+
+    /// <summary>
     /// Recuperer l'id du joueur
     /// </summary>
     /// <param name="_idDiscord">id discord du joueur conserné</param>

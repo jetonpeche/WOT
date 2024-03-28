@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from 'src/environments/environment';
 import { ECache } from './enums/ECache';
@@ -13,13 +13,14 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map, shareReplay } from 'rxjs/operators';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     standalone: true,
-    imports: [NgStyle, AsyncPipe, MatIcon, MatListModule, MatSidenavModule, MatToolbar, MatIconButton, MatIcon, MatButton, RouterLink, RouterOutlet]
+    imports: [MatSlideToggleModule, NgStyle, AsyncPipe, MatIcon, MatListModule, MatSidenavModule, MatToolbar, MatIconButton, MatIcon, MatButton, RouterLink, RouterOutlet]
 })
 export class AppComponent implements OnInit
 {
@@ -32,8 +33,12 @@ export class AppComponent implements OnInit
   tailleEcran: number = window.screen.width;
   readonly TAILLE_375 = environment.tailleEcran375;
 
+  @HostBinding('class') className = "";
+  private darkTheme = "dark-theme";
+  private lightTheme = "light-theme";
+
   constructor(
-    private dialog: MatDialog,  
+    private dialog: MatDialog,
     private breakpointObserver: BreakpointObserver
   ) { }
 
@@ -41,6 +46,13 @@ export class AppComponent implements OnInit
   {
     if(sessionStorage.getItem(ECache.joueur) != undefined)
       environment.infoJoueur = JSON.parse(sessionStorage.getItem(ECache.joueur));
+
+    this.className = this.lightTheme;
+  }
+
+  ChangerTheme(_estCheck): void
+  { 
+    this.className = _estCheck ? this.darkTheme : this.lightTheme;
   }
 
   EstOuvert(_isHandset$): boolean

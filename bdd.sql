@@ -60,6 +60,7 @@ CREATE TABLE Joueur
     id int PRIMARY KEY IDENTITY(1, 1) NOT NULL,
     idDiscord varchar(100) NOT NULL,
     pseudo varchar(200) NOT NULL,
+    mdp varchar(1000) NOT NULL,
 
     estAdmin int NOT NULL DEFAULT 0,
     estStrateur int NOT NULL DEFAULT 0,
@@ -113,9 +114,10 @@ INSERT INTO Tier (id, nom) VALUES (1, 'Tier 6'), (2, 'Tier 8'), (3, 'Tier 10');
 SET IDENTITY_INSERT Tier OFF;
 
 -- joueur
+-- mdp => salut
 SET IDENTITY_INSERT Joueur ON;
-INSERT INTO Joueur (id, idDiscord, pseudo, estAdmin, estStrateur, estActiver) VALUES
-(1, '341945414318161920', 'JetonPeche', 1, 1, 1);
+INSERT INTO Joueur (id, idDiscord, pseudo, mdp, estAdmin, estStrateur, estActiver) VALUES
+(1, '341945414318161920', 'JetonPeche', 'bI5mXJn2/U9oApvcT8pgBA==$4s81TTibak6XVi+0Ke+AjQ/RI4XLlOeIvexbOC7fCk0=', 1, 1, 1);
 SET IDENTITY_INSERT Joueur OFF;
 
 -- tank

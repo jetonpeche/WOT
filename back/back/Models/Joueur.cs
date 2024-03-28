@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace back.Models
+namespace back.Models;
+
+public partial class Joueur
 {
-    public partial class Joueur
-    {
-        public Joueur()
-        {
-            ClanWarJoueurs = new HashSet<ClanWarJoueur>();
-            IdTanks = new HashSet<Tank>();
-        }
+    public int Id { get; set; }
 
-        public int Id { get; set; }
-        public string IdDiscord { get; set; } = null!;
-        public string Pseudo { get; set; } = null!;
-        public int EstAdmin { get; set; }
-        public int EstStrateur { get; set; }
-        public int EstActiver { get; set; }
+    public string IdDiscord { get; set; } = null!;
 
-        public virtual ICollection<ClanWarJoueur> ClanWarJoueurs { get; set; }
+    public string Pseudo { get; set; } = null!;
 
-        public virtual ICollection<Tank> IdTanks { get; set; }
-    }
+    public string Mdp { get; set; } = null!;
+
+    public int EstAdmin { get; set; }
+
+    public int EstStrateur { get; set; }
+
+    public int EstActiver { get; set; }
+
+    public virtual ICollection<ClanWarJoueur> ClanWarJoueurs { get; set; } = new List<ClanWarJoueur>();
+
+    public virtual ICollection<Tank> IdTanks { get; set; } = new List<Tank>();
 }

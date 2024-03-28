@@ -3,7 +3,10 @@ using back.Extensions;
 using back.ModelExport;
 using back.Models;
 using back.Services.Joueurs;
+using certyAPI.Services.Mdp;
 using Microsoft.AspNetCore.Mvc;
+using Services.Jwts;
+using System.Security.Claims;
 
 namespace back.Routes;
 
@@ -26,6 +29,12 @@ public static class JoueurRoute
             .WithDescription("Récupèrer les infos d'un utilisateur")
             .WithName("infoJoueur")
             .Produces<JoueurExport?>()
+            .ProducesBadRequest()
+            .ProducesNotFound();
+
+        builder.MapPost("connexion", ConnexionAsync)
+            .WithDescription("Récupèrer les infos d'un utilisateur")
+            .Produces<JoueurExport>()
             .ProducesBadRequest()
             .ProducesNotFound();
 
@@ -116,10 +125,45 @@ public static class JoueurRoute
         }
     }
 
+    static async Task<IResult> ConnexionAsync([FromServices] IJoueurService _joueurServ,
+                                              [FromServices] IMdpService _mdpServ,
+                                              [FromServices] IJwtService _jwtServ,
+                                              [FromBody] ConnexionImport _connexionImport)
+    {
+        try
+        {
+            string? mdpHash = await _joueurServ.GetMdpAsync(_connexionImport.Pseudo);
+
+            if(mdpHash is null || !_mdpServ.VerifierHash(_connexionImport.Mdp, mdpHash))
+                return Results.BadRequest("Le login ou le mot de passe est faux");
+
+            var infos = (await _joueurServ.GetInfoAsync(_connexionImport.Pseudo))!;
+
+            string role = "utilisateur";
+
+            if (infos.EstAdmin)
+                role = "admin";
+
+            else if (infos.EstStrateur)
+                role = "strateur";
+
+            infos.Jwt = _jwtServ.Generer([
+                new Claim(ClaimTypes.Role, role)
+            ]);
+
+            return Results.Extensions.OK(infos, JoueurExportContext.Default);
+        }
+        catch
+        {
+            return Results.Extensions.ErreurConnexionBdd();
+        }
+    }
+
     static async Task<IResult> AjouterAsync(HttpContext _httpContext,
                                             [FromServices] IJoueurService _joueurServ,
                                             [FromServices] ProtectionService _protectionServ,
                                             [FromServices] LinkGenerator _linkGenerator,
+                                            [FromServices] IMdpService _mdpServ,
                                             [FromBody] JoueurImport _joueurImport)
     {
         try
@@ -136,6 +180,7 @@ public static class JoueurRoute
                 Pseudo = _protectionServ.XSS(_joueurImport.Pseudo),
                 EstAdmin = _joueurImport.EstAdmin ? 1 : 0,
                 EstStrateur = _joueurImport.EstStrateur ? 1 : 0,
+                Mdp = _mdpServ.Hasher(_joueurImport.Mdp),
                 EstActiver = 1
             };
 

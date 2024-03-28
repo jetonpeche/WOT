@@ -59,7 +59,10 @@ export class GestionClanWarComponent implements OnInit
       next: (retour: ClanWar) =>
       {
         if(retour)
+        {
           this.listeClanWar.push(retour);
+          this.toastrServ.success("", "La clan a été programmée")
+        }
       }
     });
   }

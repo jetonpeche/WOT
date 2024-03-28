@@ -5,6 +5,9 @@ $my-primary: mat.define-palette(mat.$indigo-palette);
 $my-accent: mat.define-palette(mat.$amber-palette);
 $my-warn: mat.define-palette(mat.$red-palette);
 
+$my-primary-dark: mat.define-palette(mat.$purple-palette);
+$my-accent-dark: mat.define-palette(mat.$green-palette);
+
 /*$kids-typography: mat.define-typography-config(
   $font-family: Helvetica,
 ); */
@@ -19,5 +22,19 @@ $my-theme: mat.define-light-theme((
  //typography: $kids-typography
 ));
 
-// Apply the dark theme by default
-@include mat.all-component-themes($my-theme);
+$my-theme-dark: mat.define-dark-theme((
+ color: (
+   primary: $my-primary-dark,
+   accent: $my-accent-dark,
+   warn: $my-warn
+ ),
+ //typography: $kids-typography
+));
+
+.dark-theme {
+  @include mat.all-component-themes($my-theme-dark);
+}
+
+.light-theme {
+  @include mat.all-component-themes($my-theme);
+}

@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace back.Models
+namespace back.Models;
+
+public partial class ClanWar
 {
-    public partial class ClanWar
-    {
-        public ClanWar()
-        {
-            ClanWarJoueurs = new HashSet<ClanWarJoueur>();
-        }
+    public int Id { get; set; }
 
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
 
-        public virtual ICollection<ClanWarJoueur> ClanWarJoueurs { get; set; }
-    }
+    public virtual ICollection<ClanWarJoueur> ClanWarJoueurs { get; set; } = new List<ClanWarJoueur>();
 }

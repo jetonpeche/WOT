@@ -7,18 +7,20 @@ namespace back.Services.ClanWars;
 
 internal sealed class ClanWarService: IClanWarService
 {
-    private WOTContext Context { get; init; }
+    private WotContext Context { get; init; }
 
-    public ClanWarService(WOTContext _wotContext)
+    public ClanWarService(WotContext _wotContext)
     {
         Context = _wotContext;
     }
 
     public async Task<ClanWarExport[]> ListerAsync(string? _idDiscord, EEtatClanWar _eEtatClanWar = EEtatClanWar.toute)
     {
+        DateOnly dateJour = DateOnly.FromDateTime(DateTime.Now.Date);
+
         IQueryable<ClanWar> requete = Context.ClanWars
             .OrderBy(x => x.Date)
-            .Where(x => x.Date >= DateTime.Now.Date);
+            .Where(x => x.Date >= dateJour);
 
         if(_idDiscord is not null)
         {
@@ -64,9 +66,11 @@ internal sealed class ClanWarService: IClanWarService
     {
         try
         {
+            DateOnly dateJour = DateOnly.FromDateTime(DateTime.Now.Date);
+
             int id = await Context.ClanWars
                 .OrderBy(x => x.Date)
-                .Where(x => x.Date >= DateTime.Now)
+                .Where(x => x.Date >= dateJour)
                 .Select(x => x.Id)
                 .FirstOrDefaultAsync();
 
@@ -154,8 +158,10 @@ internal sealed class ClanWarService: IClanWarService
     {
         try
         {
+            DateOnly date = DateOnly.FromDateTime(_date);
+
             int nb = await Context.ClanWars
-                .Where(x => x.Date == _date)
+                .Where(x => x.Date == date)
                 .ExecuteDeleteAsync();
 
             return nb > 0;
