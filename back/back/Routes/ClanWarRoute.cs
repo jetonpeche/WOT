@@ -49,6 +49,12 @@ public static class ClanWarRoute
             .ProducesNotFound()
             .ProducesNoContent();
 
+        builder.MapDelete("supprimerViaLapp/{idClanWar:int}", Supprimer2Async)
+            .WithDescription("Permet de supprimer une clan war via l'application")
+            .ProducesBadRequest()
+            .ProducesNotFound()
+            .ProducesNoContent();
+
         return builder;
     }
 
@@ -239,6 +245,25 @@ public static class ClanWarRoute
                 return Results.NotFound("Je ne te connais pas");
 
             bool ok = await _clanWarServ.SupprimerAsync(_clanWarImport.Date);
+
+            return ok ? Results.NoContent() : Results.NotFound("La clan war n'existe pas");
+        }
+        catch
+        {
+            return Results.Extensions.ErreurConnexionBdd();
+        }
+    }
+
+    async static Task<IResult> Supprimer2Async([FromServices] IJoueurService _joueurServ,
+                                              [FromServices] IClanWarService _clanWarServ,
+                                              [FromRoute(Name = "idClanWar")] int _idClanWar)
+    {
+        try
+        {
+            if (_idClanWar <= 0)
+                return Results.BadRequest("L'id clan war doit être supérieur à 0");
+
+            bool ok = await _clanWarServ.SupprimerAsync(_idClanWar);
 
             return ok ? Results.NoContent() : Results.NotFound("La clan war n'existe pas");
         }

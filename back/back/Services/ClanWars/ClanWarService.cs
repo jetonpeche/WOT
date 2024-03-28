@@ -166,6 +166,22 @@ internal sealed class ClanWarService: IClanWarService
         }
     }
 
+    public async Task<bool> SupprimerAsync(int _idClanWar)
+    {
+        try
+        {
+            int nb = await Context.ClanWars
+                .Where(x => x.Id == _idClanWar)
+                .ExecuteDeleteAsync();
+
+            return nb > 0;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
     public async Task<bool> ParticipeDejaAsync(int _idClanWar, int _idJoueur)
     {
         try

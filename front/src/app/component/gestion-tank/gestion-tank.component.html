@@ -105,29 +105,13 @@
                         <!-- btn supprimer -->
                         <button mat-raised-button color="warn"
                                 (click)="OuvrirModalConfirmation(element.Id, element.Nom)">
-
-                                @if(tailleEcran <= TAILLE_375)
-                                {
                                     <mat-icon>delete</mat-icon>
-                                } 
-                                @else
-                                {
-                                    Supprimer
-                                }
                         </button>&nbsp;
 
                         <!-- btn modifier -->
                         <button mat-raised-button color="accent"
                                 (click)="OuvrirModalJModifierTank(element)">
-
-                                @if(tailleEcran <= TAILLE_375)
-                                {
                                     <mat-icon>edit</mat-icon>
-                                } 
-                                @else
-                                {
-                                    Modifier
-                                }
                         </button>&nbsp;
 
                         <!-- btn lister joueurs qui possede le tank -->

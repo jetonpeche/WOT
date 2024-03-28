@@ -44,4 +44,9 @@ export class ClanWarService
     const DATA = { Date: _date, IdDiscord: _idDiscord };
     return this.http.delete<void>(`${this.NOM_API}/desinscrire`, { body: DATA });
   }
+
+  Supprimer(_idClanWar: number): Observable<void>
+  {
+    return this.http.delete<void>(`${this.NOM_API}/supprimerViaLapp/${_idClanWar}`);
+  }
 }

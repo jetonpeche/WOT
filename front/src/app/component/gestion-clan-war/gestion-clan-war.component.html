@@ -17,7 +17,16 @@
                     </mat-card-content>
         
                     <mat-card-actions align="end">
-                            
+                        <button mat-raised-button color="warn" (click)="ConfimerSupprimerClanWar(element.Id)">
+
+                            @if (btnClicker) 
+                            {
+                                <mat-spinner diameter="21"></mat-spinner>
+                            }
+                            @else {
+                                <mat-icon>close</mat-icon>
+                            }
+                        </button>
                     </mat-card-actions>
                 </mat-card>
             </div>

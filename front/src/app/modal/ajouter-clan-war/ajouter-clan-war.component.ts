@@ -10,12 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ClanWarService } from 'src/app/service/clan-war.service';
 import { ClanWar } from 'src/app/types/ClanWar';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-ajouter-clan-war',
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [MatProgressSpinnerModule, MatIconModule, MatDatepickerModule, MatDialogModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+  imports: [MatButtonModule, MatProgressSpinnerModule, MatIconModule, MatDatepickerModule, MatDialogModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './ajouter-clan-war.component.html',
   styleUrl: './ajouter-clan-war.component.scss'
 })
@@ -35,11 +36,14 @@ export class AjouterClanWarComponent
     if(!_date)
       return;
 
+    this.btnClicker = true;
+
     let dateFormater = _date.split("/").reverse().join("-");
 
     this.clanWarServ.Ajouter(dateFormater).subscribe({
       next: (retour: number) =>
       {
+        this.btnClicker = false;
         let info: ClanWar =
         {
           Id: retour,
@@ -49,7 +53,8 @@ export class AjouterClanWarComponent
         };
 
         this.dialogRef.close(info); 
-      }
+      },
+      error: () => this.btnClicker = false
     });
     
   }

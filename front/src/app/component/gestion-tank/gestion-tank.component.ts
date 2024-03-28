@@ -36,10 +36,6 @@ export class GestionTankComponent implements OnInit
   listeTypeTank: TypeTank[] = [];
   listeStatutTank: StatutTank[] = [];
 
-  tailleEcran: number = window.screen.width;
-
-  readonly TAILLE_375 = environment.tailleEcran375;
-
   private listeTankClone: TankAdmin[] = [];
 
   constructor(

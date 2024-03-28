@@ -64,6 +64,13 @@ public interface IClanWarService
     Task<bool> SupprimerAsync(DateTime _date);
 
     /// <summary>
+    /// Supprimer une clan war
+    /// </summary>
+    /// <param name="_idClanWar">id de la clan war conserné</param>
+    /// <returns>true => OK / false => pas OK</returns>
+    Task<bool> SupprimerAsync(int _idClanWar);
+
+    /// <summary>
     /// Check si un joueur est deja inscrit a cette clan war 
     /// </summary>
     /// <param name="_idClanWar">id clan war conserné</param>
