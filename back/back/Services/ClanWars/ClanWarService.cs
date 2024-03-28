@@ -50,7 +50,7 @@ internal sealed class ClanWarService: IClanWarService
         try
         {
             int id = await Context.ClanWars
-                .Where(x => x.Date.Equals(_date))
+                .Where(x => x.Date == DateOnly.FromDateTime(_date))
                 .Select(x => x.Id)
                 .FirstOrDefaultAsync();
 
@@ -208,7 +208,7 @@ internal sealed class ClanWarService: IClanWarService
     public async Task<bool> ExisteAsync(DateTime _date)
     {
         int nb = await Context.ClanWars
-            .Where(x => x.Date.Equals(_date))
+            .Where(x => x.Date == DateOnly.FromDateTime(_date))
             .CountAsync();
 
         return nb is 1;
