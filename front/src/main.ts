@@ -29,6 +29,7 @@ import { TankService } from './app/service/tank.service';
 import { ClanWarService } from './app/service/clan-war.service';
 import { JwtInterceptor } from './app/interceptor/jwt.interceptor';
 import { provideRouter } from '@angular/router';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 const matInput: MatFormFieldDefaultOptions = {
     appearance: 'outline'
@@ -53,7 +54,8 @@ bootstrapApplication(AppComponent, {
         { provide: TankService, useClass: TankService },
         { provide: ClanWarService, useClass: ClanWarService },
 
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: matInput }
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: matInput },
+        { provide: MAT_DATE_LOCALE, useValue: "fr-FR" }
     ]
 })
   .catch(err => console.error(err));

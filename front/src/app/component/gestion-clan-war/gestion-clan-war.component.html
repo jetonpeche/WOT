@@ -2,3 +2,26 @@
     <h1>Gestion des clans wars</h1>
     <button mat-raised-button color="primary" (click)="OuvrirModalAjouterClanWar()">Ajouter</button>
 </div>
+
+<div class="container">
+    <div class="row">
+        @for (element of listeClanWar; track $index) 
+        {
+            <div style="padding: 0;" class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <mat-card>
+                    <mat-card-title>{{ element.Date }}</mat-card-title>
+        
+                    <mat-card-content>
+                        Participe: {{ element.Participe ? 'Oui' : 'Non' }} <br>
+                        Nombre de participant(s): {{ element.NbParticipant }}
+                    </mat-card-content>
+        
+                    <mat-card-actions align="end">
+                            
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+            
+        }
+    </div>
+</div>

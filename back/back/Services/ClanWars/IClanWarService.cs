@@ -12,7 +12,7 @@ public interface IClanWarService
     /// <param name="_idDiscord">id discord de la personne appellante</param>
     /// <param name="_eEtatClanWar">filtre les clan war</param>
     /// <returns>liste des clan war</returns>
-    Task<ClanWarExport[]> ListerAsync(string _idDiscord, EEtatClanWar _eEtatClanWar = EEtatClanWar.toute);
+    Task<ClanWarExport[]> ListerAsync(string? _idDiscord, EEtatClanWar _eEtatClanWar = EEtatClanWar.toute);
 
     /// <summary>
     /// Permet de recuperer l'id d'une clan war

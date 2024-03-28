@@ -14,18 +14,21 @@ internal sealed class ClanWarService: IClanWarService
         Context = _wotContext;
     }
 
-    public async Task<ClanWarExport[]> ListerAsync(string _idDiscord, EEtatClanWar _eEtatClanWar = EEtatClanWar.toute)
+    public async Task<ClanWarExport[]> ListerAsync(string? _idDiscord, EEtatClanWar _eEtatClanWar = EEtatClanWar.toute)
     {
         IQueryable<ClanWar> requete = Context.ClanWars
             .OrderBy(x => x.Date)
             .Where(x => x.Date >= DateTime.Now.Date);
 
-        requete = _eEtatClanWar switch
+        if(_idDiscord is not null)
         {
-            EEtatClanWar.participePas => requete.Where(x => x.ClanWarJoueurs.Any(y => y.IdJoueurNavigation.IdDiscord == _idDiscord) == false),
-            EEtatClanWar.participe => requete.Where(x => x.ClanWarJoueurs.Any(y => y.IdJoueurNavigation.IdDiscord == _idDiscord)),
-            _ => requete
-        };
+            requete = _eEtatClanWar switch
+            {
+                EEtatClanWar.participePas => requete.Where(x => x.ClanWarJoueurs.Any(y => y.IdJoueurNavigation.IdDiscord == _idDiscord) == false),
+                EEtatClanWar.participe => requete.Where(x => x.ClanWarJoueurs.Any(y => y.IdJoueurNavigation.IdDiscord == _idDiscord)),
+                _ => requete
+            };
+        }
 
         var retour = await requete.Select(x => new ClanWarExport
         {

@@ -12,6 +12,11 @@ export class ClanWarService
 
   private http: HttpClient = inject(HttpClient);
 
+  Lister2(_etat: EEtatClanWar): Observable<ClanWar[]>
+  {
+    return this.http.get<ClanWar[]>(`${this.NOM_API}/lister/${_etat}`);
+  }
+
   Lister(_idDiscord: string, _etat: EEtatClanWar): Observable<ClanWar[]>
   {
     return this.http.get<ClanWar[]>(`${this.NOM_API}/lister/${_idDiscord}/${_etat}`);
@@ -20,6 +25,12 @@ export class ClanWarService
   Detail(_idClanWar: number): Observable<ClanWarDetail>
   {
     return this.http.get<ClanWarDetail>(`${this.NOM_API}/detail/${_idClanWar}`);
+  }
+
+  Ajouter(_date): Observable<number>
+  {
+    const DATA = { IdDiscord: environment.infoJoueur.IdDiscord, Date: _date };
+    return this.http.post<number>(`${this.NOM_API}/ajouter`, DATA);
   }
 
   Participer(_date: string, _idDiscord: string): Observable<void>

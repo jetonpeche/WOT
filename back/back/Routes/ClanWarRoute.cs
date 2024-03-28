@@ -14,6 +14,10 @@ public static class ClanWarRoute
     {
         builder.WithOpenApi().ProducesServiceUnavailable();
 
+        builder.MapGet("lister/{etatClanWar}", Lister2Async)
+            .WithDescription("Lister les clan war avec la participant de la personne qui possede l'id discord")
+            .Produces<ClanWarExport[]>();
+
         builder.MapGet("lister/{idDiscord}/{etatClanWar}", ListerAsync)
             .WithDescription("Lister les clan war avec la participant de la personne qui possede l'id discord")
             .Produces<ClanWarExport[]>();
@@ -46,6 +50,21 @@ public static class ClanWarRoute
             .ProducesNoContent();
 
         return builder;
+    }
+
+    async static Task<IResult> Lister2Async([FromServices] IClanWarService _clanWarServ,
+                                           [FromRoute(Name = "etatClanWar")] EEtatClanWar _etatClanWar)
+    {
+        try
+        {
+            var retour = await _clanWarServ.ListerAsync(null);
+
+            return Results.Extensions.OK(retour, ClanWarExportContext.Default);
+        }
+        catch
+        {
+            return Results.Extensions.ErreurConnexionBdd();
+        }
     }
 
     async static Task<IResult> ListerAsync([FromServices] IClanWarService _clanWarServ,

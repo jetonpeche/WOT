@@ -1,1 +1,26 @@
-<p>ajouter-clan-war works!</p>
+<h2 mat-dialog-title>Ajouter un joueur</h2>
+<mat-dialog-content style="padding-top: 10px;">
+
+    <!-- input pseudo -->
+    <mat-form-field>
+        <mat-label>Date</mat-label>
+        <input #date matInput [matDatepicker]="picker" [min]="date">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end"> 
+    <button mat-raised-button color="warn" [mat-dialog-close]="undefined">
+        <mat-icon>close</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" (click)="Ajouter(date.value)">
+
+        @if (btnClicker) 
+        {
+            <mat-spinner diameter="21"></mat-spinner>
+        }
+        @else {
+            <mat-icon>done</mat-icon>
+        }
+    </button>
+</mat-dialog-actions>

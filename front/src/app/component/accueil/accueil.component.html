@@ -6,33 +6,35 @@
     <div class="row">
         @for (element of listeClanWar; track $index) 
         {
-            <mat-card class="col col-xs-12">
-                <mat-card-title>{{ element.Date }}</mat-card-title>
-    
-                <mat-card-content>
-                    Participe: {{ element.Participe ? 'Oui' : 'Non' }} <br>
-                    Nombre de participant(s): {{ element.NbParticipant }}
-                </mat-card-content>
-    
-                <mat-card-actions align="end">
-                    <button mat-raised-button color="primary"
-                            (click)="Action(element)">
-                        
-                        <mat-icon>{{ element.Participe ? "close" : "done" }}</mat-icon>
-                    </button>&nbsp;
+            <div style="padding: 0;" class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <mat-card>
+                    <mat-card-title>{{ element.Date }}</mat-card-title>
+        
+                    <mat-card-content>
+                        Participe: {{ element.Participe ? 'Oui' : 'Non' }} <br>
+                        Nombre de participant(s): {{ element.NbParticipant }}
+                    </mat-card-content>
+        
+                    <mat-card-actions align="end">
+                        <button mat-raised-button color="primary"
+                                (click)="Action(element)">
+                            
+                            <mat-icon>{{ element.Participe ? "close" : "done" }}</mat-icon>
+                        </button>&nbsp;
 
-                    <button mat-raised-button color="primary"
-                            [disabled]="element.NbParticipant == 0"
-                            (click)="OuvrirModalParticipant(element)">
-                        <mat-icon>list</mat-icon>
-                    </button>&nbsp;
+                        <button mat-raised-button color="primary"
+                                [disabled]="element.NbParticipant == 0"
+                                (click)="OuvrirModalParticipant(element)">
+                            <mat-icon>list</mat-icon>
+                        </button>&nbsp;
 
-                    <button mat-raised-button color="primary"
-                            (click)="OuvrirModalConfigClanWar(element)">
-                        <mat-icon>settings</mat-icon>
-                    </button>
-                </mat-card-actions>
-            </mat-card>
+                        <button mat-raised-button color="primary"
+                                (click)="OuvrirModalConfigClanWar(element)">
+                            <mat-icon>settings</mat-icon>
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
         }
     </div>
 </div>
