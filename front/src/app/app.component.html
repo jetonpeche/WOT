@@ -16,22 +16,28 @@
     }
     @else 
     {
-      <button mat-button routerLink="/gestion-tank">
-        gestion tank
-      </button>
-    
-      <button mat-button routerLink="/gestion-joueur">
-        gestion joueur
-      </button>
-    
-      <button mat-button routerLink="/gestion-clan-war">
-        gestion CW
-      </button>
+      @if(EstAdmin())
+      {
+        <button mat-button routerLink="/gestion-tank">
+          gestion tank
+        </button>
+      
+        <button mat-button routerLink="/gestion-joueur">
+          gestion joueur
+        </button>
+      }
+
+      @if(EstAdmin() || EstStrateur())
+      {
+        <button mat-button routerLink="/gestion-clan-war">
+          gestion CW
+        </button>
+      }
     }
 
     <div id="flex"></div>
 
-    <mat-slide-toggle class="example-margin" (change)="ChangerTheme($event.checked)"></mat-slide-toggle>
+    <mat-slide-toggle (change)="ChangerTheme($event.checked)"></mat-slide-toggle>
 
     <button mat-raised-button (click)="OuvrirModalModifInfoCompte()">
       <mat-icon>account_circle</mat-icon>
@@ -44,15 +50,23 @@
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
       [opened]="EstOuvert((isHandset$ | async))">
       <mat-list>
+
+        @if(EstAdmin())
+        {
           <mat-list-item routerLink="/gestion-tank">
             Gestion des tanks
           </mat-list-item>
           <mat-list-item routerLink="/gestion-joueur">
             Gestion des joueurs
           </mat-list-item>
+        }
+
+        @if(EstAdmin() || EstStrateur())
+        {
           <mat-list-item routerLink="/gestion-clan-war">
             Gestion CW
           </mat-list-item>
+        }
       </mat-list>
   </mat-sidenav>
   <mat-sidenav-content>

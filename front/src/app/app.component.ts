@@ -50,6 +50,16 @@ export class AppComponent implements OnInit
     this.className = this.lightTheme;
   }
 
+  EstAdmin(): boolean
+  {
+    return environment.infoJoueur.EstAdmin;
+  }
+
+  EstStrateur(): boolean
+  {
+    return environment.infoJoueur.EstStrateur;
+  }
+
   ChangerTheme(_estCheck): void
   { 
     this.className = _estCheck ? this.darkTheme : this.lightTheme;
