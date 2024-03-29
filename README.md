@@ -18,3 +18,4 @@ Organiser les clan war
 # Installation back
 
 - Telecharger visual studio 2022 (community) [ici](https://visualstudio.microsoft.com/fr/downloads/)
+- Une fois installer, clicker sur le bouton `modifier` puis cocher `Développement web et ASP.NET` et valider en bas à droite
