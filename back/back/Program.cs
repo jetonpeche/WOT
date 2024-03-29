@@ -90,7 +90,10 @@ builder.Services
 builder.Services.AddCors(options => options.AddDefaultPolicy(c => c.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()));
 
 // genere une clé pour le JWT a partir d'une clé secrete
-builder.Services.AddAuthorizationBuilder();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("admin", x => x.RequireRole("admin"))
+    .AddPolicy("strateur", x => x.RequireRole("admin", "strateur"));
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, option =>
                 {
@@ -123,8 +126,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGroup("/joueur").AjouterRouteJoueur();
 app.MapGroup("/clanWar").AjouterRouteClanWar();

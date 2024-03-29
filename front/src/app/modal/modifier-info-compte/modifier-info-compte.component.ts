@@ -8,23 +8,22 @@ import { TypeTank } from 'src/app/types/TypeTank';
 import { environment } from 'src/environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import { ECache } from 'src/app/enums/ECache';
-import { MatButton } from '@angular/material/button';
-import { MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle } from '@angular/material/card';
-import { MatRadioGroup, MatRadioButton } from '@angular/material/radio';
 import { TitleCasePipe } from '@angular/common';
-import { MatOption } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
-import { MatIcon } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-modifier-info-compte',
     templateUrl: './modifier-info-compte.component.html',
     styleUrls: ['./modifier-info-compte.component.scss'],
     standalone: true,
-    imports: [MatIcon, MatDialogTitle, MatDialogContent, MatFormField, MatLabel, MatInput, MatSelect, MatOption, MatRadioGroup, MatRadioButton, MatCard, MatCardHeader, MatCardTitle, MatCardImage, MatCardSubtitle, MatDialogActions, MatButton, MatDialogClose, TitleCasePipe]
+    imports: [MatIconModule, MatButtonModule, MatCardModule, MatRadioModule, MatSelectModule, MatInputModule, MatFormFieldModule, MatDialogModule, TitleCasePipe]
 })
 export class ModifierInfoCompteComponent implements OnInit
 {

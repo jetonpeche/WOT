@@ -18,19 +18,22 @@ public static class JoueurRoute
 
         builder.MapGet("lister/{roleJoueur}", ListerAsync)
             .WithDescription("Lister les joueurs, valeur possible pour 'roleJoueur': admin, strateur, tous")
-            .Produces<JoueurExport[]>();
+            .Produces<JoueurExport[]>()
+            .RequireAuthorization("admin");
 
         builder.MapGet("listerPossedeTank/{idTank}", ListerTankPossederAsync)
             .WithDescription("Lister les joueurs qui possèdent le tank")
             .Produces<string[]>()
-            .ProducesBadRequest();
+            .ProducesBadRequest()
+            .RequireAuthorization();
 
         builder.MapGet("info/{pseudo}", InfosAsync)
             .WithDescription("Récupèrer les infos d'un utilisateur")
             .WithName("infoJoueur")
             .Produces<JoueurExport?>()
             .ProducesBadRequest()
-            .ProducesNotFound();
+            .ProducesNotFound()
+            .RequireAuthorization();
 
         builder.MapPost("connexion", ConnexionAsync)
             .WithDescription("Récupèrer les infos d'un utilisateur")
@@ -41,35 +44,41 @@ public static class JoueurRoute
         builder.MapPost("ajouter", AjouterAsync)
             .WithDescription("Ajouter un nouveau joueur")
             .ProducesCreated()
-            .ProducesBadRequest();
+            .ProducesBadRequest()
+            .RequireAuthorization("admin");
 
         builder.MapPost("ajouterTankJoueur", AjouterTankJoueurAsync)
             .WithDescription("Ajouter un tank à un joueur")
             .ProducesNoContent()
             .ProducesBadRequest()
-            .ProducesNotFound();
+            .ProducesNotFound()
+            .RequireAuthorization();
 
         builder.MapPut("modifier", ModifierAsync)
             .WithDescription("Modifier un joueur")
             .ProducesNoContent()
             .ProducesBadRequest()
-            .ProducesNotFound();            
+            .ProducesNotFound()
+            .RequireAuthorization();            
 
         builder.MapPut("inserverEtatActiver/{idJoueur:int}", InserverEtatActiverAsync)
             .WithDescription("Inserse l'état du compte du joueur (exemple: activer => désactiver)")
             .ProducesNoContent()
             .ProducesBadRequest()
-            .ProducesNotFound();
+            .ProducesNotFound()
+            .RequireAuthorization("admin");
 
         builder.MapPut("supprimerTankJoueur", SupprimerTankJoueurAsync)
             .WithDescription("Supprimer le tank du joueur")
             .ProducesNoContent()
-            .ProducesNotFound();
+            .ProducesNotFound()
+            .RequireAuthorization();
 
         builder.MapDelete("supprimer/{idDiscord}", SupprimerAsync)
             .WithDescription("Supprimer un joueur")
             .ProducesBadRequest()
-            .ProducesNoContent();
+            .ProducesNoContent()
+            .RequireAuthorization("admin");
 
         return builder;
     }
@@ -138,6 +147,9 @@ public static class JoueurRoute
                 return Results.BadRequest("Le login ou le mot de passe est faux");
 
             var infos = (await _joueurServ.GetInfoAsync(_connexionImport.Pseudo))!;
+
+            if (!await _joueurServ.EstActiverAsync(_connexionImport.Pseudo))
+                return Results.BadRequest("Le compte est désactivé");
 
             string role = "utilisateur";
 

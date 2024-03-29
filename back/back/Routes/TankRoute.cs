@@ -15,12 +15,14 @@ public static class TankRoute
 
         builder.MapGet("lister/{seulementVisible:bool}", ListerAsync)
             .WithDescription("Lister les tanks")
-            .Produces<TankExport[]>();
+            .Produces<TankExport[]>()
+            .RequireAuthorization();
 
         builder.MapGet("lister/{idJoueur:int}", ListerTankJoueurAsync)
             .WithDescription("Lister les tanks du joueur")
             .Produces<TankExport[]>()
-            .ProducesBadRequest();
+            .ProducesBadRequest()
+            .RequireAuthorization();
 
         builder.MapGet("listerViaDiscord", ListerViaDiscordAsync)
             .Produces<Tank2Export[]>()
@@ -32,19 +34,22 @@ public static class TankRoute
 
         builder.MapPost("ajouter", AjouterAsync)
             .WithDescription("Ajouter un nouveau tank")
-            .ProducesCreated();
+            .ProducesCreated()
+            .RequireAuthorization("admin");
 
         builder.MapPut("modifier", ModifierAsync)
             .WithDescription("Modifier un tank")
             .ProducesNoContent()
             .ProducesBadRequest()
-            .ProducesNotFound();
+            .ProducesNotFound()
+            .RequireAuthorization("admin");
 
         builder.MapDelete("supprimer/{idTank:int}", SupprimerAsync)
             .WithDescription("Permet de supprimer un tank")
             .ProducesNoContent()
             .ProducesBadRequest()
-            .ProducesNotFound();
+            .ProducesNotFound()
+            .RequireAuthorization("admin");
 
         return builder;
     }

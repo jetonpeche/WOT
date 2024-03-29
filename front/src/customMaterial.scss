@@ -31,10 +31,16 @@ $my-theme-dark: mat.define-dark-theme((
  //typography: $kids-typography
 ));
 
-.dark-theme {
-  @include mat.all-component-themes($my-theme-dark);
-}
+@include mat.all-component-themes($my-theme);
 
-.light-theme {
-  @include mat.all-component-themes($my-theme);
+.dark-theme {
+  @include mat.all-component-colors($my-theme-dark);
+
+  mat-card-title, mat-card-subtitle, .mat-mdc-dialog-title {
+    color: white !important;
+  }
+
+  .posseder {
+    border: 2px solid white !important;
+  }
 }

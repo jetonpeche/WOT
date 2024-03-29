@@ -16,45 +16,52 @@ public static class ClanWarRoute
 
         builder.MapGet("lister/{etatClanWar}", Lister2Async)
             .WithDescription("Lister les clan war avec la participant de la personne qui possede l'id discord")
-            .Produces<ClanWarExport[]>();
+            .Produces<ClanWarExport[]>()
+            .RequireAuthorization();
 
         builder.MapGet("lister/{idDiscord}/{etatClanWar}", ListerAsync)
             .WithDescription("Lister les clan war avec la participant de la personne qui possede l'id discord")
-            .Produces<ClanWarExport[]>();
+            .Produces<ClanWarExport[]>()
+            .RequireAuthorization();
 
         builder.MapGet("detail/{idClanWar}", RecupererDetailAsync)
             .WithDescription("Permet de recupérer les details d'une clan war")
             .Produces<ClanWarDetailExport>()
             .ProducesBadRequest()
-            .ProducesNotFound();
+            .ProducesNotFound()
+            .RequireAuthorization();
 
         builder.MapPost("ajouter", AjouterAsync)
             .WithDescription("Ajouter une nouvelle clan war")
-            .ProducesCreated();
+            .ProducesCreated()
+            .RequireAuthorization("strateur");
 
         builder.MapPost("participer", ParticiperAsync)
             .WithDescription("Permet de s'inscrire à la prochaine clan war (ne pas mettre de date) ou une clan war spécifique (avec la date)")
             .ProducesBadRequest()
             .ProducesNotFound()
-            .ProducesNoContent();
+            .ProducesNoContent()
+            .RequireAuthorization();
 
         builder.MapDelete("desinscrire", DesinscrireAsync)
             .WithDescription("Permet de se désinscrire à la prochaine clan war (ne pas mettre de date) ou une clan war spécifique (avec la date)")
             .ProducesBadRequest()
             .ProducesNotFound()
-            .ProducesNoContent();
+            .ProducesNoContent()
+            .RequireAuthorization();
 
         builder.MapDelete("supprimer", SupprimerAsync)
             .WithDescription("Permet de supprimer une clan war")
             .ProducesNotFound()
-            .ProducesNoContent();
+            .ProducesNoContent()
+            .RequireAuthorization("strateur");
 
         builder.MapDelete("supprimerViaLapp/{idClanWar:int}", Supprimer2Async)
             .WithDescription("Permet de supprimer une clan war via l'application")
             .ProducesBadRequest()
             .ProducesNotFound()
             .ProducesNoContent()
-            .RequireAuthorization();
+            .RequireAuthorization("strateur");
 
         return builder;
     }

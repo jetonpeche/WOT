@@ -23,7 +23,7 @@ export class AjouterModifierJoueurComponent implements OnInit
   protected form: FormGroup;
   protected btnClicker: boolean = false;
 
-  private joueur: Joueur;
+  protected joueur: Joueur;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,

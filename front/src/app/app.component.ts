@@ -14,6 +14,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
     selector: 'app-root',
@@ -39,6 +40,7 @@ export class AppComponent implements OnInit
 
   constructor(
     private dialog: MatDialog,
+    private overlay: OverlayContainer,
     private breakpointObserver: BreakpointObserver
   ) { }
 
@@ -52,17 +54,23 @@ export class AppComponent implements OnInit
 
   EstAdmin(): boolean
   {
-    return environment.infoJoueur.EstAdmin;
+    return environment.infoJoueur?.EstAdmin ?? false;
   }
 
   EstStrateur(): boolean
   {
-    return environment.infoJoueur.EstStrateur;
+    return environment.infoJoueur?.EstStrateur ?? false;
   }
 
-  ChangerTheme(_estCheck): void
+  protected ChangerTheme(_estCheck: boolean): void
   { 
     this.className = _estCheck ? this.darkTheme : this.lightTheme;
+
+    if(_estCheck)
+      this.overlay.getContainerElement().classList.add(this.darkTheme);
+    else
+      this.overlay.getContainerElement().classList.remove(this.darkTheme);
+
   }
 
   EstOuvert(_isHandset$): boolean
