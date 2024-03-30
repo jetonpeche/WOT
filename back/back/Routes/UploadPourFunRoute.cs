@@ -28,6 +28,9 @@ public static class UploadPourFunRoute
 
     async static Task<IResult> ListerAsync()
     {
+
+        try
+        {
             string[] listeFichier = Directory.GetFiles("FichierPourFun");
             List<FichierExport> listerRetour = [];
 
@@ -36,14 +39,19 @@ public static class UploadPourFunRoute
                 string fichier = listeFichier[i];
                 string base64 = Convert.ToBase64String(await File.ReadAllBytesAsync(fichier));
 
-                listerRetour.Add(new FichierExport 
-                { 
+                listerRetour.Add(new FichierExport
+                {
                     Nom = Path.GetFileName(fichier),
-                    Base64 = base64 
+                    Base64 = base64
                 });
             }
 
             return listerRetour.Count > 0 ? Results.Extensions.OK(listerRetour, FichierExportContext.Default) : Results.NotFound();
+        }
+        catch
+        {
+            return Results.Extensions.ErreurConnexionBdd();
+        }
     }
 
     async static Task<IResult> UploaderAsync([FromServices] IProtectionService _protectionServ, 
