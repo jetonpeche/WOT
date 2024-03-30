@@ -1,18 +1,20 @@
 using back.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
-using System.Security.Cryptography;
-using Microsoft.OpenApi.Models;
-using back.Services.ClanWars;
 using back.Routes;
+using back.Services.ClanWars;
+using back.Services.Fichiers;
 using back.Services.Joueurs;
 using back.Services.Tanks;
 using certyAPI.Services.Mdp;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Outil.Services;
 using Services.Jwts;
+using Services.Protections;
+using System.Reflection;
+using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,9 +84,10 @@ builder.Services
     .AddScoped<ITankService, TankService>()
     .AddScoped<IJoueurService, JoueurService>()
     .AddScoped<IClanWarService, ClanWarService>()
-    .AddSingleton(x => new TokenService(rsa, "wotApp"))
-    .AddSingleton<ProtectionService>()
+    .AddSingleton<IJwtService>(x => new JwtService(rsa, "wotApi"))
+    .AddSingleton<IProtectionService>(x => new ProtectionService(null))
     .AddTransient<IMdpService, MdpService>()
+    .AddTransient<IFichierService, FichierService>()
     .AddTransient<IJwtService>(x => new JwtService(rsa, ""));
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(c => c.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()));
@@ -132,6 +135,7 @@ app.UseAuthorization();
 app.MapGroup("/joueur").AjouterRouteJoueur();
 app.MapGroup("/clanWar").AjouterRouteClanWar();
 app.MapGroup("/tank").AjouterRouteTank();
+app.MapGroup("/upload").AjouterRouteUploadPourFun();
 
 app.Run();
 

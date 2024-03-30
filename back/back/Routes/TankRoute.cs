@@ -4,6 +4,7 @@ using back.Models;
 using back.ModelsFiltre;
 using back.Services.Tanks;
 using Microsoft.AspNetCore.Mvc;
+using Services.Protections;
 
 namespace back.Routes;
 
@@ -128,7 +129,7 @@ public static class TankRoute
     }
 
     async static Task<IResult> AjouterAsync([FromServices] ITankService _tankServ,
-                                            [FromServices] ProtectionService _protectionServ,
+                                            [FromServices] IProtectionService _protectionServ,
                                             [FromBody] TankImport _tankImport)
     {
         try
@@ -153,7 +154,7 @@ public static class TankRoute
     }
 
     async static Task<IResult> ModifierAsync([FromServices] ITankService _tankServ,
-                                             [FromServices] ProtectionService _protectionServ,
+                                             [FromServices] IProtectionService _protectionServ,
                                              [FromBody] TankModifierImport _tankImport)
     {
         try

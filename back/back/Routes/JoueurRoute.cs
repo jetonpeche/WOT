@@ -6,6 +6,7 @@ using back.Services.Joueurs;
 using certyAPI.Services.Mdp;
 using Microsoft.AspNetCore.Mvc;
 using Services.Jwts;
+using Services.Protections;
 using System.Security.Claims;
 
 namespace back.Routes;
@@ -173,7 +174,7 @@ public static class JoueurRoute
 
     static async Task<IResult> AjouterAsync(HttpContext _httpContext,
                                             [FromServices] IJoueurService _joueurServ,
-                                            [FromServices] ProtectionService _protectionServ,
+                                            [FromServices] IProtectionService _protectionServ,
                                             [FromServices] LinkGenerator _linkGenerator,
                                             [FromServices] IMdpService _mdpServ,
                                             [FromBody] JoueurImport _joueurImport)
