@@ -1,6 +1,8 @@
 # WOT 
 
-Organiser les clan war
+Organiser les clan war  
+Login: jetonpeche (admin)
+Mdp: salut
 
 # Installation front
 
@@ -25,3 +27,10 @@ Organiser les clan war
 - Dans le dossier `back` doublic click sur `back.sln` se qui va ouvrir visual studio 2022
   OU
   lancer visual studio 2022 et clicker sur `ouvrir un projet ou une solution` puis aller chercher `back.sln`
+- Clicker sur le bouton play en haut pour lancer le back
+
+## Installation Bdd
+
+### Sql Server existant
+- Si vous avez sql server créer la bdd `WOT` et copier coller le `script.sql`
+- Oublier pas de changer dans `appsettings.json` la chaine de connexion par la votre
