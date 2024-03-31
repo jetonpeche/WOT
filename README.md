@@ -33,4 +33,4 @@ Mdp: salut
 
 ### Sql Server existant
 - Si vous avez sql server créer la bdd `WOT` et copier coller le `script.sql`
-- Oublier pas de changer dans `appsettings.json` la chaine de connexion par la votre
+- Oublier pas de changer dans `appsettings.json` la chaine de connexion (data source) par la votre
