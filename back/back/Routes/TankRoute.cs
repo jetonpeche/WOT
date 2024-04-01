@@ -4,6 +4,7 @@ using back.Models;
 using back.ModelsFiltre;
 using back.Services.Tanks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Services.Protections;
 
 namespace back.Routes;
@@ -17,6 +18,7 @@ public static class TankRoute
         builder.MapGet("lister/{seulementVisible:bool}", ListerAsync)
             .WithDescription("Lister les tanks")
             .Produces<TankExport[]>()
+            .CacheOutput("parTank")
             .RequireAuthorization();
 
         builder.MapGet("lister/{idJoueur:int}", ListerTankJoueurAsync)
@@ -130,6 +132,7 @@ public static class TankRoute
 
     async static Task<IResult> AjouterAsync([FromServices] ITankService _tankServ,
                                             [FromServices] IProtectionService _protectionServ,
+                                            [FromServices] IOutputCacheStore _cache,
                                             [FromBody] TankImport _tankImport)
     {
         try
@@ -144,6 +147,7 @@ public static class TankRoute
             };
 
             await _tankServ.AjouterAsync(tank);
+            await _cache.EvictByTagAsync("tank", default);
 
             return Results.Created("", new { tank.Id });
         }
@@ -155,6 +159,7 @@ public static class TankRoute
 
     async static Task<IResult> ModifierAsync([FromServices] ITankService _tankServ,
                                              [FromServices] IProtectionService _protectionServ,
+                                             [FromServices] IOutputCacheStore _cache,
                                              [FromBody] TankModifierImport _tankImport)
     {
         try
@@ -174,7 +179,13 @@ public static class TankRoute
 
             bool ok = await _tankServ.ModifierAsync(tank);
 
-            return ok ? Results.NoContent() : Results.NotFound();
+            if(ok)
+            {
+                await _cache.EvictByTagAsync("tank", default);
+                return Results.NoContent();
+            }
+
+            return Results.NotFound();
         }
         catch
         {
@@ -183,6 +194,7 @@ public static class TankRoute
     }
 
     async static Task<IResult> SupprimerAsync([FromServices] ITankService _tankServ,
+                                              [FromServices] IOutputCacheStore _cache,
                                               [FromRoute(Name = "idTank")] int _idTank)
     {
         try
@@ -192,7 +204,13 @@ public static class TankRoute
 
             bool ok = await _tankServ.SupprimerAsync(_idTank);
 
-            return ok ? Results.NoContent() : Results.NotFound();
+            if(ok)
+            {
+                await _cache.EvictByTagAsync("tank", default);
+                return Results.NoContent();
+            }
+
+            return Results.NotFound();
         }
         catch
         {

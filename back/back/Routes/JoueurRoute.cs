@@ -5,6 +5,7 @@ using back.Models;
 using back.Services.Joueurs;
 using certyAPI.Services.Mdp;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Services.Jwts;
 using Services.Protections;
 using System.Security.Claims;
@@ -20,12 +21,14 @@ public static class JoueurRoute
         builder.MapGet("lister/{roleJoueur}", ListerAsync)
             .WithDescription("Lister les joueurs, valeur possible pour 'roleJoueur': admin, strateur, tous")
             .Produces<JoueurExport[]>()
+            .CacheOutput("parJoueur")
             .RequireAuthorization("admin");
 
         builder.MapGet("listerPossedeTank/{idTank}", ListerTankPossederAsync)
             .WithDescription("Lister les joueurs qui possèdent le tank")
             .Produces<string[]>()
             .ProducesBadRequest()
+            .CacheOutput("parTankJoueur")
             .RequireAuthorization();
 
         builder.MapGet("info/{pseudo}", InfosAsync)
@@ -177,6 +180,7 @@ public static class JoueurRoute
                                             [FromServices] IProtectionService _protectionServ,
                                             [FromServices] LinkGenerator _linkGenerator,
                                             [FromServices] IMdpService _mdpServ,
+                                            [FromServices] IOutputCacheStore _cache,
                                             [FromBody] JoueurImport _joueurImport)
     {
         try
@@ -198,6 +202,7 @@ public static class JoueurRoute
             };
 
             await _joueurServ.AjouterAsync(joueur);
+            await _cache.EvictByTagAsync("joueur", default);
 
             string uri = _linkGenerator.GetPathByName(_httpContext, "infoJoueur", new { pseudo = joueur.Pseudo })!;
 
@@ -210,6 +215,7 @@ public static class JoueurRoute
     }
 
     static async Task<IResult> AjouterTankJoueurAsync([FromServices] IJoueurService _joueurServ,
+                                                      [FromServices] IOutputCacheStore _cache,
                                                       [FromBody] JoueurTankImport _joueurTankImport)
     {
         try
@@ -236,7 +242,13 @@ public static class JoueurRoute
 
             bool ok = await _joueurServ.AjouterTankJoueurAsync(idJoueur, _joueurTankImport.IdTank);
 
-            return ok ? Results.NoContent() : Results.NotFound();
+            if(ok)
+            {
+                await _cache.EvictByTagAsync("tankJoueur", default);
+                return Results.NoContent();
+            }
+
+            return Results.NotFound();
         }
         catch
         {
@@ -245,6 +257,7 @@ public static class JoueurRoute
     }
 
     static async Task<IResult> ModifierAsync([FromServices] IJoueurService _joueurServ,
+                                             [FromServices] IOutputCacheStore _cache,
                                              [FromBody] JoueurImport _joueurImport)
     {
         try
@@ -254,7 +267,13 @@ public static class JoueurRoute
 
             bool ok = await _joueurServ.ModifierAsync(_joueurImport);
 
-            return ok ? Results.NoContent() : Results.NotFound();
+            if (ok)
+            {
+                await _cache.EvictByTagAsync("joueur", default);
+                return Results.NoContent();
+            }
+
+            return Results.NotFound();
         }
         catch
         {
@@ -263,6 +282,7 @@ public static class JoueurRoute
     }
 
     static async Task<IResult> InserverEtatActiverAsync([FromServices] IJoueurService _joueurServ,
+                                                        [FromServices] IOutputCacheStore _cache,
                                                         [FromRoute(Name = "idJoueur")] int _idJoueur)
     {
         try
@@ -272,7 +292,13 @@ public static class JoueurRoute
 
             bool ok = await _joueurServ.InverserEtatActiverAsync(_idJoueur);
 
-            return ok ? Results.NoContent() : Results.NotFound();
+            if(ok)
+            {
+                await _cache.EvictByTagAsync("joueur", default);
+                return Results.NoContent();
+            }
+
+            return Results.NotFound();
         }
         catch
         {
@@ -281,6 +307,7 @@ public static class JoueurRoute
     }
 
     static async Task<IResult> SupprimerTankJoueurAsync([FromServices] IJoueurService _joueurServ,
+                                                        [FromServices] IOutputCacheStore _cache,
                                                         [FromBody] JoueurTankImport _joueurTankImport)
     {
         int idJoueur = 0;
@@ -295,10 +322,17 @@ public static class JoueurRoute
 
         bool ok = await _joueurServ.SupprimerTankJoueurAsync(idJoueur, _joueurTankImport.IdTank);
 
-        return ok ? Results.NoContent() : Results.NotFound();
+        if(ok)
+        {
+            await _cache.EvictByTagAsync("tankJoueur", default);
+            return Results.NoContent();
+        }
+
+        return Results.NotFound();
     }
 
     static async Task<IResult> SupprimerAsync([FromServices] IJoueurService _joueurServ,
+                                              [FromServices] IOutputCacheStore _cache,
                                               [FromRoute(Name = "idDiscord")] string _idDiscord)
     {
         try
@@ -307,6 +341,10 @@ public static class JoueurRoute
                 return Results.BadRequest("id discord n'existe pas");
 
             await _joueurServ.SupprimerAsync(_idDiscord);
+
+            await _cache.EvictByTagAsync("joueur", default);
+            await _cache.EvictByTagAsync("tankJoueur", default);
+
             return Results.NoContent();
         }
         catch

@@ -1,4 +1,5 @@
 using back.Models;
+using back.PolicyOutputCache;
 using back.Routes;
 using back.Services.ClanWars;
 using back.Services.Fichiers;
@@ -97,6 +98,13 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy("admin", x => x.RequireRole("admin"))
     .AddPolicy("strateur", x => x.RequireRole("admin", "strateur"));
 
+builder.Services.AddOutputCache(x =>
+{
+    x.AddPolicy("parTank", new CachePolicyNormal("tank", TimeSpan.FromMinutes(1)));
+    x.AddPolicy("parJoueur", new CachePolicyNormal("joueur", TimeSpan.FromMinutes(5)));
+    x.AddPolicy("parTankJoueur", new CachePolicyNormal("tankJoueur", TimeSpan.FromMinutes(1)));
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, option =>
                 {
@@ -131,6 +139,8 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseOutputCache();
 
 app.MapGroup("/joueur").AjouterRouteJoueur();
 app.MapGroup("/clanWar").AjouterRouteClanWar();
